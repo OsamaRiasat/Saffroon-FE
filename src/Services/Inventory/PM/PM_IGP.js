@@ -1,0 +1,49 @@
+import http from "../../http/httpService.js"
+import {apiUrl} from "../../../config.json" 
+
+
+const data="inventory/"
+const Endpoint=apiUrl+data 
+
+export default {
+
+  methods:{  
+    PMHighestIGPNO(){
+      const resp = http.get(Endpoint+"PMHighestIGPNO");
+      console.log("PMHighestIGPNO"+resp.data)
+      return resp
+    },
+    PMPurchaseOrderPONOsWithPendingStatus(){
+        const resp = http.get(Endpoint+"PMPurchaseOrderPONOsWithPendingStatus/");
+        console.log("PMHighestIGPNO"+resp.data)
+        return resp
+      }
+      ,
+      PMPurchaseOrderItemsCodesForReceiving(PONo){
+        const resp = http.get(Endpoint+"PMPurchaseOrderItemsCodesForReceiving/"+PONo);
+        console.log("PMPurchaseOrderItemsCodesForReceiving"+resp.data)
+        return resp
+      }
+      ,
+      PMPurchaseOrderDetails(PONo,PMCode){
+        const resp = http.get(Endpoint+"PMPurchaseOrderDetails/"+PONo+"/"+PMCode);
+        console.log("PMPurchaseOrderDetails"+resp.data)
+        return resp
+      }
+      ,
+      PMIGP(data){
+        const resp = http.post(Endpoint+"PMIGP",data);
+        return resp
+      }
+
+
+}
+
+
+
+}
+
+
+// RM IGP RMIGP/
+
+
