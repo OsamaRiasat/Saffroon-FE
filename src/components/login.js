@@ -89,7 +89,7 @@ export default function SignIn() {
         else{
     
         if(sessionStorage.getItem("Role")==="Store")
-            history.replace("saffron/RM/Demand");
+            history.replace("saffron/PM/Dashboard");
         else if(sessionStorage.getItem("Role")==="Admin")
             history.replace("saffron/dashboard");
         else if(sessionStorage.getItem("Role")==="Quality Control")

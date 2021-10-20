@@ -18,7 +18,6 @@ export function ProductCodes() {
     const resp = http.get(Endpoint + "viewset/ProductCodes/");
     console.log(resp);
     return resp;
-
 }
 
 export function ProductNames() {

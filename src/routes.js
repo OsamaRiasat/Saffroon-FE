@@ -44,6 +44,7 @@ import PMDemand from "./views/PM/PM_Demand.js";
 import PM_IGP from "./views/PM/PM_IGP.js";
 import PM_GRN from "./views/PM/PM_GRN.js";
 import PM_Post_GRN from "./views/PM/PM_Post_GRN.js";
+import StoreDashboard from "./views/PM/Dashboard";
 
 //QC
 import BlockAnalyst from './views/QC/AnalystBlocking/BlockAnalyst.js'
@@ -144,9 +145,20 @@ const dashboardRoutes = [
 
   
   {
+    path: "/PM/Dashboard",
+    name: "DashBoard",
+    icon: Dashboard,
+    component: StoreDashboard ,
+    layout: "/saffron",
+    role:"Store"
+  },
+  
+
+  
+  {
     path:"/planning",
     name: "Planning ",
-    icon:LibraryBooks ,
+    icon:FilterFramesIcon ,
     component:planning,
     layout:"/saffron",
     role:"Store"
@@ -196,6 +208,8 @@ const dashboardRoutes = [
   layout: "/saffron",
   role:"Store"
 },
+
+
 {
   path: "/PM/IGP",
   name: "PM IGP Note",
@@ -222,6 +236,7 @@ const dashboardRoutes = [
   role:"Store"
 },
 
+
 //APi test
   {
     path:"/apitest",
@@ -238,7 +253,7 @@ const dashboardRoutes = [
    {
     path:"/QC/dashboard",
     name: "Dasboard",
-    icon:LibraryBooks ,
+    icon:Dashboard ,
     component:QCDashboard,
     layout:"/saffron",
     role:"Quality Control"

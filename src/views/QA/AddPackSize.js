@@ -65,7 +65,7 @@ export default class AddPackSize extends Component {
       registrationNumber: "",
       packSize: "",
       packType: "",
-      fillingWeight: "",
+      fillingWeight: "0",
       MRP: "",
     };
   }

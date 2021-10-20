@@ -7,6 +7,7 @@ import CardHeader from "../../components/Card/CardHeader.js";
 import CardBody from "../../components/Card/CardBody.js";
 import { makeStyles } from '@material-ui/core/styles';
 
+import { Link } from 'react-router-dom'
 
 const useStyles = {
   root: {
@@ -40,7 +41,7 @@ export default class Dashboard extends Component {
               </CardHeader>
               <CardBody>
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={3}>
+                  <GridItem xs={12} sm={12} md={4}>
                     <Card>
                       <CardHeader color="info">
                         <h4 style={{ textAlign: "center" }}>
@@ -53,8 +54,9 @@ export default class Dashboard extends Component {
                             root: classes.root, // class name, e.g. `classes-nesting-root-x`
                           }}
                           variant="contained"
-                          // color="success"
+                          color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/RM/view-specs"
                         >
                           Raw Material
                         </Button>
@@ -62,6 +64,7 @@ export default class Dashboard extends Component {
                           variant="contained"
                           color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/PM/view-specs"
                         >
                           Pack Material
                         </Button>
@@ -69,7 +72,7 @@ export default class Dashboard extends Component {
                           variant="contained"
                           color="success"
                           fullWidth="true"
-                          
+                          component={Link} to="/saffron/QC/Product/view-specs" 
                         >
                           Products
                         </Button>
@@ -77,7 +80,7 @@ export default class Dashboard extends Component {
                     </Card>
                   </GridItem>
 
-                  <GridItem xs={12} sm={12} md={3}>
+                  <GridItem xs={12} sm={12} md={4}>
                     <Card>
                       <CardHeader color="info">
                         <h4 style={{ textAlign: "center" }}>
@@ -89,6 +92,8 @@ export default class Dashboard extends Component {
                           variant="contained"
                           color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/RM/new-specs" 
+
                         >
                           Raw Material
                         </Button>
@@ -96,6 +101,8 @@ export default class Dashboard extends Component {
                           variant="contained"
                           color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/PM/new-specs" 
+
                         >
                           Pack Material
                         </Button>
@@ -103,6 +110,8 @@ export default class Dashboard extends Component {
                           variant="contained"
                           color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/Product/new-specs" 
+
                         >
                           Products
                         </Button>
@@ -110,7 +119,7 @@ export default class Dashboard extends Component {
                     </Card>
                   </GridItem>
 
-                  <GridItem xs={12} sm={12} md={3}>
+                  <GridItem xs={12} sm={12} md={4}>
                     <Card>
                       <CardHeader color="info">
                         <h4 style={{ textAlign: "center" }}>
@@ -122,6 +131,8 @@ export default class Dashboard extends Component {
                           variant="contained"
                           color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/RM/edit-specs" 
+
                         >
                           Raw Material
                         </Button>
@@ -129,6 +140,8 @@ export default class Dashboard extends Component {
                           variant="contained"
                           color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/PM/edit-specs" 
+
                         >
                           Pack Material
                         </Button>
@@ -136,6 +149,8 @@ export default class Dashboard extends Component {
                           variant="contained"
                           color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/Product/edit-specs" 
+
                         >
                           Products
                         </Button>
@@ -143,40 +158,46 @@ export default class Dashboard extends Component {
                     </Card>
                   </GridItem>
 
-                  <GridItem xs={12} sm={12} md={3}>
+                  {/* <GridItem xs={12} sm={12} md={3}>
                     <Card>
                       <CardHeader color="info">
                         <h4 style={{ textAlign: "center" }}>Results Loading</h4>
                       </CardHeader>
                       <CardBody>
-                        <Button
+                      <Button
                           variant="contained"
-                          color="success"
+                          // color="success"
                           fullWidth="true"
+                          // component={Link} to="" 
+
                         >
                           Raw Material
                         </Button>
                         <Button
                           variant="contained"
-                          color="success"
+                          // color="success"
                           fullWidth="true"
+                          // component={Link} to="" 
+
                         >
                           Pack Material
                         </Button>
                         <Button
                           variant="contained"
-                          color="success"
+                          // color="success"
                           fullWidth="true"
+                          // component={Link} to="" 
+
                         >
                           Products
                         </Button>
                       </CardBody>
                     </Card>
-                  </GridItem>
+                  </GridItem> */}
                 </GridContainer>
 
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={3}>
+                  <GridItem xs={12} sm={12} md={4}>
                     <Card>
                       <CardHeader color="info">
                         <h4 style={{ textAlign: "center" }}>COA Approval</h4>
@@ -186,6 +207,8 @@ export default class Dashboard extends Component {
                           variant="contained"
                           color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/RM/COA" 
+
                         >
                           Raw Material
                         </Button>
@@ -193,6 +216,8 @@ export default class Dashboard extends Component {
                           variant="contained"
                           color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/PM/COA" 
+
                         >
                           Pack Material
                         </Button>
@@ -200,6 +225,8 @@ export default class Dashboard extends Component {
                           variant="contained"
                           color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/product/COA" 
+
                         >
                           Products
                         </Button>
@@ -207,7 +234,7 @@ export default class Dashboard extends Component {
                     </Card>
                   </GridItem>
 
-                  <GridItem xs={12} sm={12} md={3}>
+                  <GridItem xs={12} sm={12} md={4}>
                     <Card>
                       <CardHeader color="info">
                         <h4 style={{ textAlign: "center" }}>Data Analysis</h4>
@@ -217,6 +244,8 @@ export default class Dashboard extends Component {
                           variant="contained"
                           color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/RM/data-analysis" 
+
                         >
                           Raw Material
                         </Button>
@@ -224,6 +253,8 @@ export default class Dashboard extends Component {
                           variant="contained"
                           color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/PM/data-analysis" 
+
                         >
                           Pack Material
                         </Button>
@@ -231,6 +262,8 @@ export default class Dashboard extends Component {
                           variant="contained"
                           color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/Product/data-analysis" 
+
                         >
                           Products
                         </Button>
@@ -238,7 +271,7 @@ export default class Dashboard extends Component {
                     </Card>
                   </GridItem>
 
-                  <GridItem xs={12} sm={12} md={3}>
+                  {/* <GridItem xs={12} sm={12} md={3}>
                     <Card>
                       <CardHeader color="info">
                         <h4 style={{ textAlign: "center" }}>Copy of COA</h4>
@@ -246,30 +279,36 @@ export default class Dashboard extends Component {
                       <CardBody>
                         <Button
                           variant="contained"
-                          color="success"
+                          // color="success"
                           fullWidth="true"
+                          // component={Link} to="" 
+
                         >
                           Raw Material
                         </Button>
                         <Button
                           variant="contained"
-                          color="success"
+                          // color="success"
                           fullWidth="true"
+                          // component={Link} to="" 
+
                         >
                           Pack Material
                         </Button>
                         <Button
                           variant="contained"
-                          color="success"
+                          // color="success"
                           fullWidth="true"
+                          // component={Link} to="" 
+
                         >
                           Products
                         </Button>
                       </CardBody>
                     </Card>
-                  </GridItem>
+                  </GridItem> */}
 
-                  <GridItem xs={12} sm={12} md={3}>
+                  <GridItem xs={12} sm={12} md={4}>
                     <Card>
                       <CardHeader color="info">
                         <h4 style={{ textAlign: "center" }}>
@@ -277,10 +316,13 @@ export default class Dashboard extends Component {
                         </h4>
                       </CardHeader>
                       <CardBody>
-                        <Button
+
+                      <Button
                           variant="contained"
                           color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/RM/sample-assignment" 
+
                         >
                           Raw Material
                         </Button>
@@ -288,6 +330,8 @@ export default class Dashboard extends Component {
                           variant="contained"
                           color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/PM/sample-assignment" 
+
                         >
                           Pack Material
                         </Button>
@@ -295,6 +339,8 @@ export default class Dashboard extends Component {
                           variant="contained"
                           color="success"
                           fullWidth="true"
+                          component={Link} to="/saffron/QC/product/sample-assignment" 
+
                         >
                           Products
                         </Button>
@@ -311,7 +357,11 @@ export default class Dashboard extends Component {
                       </CardHeader>
                       <CardBody>
                         <center>
-                          <Button variant="contained" color="success">
+                          <Button variant="contained" 
+                          color="success" 
+                          component={Link} to="/saffron/QC/blockanalyst" 
+                          
+                          >
                             Manage Analyst
                           </Button>
                         </center>

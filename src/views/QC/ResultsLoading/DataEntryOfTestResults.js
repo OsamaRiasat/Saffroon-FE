@@ -71,8 +71,8 @@ export default class DataEntryOfTestResults extends Component {
     this.setState({ batch_lot: temp.batchNo });
     this.setState({ qty: temp.quantityReceived });
     this.setState({
-      fdata: temp.result.FirstData,
-      sdata: temp.result.SecondData,
+      // fdata: temp.result.FirstData,
+      // sdata: temp.result.SecondData,
     });
     const temp2 = [];
     let arr = temp.result.list;
