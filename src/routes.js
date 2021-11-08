@@ -44,7 +44,7 @@ import PMDemand from "./views/PM/PM_Demand.js";
 import PM_IGP from "./views/PM/PM_IGP.js";
 import PM_GRN from "./views/PM/PM_GRN.js";
 import PM_Post_GRN from "./views/PM/PM_Post_GRN.js";
-import StoreDashboard from "./views/PM/Dashboard";
+// import StoreDashboard from "./views/PM/Dashboard";
 
 //QC
 import BlockAnalyst from './views/QC/AnalystBlocking/BlockAnalyst.js'
@@ -128,536 +128,547 @@ import AddPackSize from "./views/QA/AddPackSize"
 //------------------ Admin Routes ------------------------ 
 
 const dashboardRoutes = [
-  {
-    path: "/dashboard",
-    name: "Dashboard",
-    icon: Dashboard,
-    component: AddUser,
-  
-    layout: "/saffron",
-    role:"Admin"
-    
-  },
-  
-//--------------------Store Routes -----------------------------
+	{
+		path: "/dashboard",
+		name: "Dashboard",
+		icon: Dashboard,
+		component: AddUser,
 
-  //planning
+		layout: "/saffron",
+		role: "Admin",
+	},
 
-  
-  {
-    path: "/PM/Dashboard",
-    name: "DashBoard",
-    icon: Dashboard,
-    component: StoreDashboard ,
-    layout: "/saffron",
-    role:"Store"
-  },
-  
+	//--------------------Store Routes -----------------------------
 
-  
-  {
-    path:"/planning",
-    name: "Planning ",
-    icon:FilterFramesIcon ,
-    component:planning,
-    layout:"/saffron",
-    role:"Store"
-  },
-  
-  {
-    path: "/RM/Demand",
-    name: "RM Demand Form",
-    icon:FilterFramesIcon ,
-    component:RawMaterialDemand,
-    layout: "/saffron",
-    role:"Store"
-  },
-  {
-    path: "/RM/IGP",
-    name: "RM IGP Note",
-    icon:FilterFramesIcon ,
-    // RM IGP Form
-    component: RM_IGP,
-    layout: "/saffron",
-    role:"Store"
-  },
-  {
-    path: "/RM/GRN",
-    name: "RM Generate GRN",
-    icon:FilterFramesIcon ,
-    component: RM_GRN ,
-    layout: "/saffron",
-    role:"Store"
-  },
-  {
-    path: "/RM/PostGRN",
-    name: "RM Post GRN",
-    icon:FilterFramesIcon ,
-    component: RM_Post_GRN ,
-    layout: "/saffron",
-    role:"Store"
-  },
+	//planning
 
-// Packing material 
+	// {
+	//   path: "/PM/Dashboard",
+	//   name: "DashBoard",
+	//   icon: Dashboard,
+	//   component: StoreDashboard ,
+	//   layout: "/saffron",
+	//   role:"Store"
+	// },
 
-{
-  path: "/PM/Demand",
-  name: "PM Demand Form",
-  icon:FilterFramesIcon ,
-  component:PMDemand,
-  layout: "/saffron",
-  role:"Store"
-},
+	{
+		path: "/planning",
+		name: "Planning ",
+		icon: FilterFramesIcon,
+		component: planning,
+		layout: "/saffron",
+		role: "Store",
+	},
 
+	{
+		path: "/RM/Demand",
+		name: "RM Demand Form",
+		icon: FilterFramesIcon,
+		component: RawMaterialDemand,
+		layout: "/saffron",
+		role: "Store",
+	},
+	{
+		path: "/RM/IGP",
+		name: "RM IGP Note",
+		icon: FilterFramesIcon,
+		// RM IGP Form
+		component: RM_IGP,
+		layout: "/saffron",
+		role: "Store",
+	},
+	{
+		path: "/RM/GRN",
+		name: "RM Generate GRN",
+		icon: FilterFramesIcon,
+		component: RM_GRN,
+		layout: "/saffron",
+		role: "Store",
+	},
+	{
+		path: "/RM/PostGRN",
+		name: "RM Post GRN",
+		icon: FilterFramesIcon,
+		component: RM_Post_GRN,
+		layout: "/saffron",
+		role: "Store",
+	},
 
-{
-  path: "/PM/IGP",
-  name: "PM IGP Note",
-  icon:FilterFramesIcon ,
-  // RM IGP Form
-  component: PM_IGP,
-  layout: "/saffron",
-  role:"Store"
-},
-{
-  path: "/PM/GRN",
-  name: "PM Generate GRN",
-  icon:FilterFramesIcon ,
-  component: PM_GRN ,
-  layout: "/saffron",
-  role:"Store"
-},
-{
-  path: "/PM/PostGRN",
-  name: "PM Post GRN",
-  icon:FilterFramesIcon ,
-  component: PM_Post_GRN ,
-  layout: "/saffron",
-  role:"Store"
-},
+	// Packing material
 
+	{
+		path: "/PM/Demand",
+		name: "PM Demand Form",
+		icon: FilterFramesIcon,
+		component: PMDemand,
+		layout: "/saffron",
+		role: "Store",
+	},
 
-//APi test
-  {
-    path:"/apitest",
-    name: "My Api Tests",
-    icon:LibraryBooks ,
-    component:ApiTest,
-    layout:"/saffron",
-    role:"Admin"
-  },
+	{
+		path: "/PM/IGP",
+		name: "PM IGP Note",
+		icon: FilterFramesIcon,
+		// RM IGP Form
+		component: PM_IGP,
+		layout: "/saffron",
+		role: "Store",
+	},
+	{
+		path: "/PM/GRN",
+		name: "PM Generate GRN",
+		icon: FilterFramesIcon,
+		component: PM_GRN,
+		layout: "/saffron",
+		role: "Store",
+	},
+	{
+		path: "/PM/PostGRN",
+		name: "PM Post GRN",
+		icon: FilterFramesIcon,
+		component: PM_Post_GRN,
+		layout: "/saffron",
+		role: "Store",
+	},
 
-  //--------------------QC---------------
-  
-   // Dashboard
-   {
-    path:"/QC/dashboard",
-    name: "Dasboard",
-    icon:Dashboard ,
-    component:QCDashboard,
-    layout:"/saffron",
-    role:"Quality Control"
-  },
-  //Block analyst
-  {
-    path:"/QC/blockanalyst",
-    name: "Block Analyst",
-    icon:LibraryBooks ,
-    component:BlockAnalyst,
-    layout:"/saffron",
-    role:"Quality Control"
-  },
- 
+	//APi test
+	{
+		path: "/apitest",
+		name: "My Api Tests",
+		icon: LibraryBooks,
+		component: ApiTest,
+		layout: "/saffron",
+		role: "Admin",
+	},
 
-  // View
-  {
-    path:"/QC/RM/view-specs",
-    name: "RM View Specs",
-    icon:LibraryBooks ,
-    component:RMViewSpecifications,
-    layout:"/saffron",
-    role:"Quality Control"
-  },
-  {
-    path:"/QC/PM/view-specs",
-    name: "PM View Specs",
-    icon:LibraryBooks ,
-    component:PMViewSpecifications,
-    layout:"/saffron",
-    role:"Quality Control"
-  },
-  {
-    path:"/QC/Product/view-specs",
-    name: "View Product Specs",
-    icon:LibraryBooks ,
-    component:ProdViewSpecifications,
-    layout:"/saffron",
-    role:"Quality Control"
-  },
-  // New
-  {
-    path:"/QC/RM/new-specs",
-    name: "RM New Specs",
-    icon:LibraryBooks ,
-    component:RMNewSpecifications,
-    layout:"/saffron",
-    role:"Quality Control"
-  },
-  {
-    path:"/QC/PM/new-specs",
-    name: "PM New Specs",
-    icon:LibraryBooks ,
-    component:PMNewSpecifications,
-    layout:"/saffron",
-    role:"Quality Control"
-  },
-  {
-    path:"/QC/Product/new-specs",
-    name: "Prod New Specs",
-    icon:LibraryBooks ,
-    component:ProdNewSpecifications,
-    layout:"/saffron",
-    role:"Quality Control"
-  },
-  // Edit
-  {
-    path:"/QC/RM/edit-specs",
-    name: "RM Edit Specs",
-    icon:LibraryBooks ,
-    component:RMEditSpecifications,
-    layout:"/saffron",
-    role:"Quality Control"
-  },
-  {
-    path:"/QC/PM/edit-specs",
-    name: "PM Edit Specs",
-    icon:LibraryBooks ,
-    component:PMEditSpecifications,
-    layout:"/saffron",
-    role:"Quality Control"
-  },
-  {
-    path:"/QC/Product/edit-specs",
-    name: "Prod Edit Specs",
-    icon:LibraryBooks ,
-    component:ProdEditSpecifications,
-    layout:"/saffron",
-    role:"Quality Control"
-  },
-// Sample Assignment
-{
-  path:"/QC/RM/sample-assignment",
-  name: "RM Sample",
-  icon:LibraryBooks ,
-  component:RMSampleAssignment,
-  layout:"/saffron",
-  role:"Quality Control"
-},
-{
-  path:"/QC/PM/sample-assignment",
-  name: "PM Sample",
-  icon:LibraryBooks ,
-  component:PMSampleAssignment,
-  layout:"/saffron",
-  role:"Quality Control"
-},
-{
-  path:"/QC/product/sample-assignment",
-  name: "Product Sample",
-  icon:LibraryBooks ,
-  component:ProdSampleAssignment,
-  layout:"/saffron",
-  role:"Quality Control"
-},
+	//--------------------QC---------------
 
-//ResultsLoading
-{
-  path: "/QC/RM/pending-reports",
-  name: "RM Pending Reports",
-  icon: LibraryBooks,
-  component: RMPendingReports,
-  layout: "/saffron",
-  role: "QC_Analyst",
-},
-{
-  path: "/QC/PM/pending-reports",
-  name: "PM Pending Reports",
-  icon: LibraryBooks,
-  component: PMPendingReports,
-  layout: "/saffron",
-  role: "QC_Analyst",
-},
-{
-  path: "/QC/Product/pending-reports",
-  name: "Product Pending Reports",
-  icon: LibraryBooks,
-  component: ProductPendingReports,
-  layout: "/saffron",
-  role: "QC_Analyst",
-},
-{
-  path: "/QC/RM/data-entry",
-  name: "Data Entry of RM",
-  icon: LibraryBooks,
-  component: DataEntryOfTestResults,
-  layout: "/saffron",
-  role: "QC_Analyst",
-},
-{
-  path: "/QC/PM/data-entry",
-  name: "Data Entry of PM",
-  icon: LibraryBooks,
-  component:PMDataEntry,
-  layout: "/saffron",
-  role: "QC_Analyst",
-},
-{
-  path: "/QC/product/data-entry",
-  name: "Product Data Entry",
-  icon: LibraryBooks,
-  component: ProductDataEntry,
-  layout: "/saffron",
-  role: "QC_Analyst",
-},
+	// Dashboard
+	{
+		path: "/QC/dashboard",
+		name: "Dasboard",
+		icon: Dashboard,
+		component: QCDashboard,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	//Block analyst
+	{
+		path: "/QC/blockanalyst",
+		name: "Block Analyst",
+		icon: LibraryBooks,
+		component: BlockAnalyst,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
 
-//COA
-{
-  path: "/QC/RM/COA",
-  name: "COA RM",
-  icon: LibraryBooks,
-  component: COARM,
-  layout: "/saffron",
-  role: "Quality Control",
-},
-{
-  path: "/QC/PM/COA",
-  name: "COA PM",
-  icon: LibraryBooks,
-  component: COAPM,
-  layout: "/saffron",
-  role: "Quality Control",
-},
-{
-  path: "/QC/product/COA",
-  name: "COA Product",
-  icon: LibraryBooks,
-  component: COAProduct,
-  layout: "/saffron",
-  role: "Quality Control",
-},
-//DA
-{
-  path: "/QC/RM/data-analysis",
-  name: "RM Data Aanlysis",
-  icon: LibraryBooks,
-  component: DARM,
-  layout: "/saffron",
-  role: "Quality Control",
-},
-{
-  path: "/QC/PM/data-analysis",
-  name: "PM Data Aanlysis",
-  icon: LibraryBooks,
-  component: DAPM,
-  layout: "/saffron",
-  role: "Quality Control",
-},
+	// View
+	{
+		path: "/QC/RM/view-specs",
+		name: "RM View Specs",
+		icon: LibraryBooks,
+		component: RMViewSpecifications,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	{
+		path: "/QC/PM/view-specs",
+		name: "PM View Specs",
+		icon: LibraryBooks,
+		component: PMViewSpecifications,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	{
+		path: "/QC/Product/view-specs",
+		name: "View Product Specs",
+		icon: LibraryBooks,
+		component: ProdViewSpecifications,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	// New
+	{
+		path: "/QC/RM/new-specs",
+		name: "RM New Specs",
+		icon: LibraryBooks,
+		component: RMNewSpecifications,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	{
+		path: "/QC/PM/new-specs",
+		name: "PM New Specs",
+		icon: LibraryBooks,
+		component: PMNewSpecifications,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	{
+		path: "/QC/Product/new-specs",
+		name: "Prod New Specs",
+		icon: LibraryBooks,
+		component: ProdNewSpecifications,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	// Edit
+	{
+		path: "/QC/RM/edit-specs",
+		name: "RM Edit Specs",
+		icon: LibraryBooks,
+		component: RMEditSpecifications,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	{
+		path: "/QC/PM/edit-specs",
+		name: "PM Edit Specs",
+		icon: LibraryBooks,
+		component: PMEditSpecifications,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	{
+		path: "/QC/Product/edit-specs",
+		name: "Prod Edit Specs",
+		icon: LibraryBooks,
+		component: ProdEditSpecifications,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	// Sample Assignment
+	{
+		path: "/QC/RM/sample-assignment",
+		name: "RM Sample",
+		icon: LibraryBooks,
+		component: RMSampleAssignment,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	{
+		path: "/QC/PM/sample-assignment",
+		name: "PM Sample",
+		icon: LibraryBooks,
+		component: PMSampleAssignment,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	{
+		path: "/QC/product/sample-assignment",
+		name: "Product Sample",
+		icon: LibraryBooks,
+		component: ProdSampleAssignment,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
 
-{
-  path: "/QC/Product/data-analysis",
-  name: "Product Data Aanlysis",
-  icon: LibraryBooks,
-  component: DAProduct,
-  layout: "/saffron",
-  role: "Quality Control",
-},
+	//ResultsLoading
+	{
+		path: "/QC/RM/pending-reports",
+		name: "RM Pending Reports",
+		icon: LibraryBooks,
+		component: RMPendingReports,
+		layout: "/saffron",
+		role: "QC_Analyst",
+	},
+	{
+		path: "/QC/PM/pending-reports",
+		name: "PM Pending Reports",
+		icon: LibraryBooks,
+		component: PMPendingReports,
+		layout: "/saffron",
+		role: "QC_Analyst",
+	},
+	{
+		path: "/QC/Product/pending-reports",
+		name: "Product Pending Reports",
+		icon: LibraryBooks,
+		component: ProductPendingReports,
+		layout: "/saffron",
+		role: "QC_Analyst",
+	},
+	{
+		path: "/QC/RM/data-entry",
+		name: "Data Entry of RM",
+		icon: LibraryBooks,
+		component: DataEntryOfTestResults,
+		layout: "/saffron",
+		role: "QC_Analyst",
+	},
+	{
+		path: "/QC/PM/data-entry",
+		name: "Data Entry of PM",
+		icon: LibraryBooks,
+		component: PMDataEntry,
+		layout: "/saffron",
+		role: "QC_Analyst",
+	},
+	{
+		path: "/QC/product/data-entry",
+		name: "Product Data Entry",
+		icon: LibraryBooks,
+		component: ProductDataEntry,
+		layout: "/saffron",
+		role: "QC_Analyst",
+	},
 
+	//COA
+	{
+		path: "/QC/RM/COA",
+		name: "COA RM",
+		icon: LibraryBooks,
+		component: COARM,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	{
+		path: "/QC/PM/COA",
+		name: "COA PM",
+		icon: LibraryBooks,
+		component: COAPM,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	{
+		path: "/QC/product/COA",
+		name: "COA Product",
+		icon: LibraryBooks,
+		component: COAProduct,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	//DA
+	{
+		path: "/QC/RM/data-analysis",
+		name: "RM Data Aanlysis",
+		icon: LibraryBooks,
+		component: DARM,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	{
+		path: "/QC/PM/data-analysis",
+		name: "PM Data Aanlysis",
+		icon: LibraryBooks,
+		component: DAPM,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
 
- //Production
- {
-  path: "/production/batch/request",
-  name: "Req Batch Issuence",
-  icon: LibraryBooks,
-  component: RFBatchIss,
-  layout: "/saffron",
-  role: "Production",
-},
-// {
-//   path: "/production/batch/issue",
-//   name: "Issue Batch No",
-//   icon: LibraryBooks,
-//   component: IBatchNo,
-//   layout: "/saffron",
-//   role: "Quality Control",
-// },
-{
-  path: "/production/batch/track",
-  name: "Batch Track",
-  icon: LibraryBooks,
-  component: BatchTaP,
-  layout: "/saffron",
-  role: "Production",
-},
- //Line Clearance
- {
-  path: "/production/lc-request",
-  name: "LC Requests",
-  icon: LibraryBooks,
-  component: LCR,
-  layout: "/saffron",
-  role: "Production",
-},
-{
-  path: "/production/daily-packing",
-  name: "Daily Packing",
-  icon: LibraryBooks,
-  component: DailyPacking,
-  layout: "/saffron",
-  role: "Production",
-},
-{
-  path: "/production/order",
-  name: "Close Order",
-  icon: LibraryBooks,
-  component: CloseOrder,
-  layout: "/saffron",
-  role: "Production",
-},
-{
-  path: "/production/RM/Assessment",
-  name: "RM Assessment",
-  icon: LibraryBooks,
-  component: RMAssessment,
-  layout: "/saffron",
-  role: "Production",
-},
-{
-  path: "/production/pm/new",
-  name: "PM New Formulation",
-  icon: LibraryBooks,
-  component: PMNewFormulation,
-  layout: "/saffron",
-  role: "Production",
-},
+	{
+		path: "/QC/Product/data-analysis",
+		name: "Product Data Aanlysis",
+		icon: LibraryBooks,
+		component: DAProduct,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
 
+	//Production
+	{
+		path: "/production/batch/request",
+		name: "Req Batch Issuence",
+		icon: LibraryBooks,
+		component: RFBatchIss,
+		layout: "/saffron",
+		role: "Production",
+	},
+	// {
+	//   path: "/production/batch/issue",
+	//   name: "Issue Batch No",
+	//   icon: LibraryBooks,
+	//   component: IBatchNo,
+	//   layout: "/saffron",
+	//   role: "Quality Control",
+	// },
+	{
+		path: "/production/batch/track",
+		name: "Batch Track",
+		icon: LibraryBooks,
+		component: BatchTaP,
+		layout: "/saffron",
+		role: "Production",
+	},
+	//Line Clearance
+	{
+		path: "/production/lc-request",
+		name: "LC Requests",
+		icon: LibraryBooks,
+		component: LCR,
+		layout: "/saffron",
+		role: "Production",
+	},
+	{
+		path: "/production/daily-packing",
+		name: "Daily Packing",
+		icon: LibraryBooks,
+		component: DailyPacking,
+		layout: "/saffron",
+		role: "Production",
+	},
+	{
+		path: "/production/order",
+		name: "Close Order",
+		icon: LibraryBooks,
+		component: CloseOrder,
+		layout: "/saffron",
+		role: "Production",
+	},
+	{
+		path: "/production/RM/Assessment",
+		name: "RM Assessment",
+		icon: LibraryBooks,
+		component: RMAssessment,
+		layout: "/saffron",
+		role: "Production",
+	},
+	{
+		path: "/production/pm/new",
+		name: "PM New Formulation",
+		icon: LibraryBooks,
+		component: PMNewFormulation,
+		layout: "/saffron",
+		role: "Production",
+	},
 
-//Quality Assurance 
+	//Quality Assurance
 
-{
-  path: "/QA/batch/issue",
-  name: "Issue Batch No",
-  icon: LibraryBooks,
-  component: IBatchNo,
-  layout: "/saffron",
-  role: "Quality Assurance",
-},
-{
-  path: "/QA/RM/sample",
-  name: "RM Sample",
-  icon: LibraryBooks,
-  component: RMSample,
-  layout: "/saffron",
-  role: "Quality Assurance",
-},
-{
-  path: "/QA/formulation/add",
-  name: "New Formulation",
-  icon: LibraryBooks,
-  component: RMNewFormula,
-  layout: "/saffron",
-  role: "Quality Assurance",
-},
-// {
-//   path: "/QA/formulation/edit",
-//   name: "Edit Formulation",
-//   icon: LibraryBooks,
-//   component: IBatchNo,
-//   layout: "/saffron",
-//   role: "Quality Assurance",
-// },
-{
-  path: "/QA/non-conformance",
-  name: "Non Conformance",
-  icon: LibraryBooks,
-  component: NC,
-  layout: "/saffron",
-  role: "Quality Assurance",
-},
-{
-  path: "/QA/product/add",
-  name: "Add Product",
-  icon: LibraryBooks,
-  component: addProduct,
-  layout: "/saffron",
-  role: "Quality Assurance",
-},
-{
-  path: "/QA/RM/add",
-  name: "Add RM",
-  icon: LibraryBooks,
-  component: addRM,
-  layout: "/saffron",
-  role: "Quality Assurance",
-},
-{
-  path: "/QA/packSize/add",
-  name: "Add Pack Size",
-  icon: LibraryBooks,
-  component: AddPackSize,
-  layout: "/saffron",
-  role: "Quality Assurance",
-},
-{
-  path: "/QA/batch-deviation",
-  name: "Batch Deviation",
-  icon: LibraryBooks,
-  component: batchDeviation,
-  layout: "/saffron",
-  role: "Quality Assurance",
-},
-{
-  path: "/QA/change-control",
-  name: "Change Control",
-  icon: LibraryBooks,
-  component: changeControl,
-  layout: "/saffron",
-  role: "Quality Assurance",
-},
-{
-  path: "/QA/close-batch",
-  name: "Close Batch",
-  icon: LibraryBooks,
-  component: CloseBatch,
-  layout: "/saffron",
-  role: "Quality Assurance",
-},
-{
-  path: "/QA/product/view",
-  name: "View Products",
-  icon: LibraryBooks,
-  component: ViewProduct,
-  layout: "/saffron",
-  role: "Quality Assurance",
-
-},
-{
-  path: "/QA/RM/view",
-  name: "View RM",
-  icon: LibraryBooks,
-  component: ViewRM,
-  layout: "/saffron",
-  role: "Quality Assurance",
-},
-{
-  path: "/QA/batch-review",
-  name: "Batch Review",
-  icon: LibraryBooks,
-  component: batchReview,
-  layout: "/saffron",
-  role: "Quality Assurance",
-
-},
-
+	{
+		path: "/QA/batch/issue",
+		name: "Issue Batch No",
+		icon: LibraryBooks,
+		component: IBatchNo,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	{
+		path: "/QA/RM/sample",
+		name: "RM Sample",
+		icon: LibraryBooks,
+		component: RMSample,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	{
+		path: "/QA/formulation/add",
+		name: "New Formulation",
+		icon: LibraryBooks,
+		component: RMNewFormula,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	// {
+	//   path: "/QA/formulation/edit",
+	//   name: "Edit Formulation",
+	//   icon: LibraryBooks,
+	//   component: IBatchNo,
+	//   layout: "/saffron",
+	//   role: "Quality Assurance",
+	//	 showNav: true
+	// },
+	{
+		path: "/QA/non-conformance",
+		name: "Non Conformance",
+		icon: LibraryBooks,
+		component: NC,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	{
+		path: "/QA/product/add",
+		name: "Add Product",
+		icon: LibraryBooks,
+		component: addProduct,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	{
+		path: "/QA/RM/add",
+		name: "Add RM",
+		icon: LibraryBooks,
+		component: addRM,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	{
+		path: "/QA/packSize/add",
+		name: "Add Pack Size",
+		icon: LibraryBooks,
+		component: AddPackSize,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	{
+		path: "/QA/batch-deviation",
+		name: "Batch Deviation",
+		icon: LibraryBooks,
+		component: batchDeviation,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	{
+		path: "/QA/change-control",
+		name: "Change Control",
+		icon: LibraryBooks,
+		component: changeControl,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	{
+		path: "/QA/print-change-control",
+		name: "Print Change Control",
+		icon: LibraryBooks,
+		component: changeControl,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: false,
+	},
+	{
+		path: "/QA/close-batch",
+		name: "Close Batch",
+		icon: LibraryBooks,
+		component: CloseBatch,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	{
+		path: "/QA/product/view",
+		name: "View Products",
+		icon: LibraryBooks,
+		component: ViewProduct,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	{
+		path: "/QA/RM/view",
+		name: "View RM",
+		icon: LibraryBooks,
+		component: ViewRM,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	{
+		path: "/QA/batch-review",
+		name: "Batch Review",
+		icon: LibraryBooks,
+		component: batchReview,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
 ];
 
 export default dashboardRoutes;
