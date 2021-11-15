@@ -137,7 +137,6 @@ export default class ChangeControl extends Component {
 			this.getQAsList();
 		}
 		const pl = (await Change_Control.methods.ProductCode()).data;
-		console.log(pl);
 		this.setState({ productList: pl });
 	}
 
@@ -221,7 +220,6 @@ export default class ChangeControl extends Component {
 	}
 
 	async handleVerificationChanges() {
-		console.log(this.state);
 		try {
 			let data = {
 				state: this.state.vcStatusOfChanges,
@@ -235,7 +233,7 @@ export default class ChangeControl extends Component {
 				this.setState({ showVerificationSuccess: true });
 			}
 		} catch {
-			console.log('Something went wrong');
+			alert('Something went wrong');
 		}
 	}
 
@@ -284,7 +282,6 @@ export default class ChangeControl extends Component {
 														fullWidth="true"
 														select
 														onChange={event => {
-															console.log(event.target.value);
 															this.getChangeControlDate(event.target.value);
 														}}
 													>
@@ -326,7 +323,6 @@ export default class ChangeControl extends Component {
 
 										<GridContainer>
 											<GridItem xs={12} sm={12} md={4}>
-												{console.log("department", this.state)}
 												<TextField
 													id=""
 													select
@@ -658,7 +654,6 @@ export default class ChangeControl extends Component {
 													fullWidth="true"
 													variant="outlined"
 													onChange={event => {
-														console.log(event.target.value);
 														this.setState({
 															vcStatusOfChanges: event.target.value,
 														});
@@ -697,7 +692,6 @@ export default class ChangeControl extends Component {
 													label="Implemented Changes:"
 													fullWidth="true"
 													onChange={event => {
-														console.log(event.target.value);
 														this.setState({
 															vcImplementedChanges: event.target.value,
 														});
@@ -715,7 +709,6 @@ export default class ChangeControl extends Component {
 													fullWidth="true"
 													variant="outlined"
 													onChange={event => {
-														console.log(event.target.value);
 														this.setState({
 															vcDegreeOfImplementation: event.target.value,
 														});
@@ -737,7 +730,6 @@ export default class ChangeControl extends Component {
 													fullWidth="true"
 													variant="outlined"
 													onChange={event => {
-														console.log(event.target.value);
 														this.setState({
 															vcVerifiedBy: event.target.value,
 														});
