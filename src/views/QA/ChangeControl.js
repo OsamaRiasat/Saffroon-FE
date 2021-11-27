@@ -147,7 +147,7 @@ export default class ChangeControl extends Component {
 
 	async handleProd(pro) {
 		const batch = (await Change_Control.methods.BatchNo(pro)).data;
-		this.setState({ batchNo: batch.batchNo });
+		this.setState({ batchNo: batch[0].batchNo });
 	}
 
 	async handlePost() {
@@ -170,6 +170,7 @@ export default class ChangeControl extends Component {
 				commentsOfPlantDirector: this.state.commentsPD,
 				commentsOfQAManager: this.state.commentsQA,
 				batchNo: this.state.batchNo,
+				product: this.state.product
 			};
 
 			const resp = await Change_Control.methods.ChangeControl(payload);
