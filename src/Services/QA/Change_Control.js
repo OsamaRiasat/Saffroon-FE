@@ -79,20 +79,27 @@ export default {
 
 		getChangeControlNoData(CCNo) {
 			const resp = http.get(Endpoint + "ChangeControlGetData/" + CCNo);
-			console.log(resp);
 			return resp;
 		},
 
 		getQualityAssuranceList() {
 			const resp = http.get(Endpoint + "QAs");
-			console.log(resp);
 			return resp;
 		},
 
 		saveVerificationChanges(data, CCNo) {
       const resp = http.put(Endpoint + "changeControlVerificationOfChanges/" + CCNo, data);
-      console.log(resp);
       return resp;
-    }
+    },
+
+    getHighestDRFNo() {
+			const resp = http.get(Endpoint + "HighestDRFNo/");
+			return resp;
+		},
+
+		postDRFView(data) {
+			const resp = http.post(Endpoint + "DRFPostView/", data);
+			return resp;
+		}
 	},
 };
