@@ -38,7 +38,7 @@ export function RawMaterialSearchByRMCode(rmCode)
 {
     
     console.log("Gettting RawMaterialbyCode")
-     const resp=http.get(Endpoint+"RawMaterialSearchByRMCode/"+rmCode);
+     const resp=http.get(Endpoint+"RawMaterialSearchByRMCode/"+rmCode+"/");
      console.log(resp);
      return resp;
     
@@ -47,7 +47,7 @@ export function RawMaterialSearchByName(rmName)
 {
     
     console.log("Gettting RawMaterialSearchByName")
-     const resp=http.get(Endpoint+"RawMaterialSearchByName/"+rmName);
+     const resp=http.get(Endpoint+"RawMaterialSearchByName/"+rmName+"/");
      console.log(resp);
      return resp;
     
@@ -61,7 +61,6 @@ export function RMDemands(rmdemand)
      return resp;
     
 }
-
 
 // RM Purchase Order
 
