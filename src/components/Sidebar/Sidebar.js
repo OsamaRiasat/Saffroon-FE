@@ -51,7 +51,7 @@ export default function Sidebar(props) {
         const whiteFontClasses = classNames({
           [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path),
         });
-        if(prop.role == sessionStorage.getItem("Role")) {
+        // if(prop.role == sessionStorage.getItem("Role")) {
           if(prop.showNav === true) {
             return (
 							<NavLink
@@ -95,7 +95,7 @@ export default function Sidebar(props) {
 							</NavLink>
 						);
           }
-        }   
+        // }   
       })}
       
     </List>

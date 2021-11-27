@@ -44,7 +44,7 @@ import PMDemand from "./views/PM/PM_Demand.js";
 import PM_IGP from "./views/PM/PM_IGP.js";
 import PM_GRN from "./views/PM/PM_GRN.js";
 import PM_Post_GRN from "./views/PM/PM_Post_GRN.js";
-// import StoreDashboard from "./views/PM/Dashboard";
+import StoreDashboard from "./views/PM/Dashboard";
 
 //QC
 import BlockAnalyst from './views/QC/AnalystBlocking/BlockAnalyst.js'
@@ -142,14 +142,14 @@ const dashboardRoutes = [
 
 	//planning
 
-	// {
-	//   path: "/PM/Dashboard",
-	//   name: "DashBoard",
-	//   icon: Dashboard,
-	//   component: StoreDashboard ,
-	//   layout: "/saffron",
-	//   role:"Store"
-	// },
+	{
+	  path: "/PM/Dashboard",
+	  name: "DashBoard",
+	  icon: Dashboard,
+	  component: StoreDashboard ,
+	  layout: "/saffron",
+	  role:"Store"
+	},
 
 	{
 		path: "/planning",
