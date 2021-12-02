@@ -31,9 +31,13 @@ export default function AlertModal(props) {
 				<DialogTitle id="alert-dialog-slide-title">
 				</DialogTitle>
 				<DialogContent>
-					<DialogContentText id="alert-dialog-slide-description">
+					
+					{props.success === true && (<DialogContentText id="alert-dialog-slide-description">
 						{ props.message } has been saved Successfully.
-					</DialogContentText>
+					</DialogContentText>)}
+					{props.success === false && (<DialogContentText id="alert-dialog-slide-description">
+						{ props.message }
+					</DialogContentText>)}
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={handleClose} color="primary">
