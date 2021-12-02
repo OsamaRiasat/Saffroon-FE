@@ -153,6 +153,8 @@ export default class ChangeControl extends Component {
 	async handlePost() {
 		try {
 			let temp = this.state.des === "Rejected" ? "REJECTED" : "APPROVED";
+			var today = new Date();
+			let date = today.getFullYear() + "-" + (today.getMonth() + 1 + "-" + today.getDate());
 			const payload = {
 				status: "CLOSE", // every time
 				initiator: this.state.initiator,
@@ -170,7 +172,8 @@ export default class ChangeControl extends Component {
 				commentsOfPlantDirector: this.state.commentsPD,
 				commentsOfQAManager: this.state.commentsQA,
 				batchNo: this.state.batchNo,
-				product: this.state.product
+				changeDate: date,
+				// product: this.state.product
 			};
 
 			const resp = await Change_Control.methods.ChangeControl(payload);
@@ -207,7 +210,7 @@ export default class ChangeControl extends Component {
 				kw: res.keyword,
 				cat: res.category,
 			},
-			product: "",
+			product: res.product,
 			batchNo: res.batchNo,
 			name: res.name,
 			related: res.relatedChanges,
@@ -765,7 +768,7 @@ export default class ChangeControl extends Component {
 							<GridContainer>
 								{this.state.printUrl === true && (
 									<GridItem xs={12} sm={12} md={3}>
-										<PrintDrfModal />
+										<PrintDrfModal product={this.state.product} batchNo={this.state.batchNo} />
 									</GridItem>
 								)}
 								<GridItem xs={12} sm={12} md={3}>
@@ -806,6 +809,7 @@ export default class ChangeControl extends Component {
 					<AlertModal
 						showOpen={this.state.showVerificationSuccess}
 						message="Verification of Changes"
+						success={true}
 					/>
 				)}
 			</div>
