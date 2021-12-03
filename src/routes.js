@@ -117,6 +117,7 @@ import RMNewFormula from "./views/QA/RMNewFormulation"
 import NC from "./views/QA/NonConformance"
 import addProduct from "./views/QA/addaproduct"
 import addRM from "./views/QA/addrawmaterial"
+import AddPackingMaterial from "./views/QA/AddPackingMaterial";
 import batchDeviation from "./views/QA/BatchDeviationForm"
 import changeControl from "./views/QA/ChangeControl"
 import CloseBatch from "./views/QA/CloseBatch"
@@ -603,6 +604,15 @@ const dashboardRoutes = [
 		name: "Add RM",
 		icon: LibraryBooks,
 		component: addRM,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	{
+		path: "/QA/RM/packing-material/add",
+		name: "Add Packing Material",
+		icon: LibraryBooks,
+		component: AddPackingMaterial,
 		layout: "/saffron",
 		role: "Quality Assurance",
 		showNav: true,
