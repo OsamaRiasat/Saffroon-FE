@@ -26,6 +26,19 @@ import MenuItem from "@material-ui/core/MenuItem";
 import RM_New_Formulation from "../../Services/QA/RM_New_Formulation.js";
 import { Alert, AlertTitle } from '@material-ui/lab';
 
+import {
+	PCodeList,
+	PNameList,
+	RMCodeList,
+	RMNameList,
+	PnameByPCode,
+	PCodeByPname,
+	RMNameByRMCode,
+	RMData,
+	RMCodeByName,
+	RMFormulation,
+} from "../../Services/QA/RM_New_Formulation";
+
 
 export default class RMNewFormulation extends Component {
   constructor(props) {
@@ -73,33 +86,33 @@ export default class RMNewFormulation extends Component {
   }
 
   async componentDidMount() {
-    const pCod = (await RM_New_Formulation.methods.PCodeList()).data;
+    const pCod = (await PCodeList()).data;
     this.setState({ pCodeList: pCod });
-    const pNam = (await RM_New_Formulation.methods.PNameList()).data;
+    const pNam = (await PNameList()).data;
     this.setState({ pNameList: pNam });
-    const rmCod = (await RM_New_Formulation.methods.RMCodeList()).data;
+    const rmCod = (await RMCodeList()).data;
     this.setState({ rmCodeList: rmCod });
-    const rmNam = (await RM_New_Formulation.methods.RMNameList()).data;
+    const rmNam = (await RMNameList()).data;
     this.setState({ rmNameList: rmNam });
   }
 
   async handlePCod(cod) {
-    const nam = (await RM_New_Formulation.methods.PnameByPCode(cod)).data;
+    const nam = (await PnameByPCode(cod)).data;
     this.setState({ pName: nam.Product });
   }
   async handlePName(nam) {
-    const cod = (await RM_New_Formulation.methods.PCodeByPname(nam)).data;
+    const cod = (await PCodeByPname(nam)).data;
     this.setState({ pCode: cod.ProductCode });
   }
   async handleRMCode(cod) {
-    const nam = (await RM_New_Formulation.methods.RMNameByRMCode(cod)).data;
+    const nam = (await RMNameByRMCode(cod)).data;
     this.setState((prevState) => ({
       selected: {
         ...prevState.selected,
         rmName: nam.Material,
       },
     }));
-    const res = (await RM_New_Formulation.methods.RMData(cod)).data;
+    const res = (await RMData(cod)).data;
     this.setState((prevState) => ({
       selected: {
         // object that we want to update
@@ -111,7 +124,7 @@ export default class RMNewFormulation extends Component {
     }));
   }
   async handleRMName(nam) {
-    const cod = (await RM_New_Formulation.methods.RMCodeByName(nam)).data;
+    const cod = (await RMCodeByName(nam)).data;
     this.setState(
       (prevState) => ({
         selected: {
@@ -147,7 +160,7 @@ export default class RMNewFormulation extends Component {
           fItems: items,
         };
 
-        const resp = await RM_New_Formulation.methods.RMFormulation(payload);
+        const resp = await RMFormulation(payload);
 
         if (resp.status === 201) {
           this.setState({ cart: [],error:false });
