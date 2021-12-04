@@ -24,7 +24,7 @@ import CardHeader from "../Card/CardHeader.js";
 import Button from "../CustomButtons/Button.js";
 import AlertModal from "./AlertModal.js";
 
-import ChangeControlService from "../../Services/QA/Change_Control";
+import { getHighestDRFNo, postDRFView } from "../../Services/QA/Change_Control";
 import {
 	RawMaterialNames,
 	RawMaterialCodes,
@@ -61,7 +61,7 @@ export default function PrintDrfModal(props) {
 	}, []);
 
 	const getHighestDRFNo = async () => {
-		const hdrf = (await ChangeControlService.methods.getHighestDRFNo()).data;
+		const hdrf = (await getHighestDRFNo()).data;
 		setHighestDrf(hdrf.DRFNo1);
 	};
 
@@ -138,7 +138,7 @@ export default function PrintDrfModal(props) {
 	};
 
 	const handlePost = async () => {
-		const res = (await ChangeControlService.methods.postDRFView(drfCart)).data;
+		const res = (await postDRFView(drfCart)).data;
 		if (res.product != "" && res.batchNo != "") {
 			handleClose();
 			setShowSuccess(true);

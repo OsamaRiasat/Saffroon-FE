@@ -20,9 +20,19 @@ import Card from "../../components/Card/Card.js";
 import CardHeader from "../../components/Card/CardHeader.js";
 import CardFooter from "../../components/Card/CardFooter";
 import CardBody from "../../components/Card/CardBody.js";
-import Change_Control from "../../Services/QA/Change_Control.js"
 import PrintDrfModal from "../../components/Modal/PrintDrfModal.js";
 import AlertModal from "../../components/Modal/AlertModal.js";
+
+import {
+	HighestCCNo,
+	ProductCode,
+	getQualityAssuranceList,
+	BatchNo,
+	Change_Control,
+	getChangeControlNoList,
+	getChangeControlNoData,
+	saveVerificationChanges,
+} from "../../Services/QA/Change_Control";
 
 
 export default class ChangeControl extends Component {
@@ -129,24 +139,24 @@ export default class ChangeControl extends Component {
 			today.getFullYear();
 		this.setState({ date: date });
 		if (!this.state.printUrl) {
-			const hccn = (await Change_Control.methods.HighestCCNo()).data;
+			const hccn = (await HighestCCNo()).data;
 			this.setState({ ccn: hccn.CCNo });
 		}
 		if (this.state.printUrl) {
 			this.getchangeControlNoList();
 			this.getQAsList();
 		}
-		const pl = (await Change_Control.methods.ProductCode()).data;
+		const pl = (await ProductCode()).data;
 		this.setState({ productList: pl });
 	}
 
 	async getQAsList() {
-		const res = (await Change_Control.methods.getQualityAssuranceList()).data;
+		const res = (await getQualityAssuranceList()).data;
 		this.setState({ qualityAssuranceList: res });
 	}
 
 	async handleProd(pro) {
-		const batch = (await Change_Control.methods.BatchNo(pro)).data;
+		const batch = (await BatchNo(pro)).data;
 		this.setState({ batchNo: batch[0].batchNo });
 	}
 
@@ -176,7 +186,7 @@ export default class ChangeControl extends Component {
 				// product: this.state.product
 			};
 
-			const resp = await Change_Control.methods.ChangeControl(payload);
+			const resp = await ChangeControl(payload);
 
 			if (resp.status === 201) {
 				alert("Data Saved Successfully!");
@@ -189,7 +199,7 @@ export default class ChangeControl extends Component {
 	}
 
 	async getchangeControlNoList() {
-		const res = (await Change_Control.methods.getChangeControlNoList()).data;
+		const res = (await getChangeControlNoList()).data;
 		this.setState({ ccnList: res });
 	}
 
@@ -199,7 +209,7 @@ export default class ChangeControl extends Component {
 	}
 
 	async getChangeControlDate(CCNo) {
-		const res = (await Change_Control.methods.getChangeControlNoData(CCNo)).data;
+		const res = (await getChangeControlNoData(CCNo)).data;
 		this.setState({
 			ccn: CCNo,
 			date: res.date,
@@ -232,7 +242,7 @@ export default class ChangeControl extends Component {
 				degreeOfImplementation: this.state.vcDegreeOfImplementation,
 				verifiedBy: this.state.vcVerifiedBy,
 			};
-			const res = await Change_Control.methods.saveVerificationChanges(data, this.state.ccn);
+			const res = await saveVerificationChanges(data, this.state.ccn);
 			if(res.status === 200) {
 				this.setState({ showVerificationSuccess: true });
 			}
