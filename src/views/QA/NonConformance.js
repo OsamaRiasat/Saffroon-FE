@@ -19,6 +19,17 @@ import RM_New_Formulation from "../../Services/QA/RM_New_Formulation"
 import PrintIcon from '@material-ui/icons/Print';
 import NCR from '../../Services/QA/NCR.js';
 import { ControlCameraOutlined } from '@material-ui/icons';
+
+import {
+	NCRNoList,
+	ProductCode,
+	CategoriesList,
+	HighestNCR,
+	AllUsers,
+	SubCategories,
+	BatchNo,
+	NCR,
+} from "../../Services/QA/NCR";
 export default class NonConformance extends Component {
 
     constructor(props) {
@@ -64,15 +75,15 @@ export default class NonConformance extends Component {
         };
     }
     async componentDidMount() {
-        const ncrFPL = (await NCR.methods.NCRNoList()).data;
+        const ncrFPL = (await NCRNoList()).data;
         this.setState({ncrForPrintList: ncrFPL})
-        const pc = (await NCR.methods.ProductCode()).data;
+        const pc = (await ProductCode()).data;
         this.setState({productList: pc})
-        const catL = (await NCR.methods.CategoriesList()).data;
+        const catL = (await CategoriesList()).data;
         this.setState({catList: catL})
-        const highNC = (await NCR.methods.HighestNCR()).data;
+        const highNC = (await HighestNCR()).data;
         this.setState({ncrNo: highNC})
-        const allU = (await NCR.methods.AllUsers()).data;
+        const allU = (await AllUsers()).data;
         this.setState({varifiedList: allU})
         this.setState({auditorList: allU})
         const today = new Date();
@@ -85,11 +96,11 @@ export default class NonConformance extends Component {
         this.setState({openDate: date})
     }
     async handleCat(cat) {
-        const sub = (await NCR.methods.SubCategories(cat)).data;
+        const sub = (await SubCategories(cat)).data;
         this.setState({subCatList: sub}, console.log("sub: ", sub))
     }
     async handleProd(pro) {
-        const batch = (await NCR.methods.BatchNo(pro)).data;        
+        const batch = (await BatchNo(pro)).data;        
         this.setState({batchList: batch}, console.log("batch: ", batch))
     }
     async handlePost(props) {
