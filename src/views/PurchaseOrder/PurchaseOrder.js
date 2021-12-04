@@ -20,6 +20,17 @@ import MenuItem from "@material-ui/core/MenuItem";
 
 import purchaseOrderService from "../../Services/PurchaseOrder/purchase_Order";
 
+import {
+	highestPurchaseOrderNo,
+	demandNumberList,
+	suppliersData,
+	supplierApprovedMaterial,
+	materialCodes,
+	material,
+	materialByCode,
+	postPurchaseOrder,
+} from "../../Services/PurchaseOrder/purchase_Order";
+
 
 class PurchaseOrder extends React.Component {
 	constructor(props) {
@@ -49,24 +60,24 @@ class PurchaseOrder extends React.Component {
 	}
 
 	async getHighestPurchaseOrderNumber() {
-		const res = (await purchaseOrderService.methods.highestPurchaseOrderNo())
+		const res = (await highestPurchaseOrderNo())
 			.data;
 		this.setState({ highestPurchaseOrderNo: res.PONo__max });
 	}
 
 	async getDemandNumberList() {
-		const res = (await purchaseOrderService.methods.demandNumberList()).data;
+		const res = (await demandNumberList()).data;
 		this.setState({ demandNumberList: res });
 	}
 
 	async getSupliersData() {
-		const res = (await purchaseOrderService.methods.suppliersData()).data;
+		const res = (await suppliersData()).data;
 		this.setState({ suppliersData: res });
 	}
 
 	async getApprovedMaterialList(data) {
 		console.log(data);
-		const res = (await purchaseOrderService.methods.supplierApprovedMaterial(data)).data;
+		const res = (await supplierApprovedMaterial(data)).data;
 	}
 
 	async getMaterialCodes(DNO, SID) {
@@ -74,7 +85,7 @@ class PurchaseOrder extends React.Component {
       DNo: DNO,
       SID: SID
     }
-		const res = (await purchaseOrderService.methods.materialCodes(data)).data;
+		const res = (await materialCodes(data)).data;
 		this.setState({ materialCodes: res });
 	}
 
@@ -83,13 +94,13 @@ class PurchaseOrder extends React.Component {
       DNo: DNO,
       SID: SID
     }
-		const res = (await purchaseOrderService.methods.material(data)).data;
+		const res = (await material(data)).data;
 		// this.setState({ materialCodes: res });
     console.log(res);
 	}
 
   async getMaterialByCode(code) {
-    const res = (await purchaseOrderService.methods.materialByCode(code)).data;
+    const res = (await materialByCode(code)).data;
     this.setState({ selectedMaterial: res[0] });
   }
 
@@ -127,7 +138,7 @@ class PurchaseOrder extends React.Component {
   }
 
   handlePost = async () => {
-    const res = (await purchaseOrderService.methods.postPurchaseOrder(this.state.purchaseOrderCart)).data;
+    const res = (await postPurchaseOrder(this.state.purchaseOrderCart)).data;
     console.log(res);
     if(res.DNo != undefined && res.DNo != '') {
       this.setState({
