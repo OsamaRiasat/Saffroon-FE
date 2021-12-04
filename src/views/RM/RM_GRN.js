@@ -10,8 +10,9 @@ import CardBody from "../../components/Card/CardBody.js";
 import CardFooter from "../../components/Card/CardFooter.js";
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
-import GRN from "../../Services/Inventory/GRN.js";
 import { CircularProgress} from '@material-ui/core';
+
+import { IGPNoList, RMRecievingDetail, UpdateRMRecieving, RMHighestGRNo } from "../../Services/Inventory/GRN";
 
 class demo2 extends React.Component {
 
@@ -19,19 +20,15 @@ class demo2 extends React.Component {
         //all states set when component is rendered
        this.incGrn()
 
-        const igpList=(await GRN.methods.IGPNoList()).data;
+        const igpList=(await IGPNoList()).data;
         this.setState({
             
             igpnumber_list:igpList
         })
-      
-    //     const temp= (await IGP.methods.RMPurchaseOrderDetails(2,"RM0007")).data;
-    //   console.log("auto fill" , temp)
-
     }
 
     handleAutoFill=async (igpNum)=>{
-        const temp = (await GRN.methods.RMRecievingDetail(igpNum)).data;
+        const temp = (await RMRecievingDetail(igpNum)).data;
         this.setState({
             material:temp["Material"],
             supplier:temp["supplierName"],
@@ -41,14 +38,7 @@ class demo2 extends React.Component {
             rec_date:temp["Recieving_Date"].substr(0,10),
             codenumber:temp["Code"],
             unit:temp[ "units"]
-            
-
-
-
-
-
         })
-
     }
     constructor(props) {
         super(props);
@@ -70,8 +60,6 @@ class demo2 extends React.Component {
         }
     }
     postGRNData= async ()=>{
-        //   const resp= await IGP.methods.RMIGP()
-        
         try{
             const payload= {
                 
@@ -83,12 +71,10 @@ class demo2 extends React.Component {
                 "GRNo": this.state.grnnumber,
                 "remarks": this.state.remarks
             }
-            const resp=(await GRN.methods.UpdateRMRecieving(this.state.igpnumber,payload));
+            const resp=(await UpdateRMRecieving(this.state.igpnumber,payload));
             alert("GRN Update Request Sent")
             this.clearForm();
             this.incGrn();
-        
-      
     }
     catch(error)
     {
@@ -114,26 +100,16 @@ class demo2 extends React.Component {
            
             unit:''
         })
-       
-
-
     }
     incGrn=async ()=>{
-        const Hinum= (await GRN.methods.RMHighestGRNo()).data['GRNo__max'];
+        const Hinum= (await RMHighestGRNo()).data['GRNo__max'];
         this.setState({
-            
             grnnumber:Hinum+1
         })
-
     }
-
-
 
     render() {
         var today = new Date()
-        // let date = today.getUTCDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
-        // let date = new Date().toLocaleString('en-us', { day: 'numeric', month: 'long', year: 'numeric' });
-
         return (
             <div style={{marginTop:50}}>
 
@@ -220,21 +196,6 @@ class demo2 extends React.Component {
                                             </GridContainer>
 
                                             <GridContainer>
-                                                {/* <GridItem xs={6} sm={6} md={6}>
-                                                    <TextField
-                                                        id="materialname"
-                                                        label="Material"
-                                                        variant="outlined"
-                                                        InputProps={{readOnly: true,}}
-                                                        fullWidth="true"
-                                                        value={this.state.material}
-                                                        onChange={(event) => {
-                                                            this.setState({ material: event.target.value })
-                                                        }}
-                                                    >
-
-                                                    </TextField>
-                                                </GridItem> */}
                                                 <GridItem xs={12} sm={12} md={12}>
                                                     <TextField
                                                         id="supplier"
@@ -248,28 +209,9 @@ class demo2 extends React.Component {
                                                             this.setState({ supplier: event.target.value })
                                                         }}
                                                     >
-
                                                     </TextField>
                                                 </GridItem>
                                             </GridContainer>
-                                            {/* <GridContainer>
-                                                <GridItem xs={12} sm={12} md={12}>
-                                                    <TextField
-                                                        id="supplier"
-                                                        label="Supplier"
-                                                        InputProps={{readOnly: true,}}
-                                                        variant="outlined"
-                                                        fullWidth="true"
-                                                        value={this.state.supplier}
-                                                        onChange={(event) => {
-                                                            this.setState({ supplier: event.target.value })
-                                                        }}
-                                                    >
-
-                                                    </TextField>
-                                                </GridItem>
-                                            </GridContainer> */}
-
                                             <GridContainer>
                                                 <GridItem xs={12} sm={12} md={4}>
                                                     <TextField id="batchnumber" style={{ backgroundColor: "#f5f7f7" }} fullWidth="true" required="true" variant="outlined" label="Batch Number" value={this.state.batchnumber}
@@ -293,9 +235,6 @@ class demo2 extends React.Component {
                                                     />
                                                 </GridItem>
                                             </GridContainer>
-
-
-
                                             <GridContainer>
                                                 <GridItem xs={12} sm={12} md={6}  >
                                                     <TextField id="manufacturedate" type="date"  fullWidth="true" required="true" variant="outlined" label="Manufacture Date "  InputLabelProps={{ shrink: true }}  value={this.state.mfg_date}
@@ -304,7 +243,6 @@ class demo2 extends React.Component {
                                                         }}
                                                     />
                                                 </GridItem>
-
                                                 <GridItem xs={12} sm={12} md={6}>
                                                     <TextField id="expirydate" fullWidth="true" required="true" variant="outlined" label="Expiry Date "   InputLabelProps={{ shrink: true }}  type="date" value={this.state.exp_date}
                                                         onChange={(event) => {
@@ -342,8 +280,7 @@ class demo2 extends React.Component {
                             this.postGRNData()
                             }} color="primary">
                                 Request For Sample
-                                  {/* <CircularProgress size="2" thickness="7" color="inherit"/> */}
-                                </Button>
+                            </Button>
                         </CardFooter>
                     </Card>
                     </GridItem>
