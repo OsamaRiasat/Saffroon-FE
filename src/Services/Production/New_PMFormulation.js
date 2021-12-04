@@ -4,114 +4,79 @@ import { apiUrl } from "../../config.json";
 const data = "Production/";
 const Endpoint = apiUrl + data;
 
-export default {
-  methods: {
+export function PCodeList() {
+  console.log("Gettting PCodeList");
+  const resp = http.get(Endpoint + "PCodeList/");
+  console.log(resp);
+  return resp;
+}
 
-  
+export function PNameList() {
+  console.log("Gettting PNameList");
+  const resp = http.get(Endpoint + "PNameList/" );
+  console.log(resp);
+  return resp;
+}
 
-    //List of PCodes those dont have any formulations
-    PCodeList() {
-      console.log("Gettting PCodeList");
-      const resp = http.get(Endpoint + "PCodeList/");
-      console.log(resp);
-      return resp;
-    },
+export function PCodeByPname(PName) {
+  console.log("Gettting PNameList");
+  const resp = http.get(Endpoint + "PCodeByPname/" + PName + "/");
+  console.log(resp);
+  return resp;
+}
 
+export function PnameByPCode(PCode) {
+  console.log("Gettting PNameList");
+  const resp = http.get(Endpoint + "PnameByPCode/" + PCode + "/");
+  console.log(resp);
+  return resp;
+}
 
-    PNameList() {
-      console.log("Gettting PNameList");
-      const resp = http.get(Endpoint + "PNameList/" );
-      console.log(resp);
-      return resp;
-    },
+export function RMCodeList() {
+  console.log("Gettting RMCodeList");
+  const resp = http.get(Endpoint + "PMCodeList/");
+  console.log(resp);
+  return resp;
+}
 
-    // if pname is selected
-    PCodeByPname(PName) {
-        console.log("Gettting PNameList");
-        const resp = http.get(Endpoint + "PCodeByPname/" + PName + "/");
-        console.log(resp);
-        return resp;
-    },
-    
-    // if pcode is selected
-    PnameByPCode(PCode) {
-        console.log("Gettting PNameList");
-        const resp = http.get(Endpoint + "PnameByPCode/" + PCode + "/");
-        console.log(resp);
-        return resp;
-    },
-  
-    
-    RMCodeList() {
-      console.log("Gettting RMCodeList");
-      const resp = http.get(Endpoint + "PMCodeList/");
-      console.log(resp);
-      return resp;
-    },
-    RMNameList() {
-        console.log("Gettting PMNameList");
-        const resp = http.get(Endpoint + "PMNameList/");
-        console.log(resp);
-        return resp;
-      },
-      RMCodeByName(Name) {
-        console.log("Gettting RMCodeByName");
-        const resp = http.get(Endpoint + "PMCodeByName/" + Name + "/");
-        console.log(resp);
-        return resp;
-      },
-  
-      RMNameByRMCode(code) {
-        console.log("Gettting RMNameByRMCode");
-        const resp = http.get(Endpoint + "PMNameByPMCode/" + code + "/");
-        console.log(resp);
-        return resp;
-      },
-  
+export function RMNameList() {
+  console.log("Gettting PMNameList");
+  const resp = http.get(Endpoint + "PMNameList/");
+  console.log(resp);
+  return resp;
+}
 
- 
-    // When RMCode is selected
-    RMData(PMCode) {
-        console.log("Viewing RMData");
-        const resp = http.get(Endpoint + "PMData/" + PMCode + "/" );
-        console.log(resp);
-        return resp;
-      },
+export function RMCodeByName(Name) {
+  console.log("Gettting RMCodeByName");
+  const resp = http.get(Endpoint + "PMCodeByName/" + Name + "/");
+  console.log(resp);
+  return resp;
+}
 
-      
+export function RMNameByRMCode(code) {
+  console.log("Gettting RMNameByRMCode");
+  const resp = http.get(Endpoint + "PMNameByPMCode/" + code + "/");
+  console.log(resp);
+  return resp;
+}
 
+export function RMData(PMCode) {
+  console.log("Viewing RMData");
+  const resp = http.get(Endpoint + "PMData/" + PMCode + "/" );
+  console.log(resp);
+  return resp;
+}
 
-      // {
-      //   "fItems": [
-      //     {
-      //       "ProductCode": "string",
-      //       "PMCode": "string",
-      //        "PackSize":""
-      //       "batchSize": 0,
-      //       "quantity": "string",
-      //       "date": "2021-09-02",
-      //       "docNo": "string"
-      //     }
-      //   ]
-      // }
+export function RMFormulation(obj) {
+  console.log("Posting RMFormulation")
+  const resp = http.post(Endpoint + "AddPMFormulation/", obj);
+  console.log(resp);
+  return resp;
+}
 
-    // Post Button
-    RMFormulation(obj) {
-
-        console.log("Posting RMFormulation")
-        const resp = http.post(Endpoint + "AddPMFormulation/", obj);
-        console.log(resp);
-        return resp;
-    
-    },
-    PackSize(pcode) {
-
-      console.log("gettinmg packsizes")
-      const resp = http.get(Endpoint + "PackSizeList/"+pcode+"/");
-      console.log(resp);
-      return resp;
-  
-  },
-  },
-
-};
+export function PackSize(pcode) {
+  console.log("gettinmg packsizes")
+  const resp = http.get(Endpoint + "PackSizeList/"+pcode+"/");
+  console.log(resp);
+  return resp;
+}
