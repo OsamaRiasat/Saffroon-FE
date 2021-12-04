@@ -12,24 +12,25 @@ import MenuItem from "@material-ui/core/MenuItem";
 
 import PackSizeAdd from "../../Services/QA/Add_PackSize";
 
+import {
+	ProductCodeListForPackSize,
+	ProductData,
+	AddPackSize,
+} from "../../Services/QA/Add_PackSize";
+
 export default class AddPackSize extends Component {
   async componentDidMount() {
     this.getProductCodeList();
   }
 
   getProductCodeList = async () => {
-    const productCodeList = (
-      await PackSizeAdd.methods.ProductCodeListForPackSize()
-    ).data;
-
+    const productCodeList = (await ProductCodeListForPackSize()).data;
     console.log(productCodeList);
-    this.setState({
-      productCodeList: productCodeList,
-    });
+    this.setState({productCodeList: productCodeList});
   };
 
   getData = async (pcode) => {
-    const sampledBtList = (await PackSizeAdd.methods.ProductData(pcode)).data;
+    const sampledBtList = (await ProductData(pcode)).data;
 
     console.log(sampledBtList);
     this.setState({
@@ -94,7 +95,7 @@ export default class AddPackSize extends Component {
       };
 
       console.log(payload);
-      const data = await PackSizeAdd.methods.AddPackSize(payload);
+      const data = await AddPackSize(payload);
       console.log(data);
 
       if (data.status === 201) {
