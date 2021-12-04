@@ -14,9 +14,15 @@ import PrintIcon from "@material-ui/icons/Print";
 import MenuItem from "@material-ui/core/MenuItem";
 import Line_Clearance from "../../Services/Production/Line_Clearance.js";
 
+import {
+	PCodesForLineClearance,
+	BatchNoBYPCode,
+	WhenBatchNoIsSelected,
+} from "../../Services/Production/Line_Clearance";
+
 export default class LineClearanceRequest extends Component {
   async componentDidMount() {
-    const pcodes = (await Line_Clearance.methods.PCodesForLineClearance()).data;
+    const pcodes = (await PCodesForLineClearance()).data;
     console.log(pcodes);
     this.setState({
       pcodes: pcodes,
@@ -81,14 +87,14 @@ export default class LineClearanceRequest extends Component {
   }
 
   handleGetBatches = async (pcode) => {
-    const batches = (await Line_Clearance.methods.BatchNoBYPCode(pcode)).data;
+    const batches = (await BatchNoBYPCode(pcode)).data;
     console.log(batches);
     this.setState({
       batches: batches,
     });
   };
   handleGetPrintData = async (batchno) => {
-    const data = (await Line_Clearance.methods.WhenBatchNoIsSelected(batchno))
+    const data = (await WhenBatchNoIsSelected(batchno))
       .data;
     console.log(data);
     const startdate = data.mfgDate.split("-");
