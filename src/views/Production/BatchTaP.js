@@ -13,6 +13,13 @@ import { DataGrid } from "@material-ui/data-grid";
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Batch_Track from '../../Services/Production/Batch_Track.js';
 
+import {
+	PCodeBPR,
+	BatchNoandBatchesList,
+	GeneralDataBPRLog,
+	BatchStages,
+} from "../../Services/Production/Batch_Track";
+
 export default class BatchTaP extends Component {
 
     constructor(props) {
@@ -55,12 +62,12 @@ export default class BatchTaP extends Component {
     }
 
     async componentDidMount() {
-        const pc = (await Batch_Track.methods.PCodeBPR()).data;
+        const pc = (await PCodeBPR()).data;
         this.setState({ production_code_list: pc })
     }
 
     async handlePCode(cod) {
-        const ls = (await Batch_Track.methods.BatchNoandBatchesList(cod)).data;
+        const ls = (await BatchNoandBatchesList(cod)).data;
         console.log(ls);
         
         this.setState({ cart1: ls })
@@ -77,7 +84,7 @@ export default class BatchTaP extends Component {
             "batchNo": cod,
         }
         this.setState({batch_selected: true})
-        const res = (await Batch_Track.methods.GeneralDataBPRLog(obj)).data;
+        const res = (await GeneralDataBPRLog(obj)).data;
         console.log("secondAPI: ", res)
         this.setState(prevState => ({
             selected: {                   // object that we want to update
@@ -127,7 +134,7 @@ export default class BatchTaP extends Component {
             PartialStatus: this.state.selected.current_stage,
             remarks: this.state.remarks,
         }
-        const ans = (await Batch_Track.methods.BatchStages(res));
+        const ans = (await BatchStages(res));
         console.log(ans);
         if(ans.status===201)
         {
