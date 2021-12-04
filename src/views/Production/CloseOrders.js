@@ -13,14 +13,14 @@ import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import SaveIcon from "@material-ui/icons/Save";
 import MenuItem from "@material-ui/core/MenuItem";
-import Close_Order from "../../Services/Production/Close_Order.js";
 
+import { PlanItems, PlanStatus } from "../../Services/Production/Close_Order";
 
 export default class CloseOrders extends Component {
 
   async componentDidMount(){
 
-    const data = (await Close_Order.methods.PlanItems()).data;
+    const data = (await PlanItems()).data;
     console.log(data)
     this.setState({
       orders:data
@@ -76,10 +76,10 @@ export default class CloseOrders extends Component {
 
       }
       console.log(payload);
-    const data=(await Close_Order.methods.PlanStatus(payload));
+    const data=(await PlanStatus(payload));
     if(data.status===200){
       alert("Order Status Chnaged");
-      const data = (await Close_Order.methods.PlanItems()).data;
+      const data = (await PlanItems()).data;
       console.log(data)
       this.setState({
         orders:data,
