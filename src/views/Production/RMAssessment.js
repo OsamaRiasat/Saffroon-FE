@@ -14,7 +14,14 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import PrintIcon from '@material-ui/icons/Print';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import MenuItem from "@material-ui/core/MenuItem";
-import RM_Assessment from '../../Services/Production/RM_Assessment.js';
+
+import {
+	ListOfPCodeForAssessment,
+	ListOfPNameForAssessment,
+	PackSizesList,
+	PCodeByPNameAssessment,
+	ViewFormulationForAssessment,
+} from "../../Services/Production/RM_Assessment";
 
 export default class RMAssessment extends Component {
     constructor(props) {
@@ -40,8 +47,8 @@ export default class RMAssessment extends Component {
     }
 
     async componentDidMount() {
-        const pCodes = (await RM_Assessment.methods.ListOfPCodeForAssessment()).data;
-        const products = (await RM_Assessment.methods.ListOfPNameForAssessment()).data;
+        const pCodes = (await ListOfPCodeForAssessment()).data;
+        const products = (await ListOfPNameForAssessment()).data;
         this.setState({pCodeList: pCodes.List});
         this.setState({productList: products.List});
     }
@@ -60,14 +67,14 @@ export default class RMAssessment extends Component {
     }
 
     async handleCode(cod) {
-        const res = (await RM_Assessment.methods.PackSizesList(cod)).data;
+        const res = (await PackSizesList(cod)).data;
         this.setState({batchSize: res.batchSize});
         this.setState({packSizeList: res.list});
         this.setState({product: res.productName});
         this.setState({noOfBatches: 1});
     }
     async handleProduct(nam) {
-        const cod = (await RM_Assessment.methods.PCodeByPNameAssessment(nam)).data;
+        const cod = (await PCodeByPNameAssessment(nam)).data;
         this.setState({pCode: cod.PCode});
         this.handleCode(cod.PCode);
     }
@@ -77,7 +84,7 @@ export default class RMAssessment extends Component {
         this.setState({name: ''})
         this.setState({unit: ''})
         this.setState({quantity: ''})
-        const res = (await RM_Assessment.methods.ViewFormulationForAssessment(
+        const res = (await ViewFormulationForAssessment(
             this.state.pCode, this.state.batchSize, this.state.noOfBatches
         )).data;
         this.setState({cart: res});
