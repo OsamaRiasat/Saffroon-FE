@@ -22,6 +22,13 @@ import AddIcon from "@material-ui/icons/Add";
 import Daily_Packing from "../../Services/Production/Daily_Packing.js";
 import { ContactSupportOutlined } from "@material-ui/icons";
 
+import {
+	PlanNo,
+	ProductByPlanNo,
+	WhenProductIsSelected,
+	PackingLog,
+} from "../../Services/Production/Daily_Packing";
+
 function insertAt(array, index, data) {
   if (index !== 0) {
     index = index - 1;
@@ -32,7 +39,7 @@ function insertAt(array, index, data) {
 
 export default class DailyPacking extends Component {
   async componentDidMount() {
-    const plans = (await Daily_Packing.methods.PlanNo()).data;
+    const plans = (await PlanNo()).data;
     console.log(plans);
     this.setState({
       plans: plans,
@@ -70,7 +77,7 @@ export default class DailyPacking extends Component {
   }
 
   getPcodes = async (planno) => {
-    const pcodes = (await Daily_Packing.methods.ProductByPlanNo(planno)).data;
+    const pcodes = (await ProductByPlanNo(planno)).data;
     console.log(pcodes);
     this.setState({
       pcodes: pcodes,
@@ -88,7 +95,7 @@ export default class DailyPacking extends Component {
   //     }
   //   }
   getAutoFill = async (pcode) => {
-    const data = (await Daily_Packing.methods.WhenProductIsSelected(pcode))
+    const data = (await WhenProductIsSelected(pcode))
       .data;
     console.log(data);
     this.setState({
@@ -207,7 +214,7 @@ export default class DailyPacking extends Component {
       };
       console.log(payload);
 
-      const resp = await Daily_Packing.methods.PackingLog(payload);
+      const resp = await PackingLog(payload);
       console.log(resp);
       if (resp.status === 201) {
         alert("Report Posted");
