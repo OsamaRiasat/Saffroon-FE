@@ -15,9 +15,16 @@ import GetAppIcon from "@material-ui/icons/GetApp";
 import Batch_Issuance_Request from "../../Services/Production/Batch_Issuance_Request.js";
 import MenuItem from "@material-ui/core/MenuItem";
 
+import {
+	PlanNo,
+	ProductByPlanNo,
+	SBS,
+	BatchIssuenceRequest
+} from "../../Services/Production/Batch_Issuance_Request";
+
 export default class ReqForBatchIssuence extends Component {
   async componentDidMount() {
-    const plans = (await Batch_Issuance_Request.methods.PlanNo()).data;
+    const plans = (await PlanNo()).data;
     console.log(plans);
     this.setState({
       plans: plans,
@@ -25,7 +32,7 @@ export default class ReqForBatchIssuence extends Component {
   }
   getPcodes = async (planno) => {
     const pcodes = (
-      await Batch_Issuance_Request.methods.ProductByPlanNo(planno)
+      await ProductByPlanNo(planno)
     ).data;
     console.log(pcodes);
     this.setState({
@@ -33,7 +40,7 @@ export default class ReqForBatchIssuence extends Component {
     });
   };
   getbatchSize = async (pcode) => {
-    const batchsize = (await Batch_Issuance_Request.methods.SBS(pcode)).data;
+    const batchsize = (await SBS(pcode)).data;
 
     console.log(batchsize);
     this.setState({
@@ -53,7 +60,7 @@ export default class ReqForBatchIssuence extends Component {
         planNo: this.state.plan,
         ProductCode: this.state.pcode,
       };
-      const resp = await Batch_Issuance_Request.methods.BatchIssuenceRequest( payload);
+      const resp = await BatchIssuenceRequest( payload);
       console.log(resp);
       if (resp.status === 201) {
         alert("Request Sent !!");
