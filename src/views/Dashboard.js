@@ -20,10 +20,10 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import IGP from "../Services/Inventory/PM/PM_IGP.js";
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
-import auth from "../Services/auth/login"
-import account from "../Services/Account/misc"
+import auth from "../Services/auth/login";
 import Table from "../components/Table/Table.js";
 
+import { getRoles, getUsers } from '../Services/Account/misc';
 
 
 const styles={
@@ -40,7 +40,7 @@ const classes=makeStyles(styles);
 class AddUser extends React.Component {
    async componentDidMount(){
   
-    const data= (await account.methods.getRoles()).data
+    const data= (await getRoles()).data
     var usersdata= this.handleShowUsers();
     
    
@@ -83,7 +83,7 @@ class AddUser extends React.Component {
      this.handleShowUsers();
    }
    handleShowUsers=async ()=>{
-    const resp = (await account.methods.getUsers()).data;
+    const resp = (await getUsers()).data;
     console.log(resp)
     let count = 0
     var refiedUsers= resp.map((user)=>{
