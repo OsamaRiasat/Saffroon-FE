@@ -9,7 +9,7 @@ import TextField from "@material-ui/core/TextField";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import MenuItem from "@material-ui/core/MenuItem";
 
-import AddAProduct from "../../Services/QA/Product_Add";
+import { ListOfDosageForms, AddProduct } from "../../Services/QA/Product_Add";
 
 export default class addaproduct extends Component {
   async componentDidMount() {
@@ -36,7 +36,7 @@ export default class addaproduct extends Component {
   }
 
   getDosageFormList = async () => {
-    const dosageformlist = (await AddAProduct.methods.ListOfDosageForms()).data
+    const dosageformlist = (await ListOfDosageForms()).data
       .List;
 
     console.log(dosageformlist);
@@ -99,7 +99,7 @@ export default class addaproduct extends Component {
       };
 
       console.log(payload);
-      const data = await AddAProduct.methods.AddProduct(payload);
+      const data = await AddProduct(payload);
       console.log(data);
 
       if (data.status === 201) {
