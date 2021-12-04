@@ -24,9 +24,17 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 import PrintIcon from "@material-ui/icons/Print";
 import Issue_Batch_No from "../../Services/QA/Issue_Batch_No.js";
 
+import {
+	PlanNoBIR,
+	PCodeBIR,
+	IssueBatchNo,
+	Formulation,
+	BPRLog,
+} from "../../Services/QA/Issue_Batch_No";
+
 export default class issueBtachNo extends Component {
   async componentDidMount() {
-    const plans = (await Issue_Batch_No.methods.PlanNoBIR()).data;
+    const plans = (await PlanNoBIR()).data;
     console.log(plans);
     this.setState({
       plans: plans,
@@ -51,7 +59,7 @@ export default class issueBtachNo extends Component {
     };
   }
   getPcodes = async (planno) => {
-    const pcodes = (await Issue_Batch_No.methods.PCodeBIR(planno)).data;
+    const pcodes = (await PCodeBIR(planno)).data;
     console.log(pcodes);
     this.setState({
       pcodes: pcodes,
@@ -62,7 +70,7 @@ export default class issueBtachNo extends Component {
       planNo: this.state.plan,
       ProductCode: this.state.pcode,
     };
-    const data = (await Issue_Batch_No.methods.IssueBatchNo(payload)).data;
+    const data = (await IssueBatchNo(payload)).data;
     console.log(data);
     this.setState({
       Dosage: data.Dosage,
@@ -82,7 +90,7 @@ export default class issueBtachNo extends Component {
         Pcode: this.state.pcode,
         batchSize: this.state.batchSize,
       };
-      const formula = (await Issue_Batch_No.methods.Formulation(payload)).data;
+      const formula = (await Formulation(payload)).data;
       console.log(formula);
       this.setState({
           formulations:formula
@@ -109,7 +117,7 @@ export default class issueBtachNo extends Component {
             "MFGDate": mfg,
             "EXPDate": exp
           }
-          const resp =(await Issue_Batch_No.methods.BPRLog(payload));
+          const resp =(await BPRLog(payload));
           console.log(resp);
           if(resp.status===201)
           {
