@@ -16,15 +16,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { DataGrid } from '@material-ui/data-grid';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import Post_GRN from "../../Services/Inventory/Post_GRN.js";
 
-
+import { GRNoList, RMRecievingDetailByGRNo, RMBinCard } from '../../Services/Inventory/Post_GRN';
 
 class demo3 extends React.Component {
 
 
     async componentDidMount(){
-        const GrnList=(await Post_GRN.methods.GRNoList()).data
+        const GrnList=(await GRNoList()).data
         console.log(GrnList)
         this.setState({
             grnnumber_list:GrnList
@@ -49,7 +48,7 @@ class demo3 extends React.Component {
         }
     }
     handleAutoFill=async (grnNum)=>{
-        const temp = (await Post_GRN.methods.RMRecievingDetailByGRNo(grnNum)).data;
+        const temp = (await RMRecievingDetailByGRNo(grnNum)).data;
         this.setState({
             material:temp["Material"],
             supplier:temp["supplierName"],
@@ -75,7 +74,7 @@ class demo3 extends React.Component {
             "GRNo": this.state.grnnumber,
  
         }
-        const resp=(await Post_GRN.methods.RMBinCard(payload));
+        const resp=(await RMBinCard(payload));
         alert("Post GRN Added")
         this.clearForm();
       
