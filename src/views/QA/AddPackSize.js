@@ -15,7 +15,7 @@ import PackSizeAdd from "../../Services/QA/Add_PackSize";
 import {
 	ProductCodeListForPackSize,
 	ProductData,
-	AddPackSize,
+	AddPackSizeAPI,
 } from "../../Services/QA/Add_PackSize";
 
 export default class AddPackSize extends Component {

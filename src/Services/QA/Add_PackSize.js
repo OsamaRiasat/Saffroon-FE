@@ -18,7 +18,7 @@ export function ProductData(obj) {
   return resp;
 }
 
-export function AddPackSize(obj) {
+export function AddPackSizeAPI(obj) {
     console.log("Adding AddPackSize")
     const resp = http.post(Endpoint + "AddPackSize/", obj);
     console.log(resp);
