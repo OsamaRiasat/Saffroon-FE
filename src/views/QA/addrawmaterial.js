@@ -18,7 +18,7 @@ import BackupIcon from "@material-ui/icons/Backup";
 import PrintIcon from "@material-ui/icons/Print";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 
-import AddRawMaterial from "../../Services/QA/RawMaterial_Add";
+import { AddRawMaterial } from '../../Services/QA/RawMaterial_Add';
 
 export default class addrawmaterial extends Component {
   constructor(props) {
@@ -63,7 +63,7 @@ export default class addrawmaterial extends Component {
       };
 
       console.log(payload);
-      const data = await AddRawMaterial.methods.AddRawMaterial(payload);
+      const data = await AddRawMaterial(payload);
       console.log(data);
 
       if (data.status === 201) {

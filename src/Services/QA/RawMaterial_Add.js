@@ -4,20 +4,12 @@ import { apiUrl } from "../../config.json";
 const data = "QualityAssurance/";   // Its production intentially
 const Endpoint = apiUrl + data;
 
-export default {
-	methods: {
-		AddRawMaterial(obj) {
-			console.log("Adding AddRawMaterial");
-			const resp = http.post(Endpoint + "AddRawMaterial/", obj);
-			console.log(resp);
-			return resp;
-		},
+export function AddRawMaterial(obj) {
+	const resp = http.post(Endpoint + "AddRawMaterial/", obj);
+	return resp;
+}
 
-		addPackingMaterial(obj) {
-			console.log("Adding AddRawMaterial");
-			const resp = http.post(Endpoint + "AddPackingMaterial/", obj);
-			console.log(resp);
-			return resp;
-		},
-	},
-};
+export function addPackingMaterial(obj) {
+	const resp = http.post(Endpoint + "AddPackingMaterial/", obj);
+	return resp;
+}
