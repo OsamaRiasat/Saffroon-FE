@@ -17,7 +17,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import BackupIcon from '@material-ui/icons/Backup';
 import RM_New_Formulation from "../../Services/QA/RM_New_Formulation"
 import PrintIcon from '@material-ui/icons/Print';
-import NCR from '../../Services/QA/NCR.js';
 import { ControlCameraOutlined } from '@material-ui/icons';
 
 import {
