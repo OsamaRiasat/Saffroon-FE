@@ -16,8 +16,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { DataGrid } from '@material-ui/data-grid';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-
-import IGP from "../Services/Inventory/PM/PM_IGP.js";
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import auth from "../Services/auth/login";

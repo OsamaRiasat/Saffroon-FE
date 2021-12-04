@@ -16,30 +16,31 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { DataGrid } from '@material-ui/data-grid';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import IGP from "../../Services/Inventory/PM/PM_IGP.js";
+
+import {
+	PMHighestIGPNO,
+	PMPurchaseOrderPONOsWithPendingStatus,
+	PMPurchaseOrderItemsCodesForReceiving,
+	PMPurchaseOrderDetails,
+    PMIGP
+} from "../../Services/Inventory/PM/PM_IGP";
 
 class demo extends React.Component {
     async componentDidMount(){
         //all states set when component is rendered
-        const Hinum= (await IGP.methods.PMHighestIGPNO()).data['IGPNo__max'];
+        const Hinum= (await PMHighestIGPNO()).data['IGPNo__max'];
         
         this.setState({
             
             igpnumber:Hinum+1
         })
-        const poNums=(await IGP.methods.PMPurchaseOrderPONOsWithPendingStatus()).data;
+        const poNums=(await PMPurchaseOrderPONOsWithPendingStatus()).data;
         console.log("poNums",poNums)
         this.setState({
             
             ponumber_list:poNums
         })
-    //     const temp= (await IGP.methods.RMPurchaseOrderDetails(2,"RM0007")).data;
-    //   console.log("auto fill" , temp)
-
     }
-
-
-
     constructor(props) {
         super(props);
         this.state = {
@@ -66,7 +67,7 @@ class demo extends React.Component {
     handleMaterialCodes=async(po)=>{
         
         console.log("PO",po)
-        const matList=(await IGP.methods.PMPurchaseOrderItemsCodesForReceiving(po)).data;
+        const matList=(await PMPurchaseOrderItemsCodesForReceiving(po)).data;
         console.log(matList); 
 
         this.setState({
@@ -75,7 +76,7 @@ class demo extends React.Component {
 
     }
     handleautoFilldata=async (PONo,RMCode)=>{
-      const temp= (await IGP.methods.PMPurchaseOrderDetails(PONo,RMCode)).data;
+      const temp= (await PMPurchaseOrderDetails(PONo,RMCode)).data;
       console.log("tempp",temp)
       this.setState({
           material:temp['Material'],
@@ -92,11 +93,8 @@ class demo extends React.Component {
     }
 
     postIGPData= async ()=>{
-        //   const resp= await IGP.methods.RMIGP()
-        
         try{
         const payload= {
-            
             "PMCode": this.state.materialcode,
             "quantityReceived": this.state.recieved_quantity,
             "containersReceived": this.state.number_containers,
@@ -104,7 +102,7 @@ class demo extends React.Component {
             "PONo": this.state.ponumber,
             "S_ID": this.state.supplierId
         }
-        const resp=(await IGP.methods.PMIGP(payload));
+        const resp=(await PMIGP(payload));
         alert("IGP Added")
         this.setState({
 
@@ -120,7 +118,7 @@ class demo extends React.Component {
 
 
         })
-        const Hinum= (await IGP.methods.PMHighestIGPNO()).data['IGPNo__max'];
+        const Hinum= (await PMHighestIGPNO()).data['IGPNo__max'];
         
       this.setState({
           
