@@ -16,7 +16,14 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import BackupIcon from '@material-ui/icons/Backup';
 import PrintIcon from '@material-ui/icons/Print';
-import Batch_Deviation from "../../Services/QA/Batch_Deviation.js"
+
+import {
+	ProductCode,
+	HighestBDNo,
+	BatchNo,
+	BatchDetail,
+	BatchDeviation,
+} from "../../Services/QA/Batch_Deviation";
 
 export default class BatchDeviationForm extends Component {
     
@@ -43,17 +50,17 @@ export default class BatchDeviationForm extends Component {
     }
     
     async componentDidMount() {
-        const pl = (await Batch_Deviation.methods.ProductCode()).data;
+        const pl = (await ProductCode()).data;
         this.setState({productList: pl})
-        const dev = (await Batch_Deviation.methods.HighestBDNo()).data;
+        const dev = (await HighestBDNo()).data;
         this.setState({devNo: dev.deviationNo})        
     }
     async handleProd(pro) {
-        const bn = (await Batch_Deviation.methods.BatchNo(pro)).data;
+        const bn = (await BatchNo(pro)).data;
         this.setState({batchNoList: bn})
     }
     async handleBN(bn) {
-        const det = (await Batch_Deviation.methods.BatchDetail(bn)).data;
+        const det = (await BatchDetail(bn)).data;
         console.log(det)
         this.setState({mfgDate: det.MFGDate})
         this.setState({expDate: det.EXPDate})
@@ -77,7 +84,7 @@ export default class BatchDeviationForm extends Component {
                 "batchNo": this.state.batchNo,
             }
             
-            const resp = await Batch_Deviation.methods.BatchDeviation(payload);
+            const resp = await BatchDeviation(payload);
     
             if (resp.status === 201) {
                 alert("Data Saved Successfully!");
