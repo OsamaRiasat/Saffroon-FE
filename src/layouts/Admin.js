@@ -39,6 +39,7 @@ import auth from "../Services/auth/login.js";
 import MateriaPlan from "../views/Planning/MaterialPlan.js";
 import ProductionPlan from "../views/Planning/ProductionPlan";
 import ProductsSelection from "../views/Planning/ProductsSelection";
+import { ToastContainer } from "react-toastify";
 
 let ps;
 
@@ -159,6 +160,17 @@ export default function Admin({ ...rest }) {
           fixedClasses={fixedClasses}
         /> */}
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        />
     </div>
   );
 }

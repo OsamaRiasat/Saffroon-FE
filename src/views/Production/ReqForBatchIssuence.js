@@ -14,6 +14,7 @@ import { DataGrid } from "@material-ui/data-grid";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import Batch_Issuance_Request from "../../Services/Production/Batch_Issuance_Request.js";
 import MenuItem from "@material-ui/core/MenuItem";
+import { toast, ToastContainer } from "react-toastify";
 
 import {
 	PlanNo,
@@ -71,14 +72,41 @@ export default class ReqForBatchIssuence extends Component {
       const resp = await BatchIssuenceRequest( payload);
       console.log(resp);
       if (resp.status === 201) {
-        alert("Request Sent !!");
+        toast('Request Sent !!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          });
+        // alert("Request Sent !!");
         this.clearForm();
       } else {
-        alert("Request Not sent");
+        toast.error('Request Not sent', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          });
+        // alert("Request Not sent");
       }
     } catch (error) {
       console.log(error);
-      alert("Something Went Wrong !!!");
+      toast.error('Something Went Wrong !!!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+      // alert("Something Went Wrong !!!");
     }
   };
 
