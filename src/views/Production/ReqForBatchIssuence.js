@@ -55,6 +55,14 @@ export default class ReqForBatchIssuence extends Component {
       //   "planNo": 0,
       //   "ProductCode": "string"
       // }
+      let {no_of_batches, plan, pcode} = this.state;
+
+      const fieldErrors = this.validate({no_of_batches, plan, pcode});
+      
+      this.setState({fieldErrors: fieldErrors});
+      
+      if (Object.keys(fieldErrors).length) return;
+
       const payload = {
         noOfBatches: this.state.no_of_batches,
         planNo: this.state.plan,
@@ -73,6 +81,26 @@ export default class ReqForBatchIssuence extends Component {
       alert("Something Went Wrong !!!");
     }
   };
+
+  validate = fields => {
+    const errors = {};
+    if (!fields.plan) errors.plan = 'Plan No Required';
+    if (!fields.pcode) errors.pcode = 'Product Code Required';
+    if (!fields.no_of_batches) errors.no_of_batches = 'No Of Batches Required';
+    return errors;
+  }
+
+  onChangeClearError = (name) => {
+    let data = {
+      ...this.state.fieldErrors,
+      [name]: ''
+    }
+    console.log(Object.entries(data))
+    this.setState({
+      fieldErrors: data
+    })
+  }
+
   clearForm = () => {
     this.setState({
       plan: "",
@@ -80,6 +108,7 @@ export default class ReqForBatchIssuence extends Component {
       units: "",
       pcode: "",
       pcodes: [],
+      fieldErrors: {},
     });
   };
   constructor(props) {
@@ -91,6 +120,7 @@ export default class ReqForBatchIssuence extends Component {
       units: "",
       pcodes: [],
       pcode: "",
+      fieldErrors: {},
     };
   }
   render() {
@@ -113,7 +143,10 @@ export default class ReqForBatchIssuence extends Component {
                         variant="outlined"
                         label="Plan No:"
                         fullWidth="true"
+                        name="plan"
                         value={this.state.plan}
+                        error={this.state.fieldErrors && this.state.fieldErrors.plan ? true : false}
+                        helperText={this.state.fieldErrors && this.state.fieldErrors.plan}
                         onChange={(event) => {
                           this.setState(
                             {
@@ -123,6 +156,7 @@ export default class ReqForBatchIssuence extends Component {
                               this.getPcodes(event.target.value);
                             }
                           );
+                          this.onChangeClearError(event.target.name);
                         }}
                       >
                         {this.state.plans.map((plan) => (
@@ -140,7 +174,10 @@ export default class ReqForBatchIssuence extends Component {
                         variant="outlined"
                         label="Product Codes"
                         fullWidth="true"
+                        name="pcode"
                         value={this.state.pcode}
+                        error={this.state.fieldErrors && this.state.fieldErrors.pcode ? true : false}
+                        helperText={this.state.fieldErrors && this.state.fieldErrors.pcode}
                         onChange={(event) => {
                           this.setState(
                             {
@@ -150,6 +187,7 @@ export default class ReqForBatchIssuence extends Component {
                               this.getbatchSize(event.target.value);
                             }
                           );
+                          this.onChangeClearError(event.target.name);
                         }}
                       >
                         {this.state.pcodes.map((pcode) => (
@@ -169,12 +207,16 @@ export default class ReqForBatchIssuence extends Component {
                         variant="outlined"
                         label="No. of Batches"
                         fullWidth="true"
+                        name="no_of_batches"
+                        error={this.state.fieldErrors && this.state.fieldErrors.no_of_batches ? true : false}
+                        helperText={this.state.fieldErrors && this.state.fieldErrors.no_of_batches}
                         value={this.state.no_of_batches}
                         type="number"
                         onChange={(event) => {
                           this.setState({
                             no_of_batches: event.target.value,
                           });
+                          this.onChangeClearError(event.target.name);
                         }}
                       />
                     </GridItem>
