@@ -35,14 +35,15 @@ export default class ReqForBatchIssuence extends Component {
     const pcodes = (
       await ProductByPlanNo(planno)
     ).data;
-    console.log(pcodes);
+    console.log("pcodes", pcodes);
+    console.log("pcodes", pcodes);
     this.setState({
       pcodes: pcodes,
+      pcode: pcodes[0].ProductCode,
     });
   };
   getbatchSize = async (pcode) => {
     const batchsize = (await SBS(pcode)).data;
-
     console.log(batchsize);
     this.setState({
       units: batchsize.Units,
@@ -196,7 +197,35 @@ export default class ReqForBatchIssuence extends Component {
                     </GridItem>
 
                     <GridItem xs={12} sm={12} md={3}>
+                      {
+                        // console.log("pcode form", this.state.pcode)
+                        console.log("pcode form", this.state && this.state.pcodes[0] && this.state.pcodes[0].ProductCode)
+                      }
                       <TextField
+                        id=""
+                        // select
+                        variant="outlined"
+                        label={this.state && this.state.pcodes[0] && this.state.pcodes[0].ProductCode === [] ? "Product Codes" : ""}
+                        fullWidth="true"
+                        name="pcode"
+                        InputProps={{readOnly:true}}
+                        // defaultValue ={this.state.pcode}
+                        value ={this.state && this.state.pcodes[0] && this.state.pcodes[0].ProductCode}
+                        error={this.state.fieldErrors && this.state.fieldErrors.pcode ? true : false}
+                        helperText={this.state.fieldErrors && this.state.fieldErrors.pcode}
+                        onChange={(event) => {
+                          // this.setState(
+                          //   {
+                          //     pcode: event.target.value,
+                          //   },
+                          //   () => {
+                          //     this.getbatchSize(event.target.value);
+                          //   }
+                          // );
+                          this.onChangeClearError(event.target.name);
+                        }}
+                      />
+                      {/* <TextField
                         id=""
                         select
                         variant="outlined"
@@ -226,7 +255,7 @@ export default class ReqForBatchIssuence extends Component {
                             {pcode.ProductCode}
                           </MenuItem>
                         ))}
-                      </TextField>
+                      </TextField> */}
                     </GridItem>
 
                     <GridItem xs={12} sm={12} md={3}>
