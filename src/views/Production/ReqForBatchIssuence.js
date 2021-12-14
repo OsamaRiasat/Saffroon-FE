@@ -14,7 +14,8 @@ import { DataGrid } from "@material-ui/data-grid";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import Batch_Issuance_Request from "../../Services/Production/Batch_Issuance_Request.js";
 import MenuItem from "@material-ui/core/MenuItem";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
+import Select from "react-select";
 
 import {
 	PlanNo,
@@ -72,7 +73,7 @@ export default class ReqForBatchIssuence extends Component {
       const resp = await BatchIssuenceRequest( payload);
       console.log(resp);
       if (resp.status === 201) {
-        toast('Request Sent !!', {
+        toast.success('Request Sent !!', {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -193,6 +194,31 @@ export default class ReqForBatchIssuence extends Component {
                           </MenuItem>
                         ))}
                       </TextField>
+                    </GridItem>
+
+                    <GridItem xs={12} sm={12} md={2}>
+                    <Select
+                      name="plan"
+                      className="basic-single"
+                      classNamePrefix="select"
+                      isSearchable={true}
+                      options={this.state.plans}
+                      // value={{ planNo: 4 }}
+                      getOptionValue={(option) => option.planNo}
+                      getOptionLabel={(option) => option.planNo}
+                      onChange={(value, select) => {
+                        this.setState(
+                          {
+                            plan: value.planNo,
+                          },
+                          () => {
+                            this.getPcodes(value.planNo);
+                          }
+                        );
+                        console.log(value, select.name)
+                        this.onChangeClearError(select.name);
+                      }}
+                    />
                     </GridItem>
 
                     <GridItem xs={12} sm={12} md={3}>

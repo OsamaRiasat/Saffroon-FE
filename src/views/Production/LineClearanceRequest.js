@@ -55,6 +55,7 @@ export default class LineClearanceRequest extends Component {
       pname: "",
       batch: "",
       batchsize: "",
+      productName: "",
       mfg_date: "",
       exp_date: "",
       status: "",
@@ -77,6 +78,7 @@ export default class LineClearanceRequest extends Component {
       batches: [],
       batch: "",
       batchsize: "",
+      productName: "",
       mfg_date: "",
       exp_date: "",
       status: "",
@@ -105,6 +107,7 @@ export default class LineClearanceRequest extends Component {
         stages: data.stagesList,
         status: data.currentStage,
         batchsize: data.batchSize,
+        productName: data.product,
         mfg_date: startdate[2] + "-" + startdate[1] + "-" + startdate[0],
         exp_date:
           completiondate[2] + "-" + completiondate[1] + "-" + completiondate[0],
@@ -236,10 +239,11 @@ export default class LineClearanceRequest extends Component {
                       <GridItem xs={12} sm={12} md={3}>
                         <TextField
                           id=""
-                          select
                           variant="outlined"
                           label="Products Name :"
                           fullWidth="true"
+                          InputProps={{ readOnly: true }}
+                          value={this.state.productName}
                         />
                       </GridItem>
                       <GridItem xs={12} sm={12} md={2}>
