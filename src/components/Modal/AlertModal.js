@@ -32,10 +32,10 @@ export default function AlertModal(props) {
 				</DialogTitle>
 				<DialogContent>
 					
-					{props.success === true && (<DialogContentText id="alert-dialog-slide-description">
+					{props?.success === true && (<DialogContentText id="alert-dialog-slide-description">
 						{ props.message } has been saved Successfully.
 					</DialogContentText>)}
-					{props.success === false && (<DialogContentText id="alert-dialog-slide-description">
+					{props?.error === true && (<DialogContentText id="alert-dialog-slide-description">
 						{ props.message }
 					</DialogContentText>)}
 				</DialogContent>
