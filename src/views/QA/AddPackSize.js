@@ -7,6 +7,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "../../components/Card/CardHeader.js";
 import CardBody from "../../components/Card/CardBody.js";
 import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import MenuItem from "@material-ui/core/MenuItem";
 
@@ -124,31 +125,18 @@ export default class AddPackSize extends Component {
                   <CardContent>
                     <GridContainer>
                       <GridItem xs={12} sm={12} md={3}>
-                        <TextField
-                          id=""
-                          select
-                          variant="outlined"
-                          label="Product Code:"
-                          fullWidth="true"
-                          value={this.state.productCode}
-                          select
-                          onChange={(event) => {
-                            console.log(event.target.value);
+                        <Autocomplete
+                          id="product-code"
+                          options={this.state.productCodeList}
+                          getOptionLabel={(option) => option.ProductCode}
+                          onChange={(event, value) => {
                             this.setState({
-                              productCode: event.target.value,
+                              productCode: value.ProductCode,
                             });
-                            this.getData(event.target.value);
+                            this.getData(value.ProductCode);
                           }}
-                        >
-                          {this.state.productCodeList.map((product) => (
-                            <MenuItem
-                              key={product.ProductCode}
-                              value={product.ProductCode}
-                            >
-                              {product.ProductCode}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+                          renderInput={(params) => <TextField {...params} label="Product Code:" variant="outlined" />}
+                        />
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={6}>
