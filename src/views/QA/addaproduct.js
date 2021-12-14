@@ -6,8 +6,11 @@ import Card from "../../components/Card/Card.js";
 import CardHeader from "../../components/Card/CardHeader.js";
 import CardBody from "../../components/Card/CardBody.js";
 import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import MenuItem from "@material-ui/core/MenuItem";
+
+import AlertModal from "../../components/Modal/AlertModal.js";
 
 import { ListOfDosageForms, AddProduct } from "../../Services/QA/Product_Add";
 
@@ -32,6 +35,9 @@ export default class addaproduct extends Component {
       genericName: "",
       composition: "",
       shelfLife: "",
+      showSuccess: false,
+      showError: false,
+      message: ''
     };
   }
 
@@ -103,14 +109,24 @@ export default class addaproduct extends Component {
       console.log(data);
 
       if (data.status === 201) {
-        alert("Data Posted!!!");
+        this.setState({
+          showSuccess: true,
+          message: 'Product ',
+          showError: false
+        });
+        // alert("Data Posted!!!");
         this.clearForm();
         this.getDosageFormList();
       } else {
         alert("Unexpected Error");
       }
     } catch {
-      alert("Something Went Wrong!!!");
+      // alert("Something Went Wrong!!!");
+      this.setState({
+        showSuccess: false,
+        message: 'Something went wrong.',
+        showError: true
+      });
     }
   };
 
@@ -157,12 +173,16 @@ export default class addaproduct extends Component {
                     id=""
                     fullWidth="true"
                     variant="outlined"
-                    label={"Registration Code:"}
+                    label={"Registration Number:"}
                     value={this.state.registrationCode}
+                    inputProps={{ maxLength: 6 }}
                     onChange={(event) => {
-                      this.setState({
-                        registrationCode: event.target.value,
-                      });
+                      const re = /^[0-9\b]+$/;
+                      if (event.target.value === '' || re.test(event.target.value)) {
+                        this.setState({
+                          registrationCode: event.target.value,
+                        });
+                      }
                     }}
                   />
                 </GridItem>
@@ -184,27 +204,17 @@ export default class addaproduct extends Component {
                 </GridItem>
 
                 <GridItem xs={12} sm={12} md={3}>
-                  <TextField
-                    id=""
-                    fullWidth="true"
-                    variant="outlined"
-                    label={"Dosage Form:"}
-                    select
-                    value={this.state.dosageForm}
-                    select
-                    onChange={(event) => {
-                      console.log(event.target.value);
-                      this.setState({
-                        dosageForm: event.target.value,
-                      });
-                    }}
-                  >
-                    {this.state.dosageFormList.map((dose) => (
-                      <MenuItem key={dose.dosageForm} value={dose.dosageForm}>
-                        {dose.dosageForm}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                <Autocomplete
+                  id="dosage-form"
+                  options={this.state.dosageFormList}
+                  getOptionLabel={(option) => option.dosageForm}
+                  onChange={(event, value) => {
+                    this.setState({
+                      dosageForm: value?.dosageForm,
+                    });
+                  }}
+                  renderInput={(params) => <TextField {...params} label="Dosage Form:" variant="outlined" />}
+                />
                 </GridItem>
               </GridContainer>
 
@@ -246,7 +256,7 @@ export default class addaproduct extends Component {
                     id=""
                     fullWidth="true"
                     variant="outlined"
-                    label={"Shelf-Life:"}
+                    label={"Shelf-Life(In Month):"}
                     type="number"
                     value={this.state.shelfLife}
 
@@ -266,13 +276,19 @@ export default class addaproduct extends Component {
                     startIcon={<AddCircleOutlineIcon />}
                     onClick={this.postButton}
                   >
-                    Add a Product
+                    Add Product
                   </Button>
                 </GridItem>
               </GridContainer>
             </CardBody>
           </Card>
         </GridContainer>
+        {(this.state.showSuccess == true || this.state.showError == true) && (<AlertModal
+          showOpen={this.state.showSuccess || this.state.showError}
+          message={this.state.message}
+          success={this.state.showSuccess}
+          error={this.state.showError}
+        />)}
       </div>
     );
   }
