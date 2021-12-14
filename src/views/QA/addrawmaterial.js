@@ -9,6 +9,7 @@ import CardHeader from "../../components/Card/CardHeader.js";
 import CardFooter from "../../components/Card/CardFooter";
 import CardBody from "../../components/Card/CardBody.js";
 import TextField from "@material-ui/core/TextField";
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import { DataGrid } from "@material-ui/data-grid";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -17,6 +18,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import BackupIcon from "@material-ui/icons/Backup";
 import PrintIcon from "@material-ui/icons/Print";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+
+import AlertModal from '../../components/Modal/AlertModal';
 
 import { AddRawMaterial } from '../../Services/QA/RawMaterial_Add';
 
@@ -34,9 +37,11 @@ export default class addrawmaterial extends Component {
         unit: "",
         category: "",
       },
+      showSuccess: false,
+      showError: false,
+      message: ''
     };
   }
-
 
   clearForm = () => {
     this.setState({
@@ -54,28 +59,36 @@ export default class addrawmaterial extends Component {
   };
   
   postButton = async () => {
-    try {
-      const payload = {
-        RMCode: this.state.rawMaterialCode,
-        Material: this.state.material,
-        Units: this.state.selected.unit,
-        Type: this.state.selected.category,
-      };
-
-      console.log(payload);
+    const payload = {
+      RMCode: this.state.rawMaterialCode,
+      Material: this.state.material,
+      Units: this.state.selected.unit,
+      Type: this.state.selected.category,
+    };
+    if(payload.RMCode == '' || payload.Material == '' || payload.Units == '' || payload.Type == '') {
+      this.setState({
+        showError: true,
+        showSuccess: false,
+        message: 'All fields of raw material are required.'
+      });
+    } else {
       const data = await AddRawMaterial(payload);
-      console.log(data);
-
       if (data.status === 201) {
-        alert("Data Posted!!!");
+        this.setState({
+          showSuccess: true,
+          showError: false,
+          message: 'Raw material'
+        });
         this.clearForm();
       } else {
-        alert("Unexpected Error");
+        this.setState({
+          showError: true,
+          showSuccess: false,
+          message: 'Something went wrong from server side.'
+        });
       }
-    } catch {
-      alert("Something Went Wrong!!!");
     }
-  };
+  }
 
   render() {
     return (
@@ -129,29 +142,20 @@ export default class addrawmaterial extends Component {
                   />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={3}>
-                  <TextField
-                    id=""
-                    fullWidth="true"
-                    variant="outlined"
-                    label={"Unit:"}
-                    select
-                    value={this.state.selected.unit}
-                    onChange={(event) => {
-                      this.setState((prevState) => ({
-                        selected: {
-                          // object that we want to update
-                          ...prevState.selected, // keep all other key-value pairs
-                          unit: event.target.value, // update the value of specific key
-                        },
-                      }));
-                    }}
-                  >
-                    {this.state.unit.map((pri) => (
-                      <MenuItem key={pri} value={pri}>
-                        {pri}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                <Autocomplete
+                  id="unit"
+                  options={this.state.unit}
+                  getOptionLabel={(option) => option}
+                  onChange={(event, value) => {
+                    this.setState((prevState) => ({
+                      selected : {
+                        ...prevState.selected,
+                        unit: value
+                      }
+                    }))
+                  }}
+                  renderInput={(params) => <TextField {...params} label="Unit:" variant="outlined" />}
+                />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={3}>
                   <TextField
@@ -188,13 +192,19 @@ export default class addrawmaterial extends Component {
                     startIcon={<AddCircleOutlineIcon />}
                     onClick={this.postButton}
                   >
-                    Add a Product
+                    Add Raw Material
                   </Button>
                 </GridItem>
               </GridContainer>
             </CardBody>
           </Card>
-        </GridContainer>
+        </GridContainer> 
+        {(this.state.showSuccess == true || this.state.showError == true) && (<AlertModal
+          showOpen={this.state.showSuccess || this.state.showError}
+          message={this.state.message}
+          success={this.state.showSuccess}
+          error={this.state.showError}
+        />)}
       </div>
     );
   }
