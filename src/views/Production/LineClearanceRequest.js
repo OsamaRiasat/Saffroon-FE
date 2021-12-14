@@ -123,6 +123,15 @@ export default class LineClearanceRequest extends Component {
     this.setState({ show: !this.state.show }, () => {
       this.printData();
     });
+  
+  getLastestStatus = (arr) => {
+    let length = arr.length;
+    if (length > 0) {
+      return arr[length - 1].stage;
+    } else {
+      return "Previous"
+    }
+  }
 
   Generatestages = () => {
     try {
@@ -389,7 +398,7 @@ export default class LineClearanceRequest extends Component {
               <p>
                 <strong>
                   Line Clearance is required for{" "}
-                  <span> {this.state.status} </span>{" "}
+                  <span> { this.getLastestStatus(this.state.stages) } </span>{" "}
                 </strong>
               </p>
               <p>Batch History of Previous Stages:</p>
