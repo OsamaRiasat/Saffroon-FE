@@ -18,10 +18,10 @@ import { toast } from "react-toastify";
 import Select from "react-select";
 
 import {
-	PlanNo,
-	ProductByPlanNo,
-	SBS,
-	BatchIssuenceRequest
+  PlanNo,
+  ProductByPlanNo,
+  SBS,
+  BatchIssuenceRequest,
 } from "../../Services/Production/Batch_Issuance_Request";
 
 export default class ReqForBatchIssuence extends Component {
@@ -33,9 +33,7 @@ export default class ReqForBatchIssuence extends Component {
     });
   }
   getPcodes = async (planno) => {
-    const pcodes = (
-      await ProductByPlanNo(planno)
-    ).data;
+    const pcodes = (await ProductByPlanNo(planno)).data;
     console.log(pcodes);
     this.setState({
       pcodes: pcodes,
@@ -57,12 +55,12 @@ export default class ReqForBatchIssuence extends Component {
       //   "planNo": 0,
       //   "ProductCode": "string"
       // }
-      let {no_of_batches, plan, pcode} = this.state;
+      let { no_of_batches, plan, pcode } = this.state;
 
-      const fieldErrors = this.validate({no_of_batches, plan, pcode});
-      
-      this.setState({fieldErrors: fieldErrors});
-      
+      const fieldErrors = this.validate({ no_of_batches, plan, pcode });
+
+      this.setState({ fieldErrors: fieldErrors });
+
       if (Object.keys(fieldErrors).length) return;
 
       const payload = {
@@ -70,10 +68,10 @@ export default class ReqForBatchIssuence extends Component {
         planNo: this.state.plan,
         ProductCode: this.state.pcode,
       };
-      const resp = await BatchIssuenceRequest( payload);
+      const resp = await BatchIssuenceRequest(payload);
       console.log(resp);
       if (resp.status === 201) {
-        toast.success('Request Sent !!', {
+        toast.success("Request Sent !!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -81,11 +79,11 @@ export default class ReqForBatchIssuence extends Component {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          });
+        });
         // alert("Request Sent !!");
         this.clearForm();
       } else {
-        toast.error('Request Not sent', {
+        toast.error("Request Not sent", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -93,12 +91,12 @@ export default class ReqForBatchIssuence extends Component {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          });
+        });
         // alert("Request Not sent");
       }
     } catch (error) {
       console.log(error);
-      toast.error('Something Went Wrong !!!', {
+      toast.error("Something Went Wrong !!!", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -106,29 +104,29 @@ export default class ReqForBatchIssuence extends Component {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        });
+      });
       // alert("Something Went Wrong !!!");
     }
   };
 
-  validate = fields => {
+  validate = (fields) => {
     const errors = {};
-    if (!fields.plan) errors.plan = 'Plan No Required';
-    if (!fields.pcode) errors.pcode = 'Product Code Required';
-    if (!fields.no_of_batches) errors.no_of_batches = 'No Of Batches Required';
+    if (!fields.plan) errors.plan = "Plan No Required";
+    if (!fields.pcode) errors.pcode = "Product Code Required";
+    if (!fields.no_of_batches) errors.no_of_batches = "No Of Batches Required";
     return errors;
-  }
+  };
 
   onChangeClearError = (name) => {
     let data = {
       ...this.state.fieldErrors,
-      [name]: ''
-    }
-    console.log(Object.entries(data))
+      [name]: "",
+    };
+    console.log(Object.entries(data));
     this.setState({
-      fieldErrors: data
-    })
-  }
+      fieldErrors: data,
+    });
+  };
 
   clearForm = () => {
     this.setState({
@@ -159,148 +157,130 @@ export default class ReqForBatchIssuence extends Component {
         <GridContainer md={12}>
           <Card>
             <CardHeader color="primary">
-              <h2 style={{ textAlign: "center" }}> Request for Batch Issuence </h2>
+              <h2 style={{ textAlign: "center" }}>
+                {" "}
+                Request for Batch Issuence{" "}
+              </h2>
             </CardHeader>
             <CardBody>
-              <GridContainer>
-                <CardContent>
-                  <GridContainer>
-                    <GridItem xs={12} sm={12} md={2}>
-                      <TextField
-                        id=""
-                        select
-                        variant="outlined"
-                        label="Plan No:"
-                        fullWidth="true"
-                        name="plan"
-                        value={this.state.plan}
-                        error={this.state.fieldErrors && this.state.fieldErrors.plan ? true : false}
-                        helperText={this.state.fieldErrors && this.state.fieldErrors.plan}
-                        onChange={(event) => {
-                          this.setState(
-                            {
-                              plan: event.target.value,
-                            },
-                            () => {
-                              this.getPcodes(event.target.value);
-                            }
-                          );
-                          this.onChangeClearError(event.target.name);
-                        }}
-                      >
-                        {this.state.plans.map((plan) => (
-                          <MenuItem key={plan.planNo} value={plan.planNo}>
-                            {plan.planNo}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </GridItem>
-
-                    <GridItem xs={12} sm={12} md={2}>
+              {/* <GridContainer> */}
+              <CardContent>
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={2}>
                     <Select
                       name="plan"
-                      className="basic-single"
+                      placeholder="Select Plan"
+                      className="customSelect"
                       classNamePrefix="select"
                       isSearchable={true}
                       options={this.state.plans}
-                      // value={{ planNo: 4 }}
+                      value={
+                        this.state.plan ? { planNo: this.state.plan } : null
+                      }
                       getOptionValue={(option) => option.planNo}
                       getOptionLabel={(option) => option.planNo}
                       onChange={(value, select) => {
                         this.setState(
                           {
                             plan: value.planNo,
+                            pcode: "",
+                            no_of_batches: "",
                           },
                           () => {
                             this.getPcodes(value.planNo);
                           }
                         );
-                        console.log(value, select.name)
+                        console.log(value, select.name);
                         this.onChangeClearError(select.name);
                       }}
                     />
-                    </GridItem>
+                  </GridItem>
 
-                    <GridItem xs={12} sm={12} md={3}>
-                      <TextField
-                        id=""
-                        select
-                        variant="outlined"
-                        label="Product Codes"
-                        fullWidth="true"
-                        name="pcode"
-                        value={this.state.pcode}
-                        error={this.state.fieldErrors && this.state.fieldErrors.pcode ? true : false}
-                        helperText={this.state.fieldErrors && this.state.fieldErrors.pcode}
-                        onChange={(event) => {
-                          this.setState(
-                            {
-                              pcode: event.target.value,
-                            },
-                            () => {
-                              this.getbatchSize(event.target.value);
-                            }
-                          );
-                          this.onChangeClearError(event.target.name);
-                        }}
-                      >
-                        {this.state.pcodes.map((pcode) => (
-                          <MenuItem
-                            key={pcode.ProductCode}
-                            value={pcode.ProductCode}
-                          >
-                            {pcode.ProductCode}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </GridItem>
+                  <GridItem xs={12} sm={12} md={3}>
+                    <Select
+                      name="pcode"
+                      placeholder="Select Product Code"
+                      className="customSelect"
+                      classNamePrefix="select"
+                      isSearchable={true}
+                      options={this.state.pcodes}
+                      value={
+                        this.state.pcode
+                          ? { ProductCode: this.state.pcode }
+                          : null
+                      }
+                      getOptionValue={(option) => option.ProductCode}
+                      getOptionLabel={(option) => option.ProductCode}
+                      onChange={(value, select) => {
+                        this.setState(
+                          {
+                            pcode: value.ProductCode,
+                            no_of_batches: "",
+                          },
+                          () => {
+                            this.getbatchSize(value.ProductCode);
+                          }
+                        );
+                        console.log(value, this.state.pcode, select.name);
+                        this.onChangeClearError(select.name);
+                      }}
+                    />
+                  </GridItem>
 
-                    <GridItem xs={12} sm={12} md={3}>
-                      <TextField
-                        id=""
-                        variant="outlined"
-                        label="No. of Batches"
-                        fullWidth="true"
-                        name="no_of_batches"
-                        error={this.state.fieldErrors && this.state.fieldErrors.no_of_batches ? true : false}
-                        helperText={this.state.fieldErrors && this.state.fieldErrors.no_of_batches}
-                        value={this.state.no_of_batches}
-                        type="number"
-                        onChange={(event) => {
-                          this.setState({
-                            no_of_batches: event.target.value,
-                          });
-                          this.onChangeClearError(event.target.name);
-                        }}
-                      />
-                    </GridItem>
+                  <GridItem xs={12} sm={12} md={3}>
+                    <TextField
+                      id=""
+                      variant="outlined"
+                      label="No. of Batches"
+                      fullWidth="true"
+                      name="no_of_batches"
+                      error={
+                        this.state.fieldErrors &&
+                        this.state.fieldErrors.no_of_batches
+                          ? true
+                          : false
+                      }
+                      helperText={
+                        this.state.fieldErrors &&
+                        this.state.fieldErrors.no_of_batches
+                      }
+                      value={this.state.no_of_batches}
+                      type="number"
+                      onChange={(event) => {
+                        this.setState({
+                          no_of_batches: event.target.value,
+                        });
+                        this.onChangeClearError(event.target.name);
+                      }}
+                    />
+                  </GridItem>
 
-                    <GridItem xs={12} sm={12} md={2}>
-                      <TextField
-                        id=""
-                        variant="outlined"
-                        label="Units"
-                        fullWidth="true"
-                        value={this.state.units}
-                        InputProps={{ readOnly: true }}
-                      />
-                    </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <TextField
+                      id=""
+                      variant="outlined"
+                      label="Units"
+                      fullWidth="true"
+                      value={this.state.units}
+                      InputProps={{ readOnly: true }}
+                    />
+                  </GridItem>
 
-                    <GridItem xs={12} sm={12} md={2}>
-                      <Button
-                        className=""
-                        color="primary"
-                        startIcon={<GetAppIcon />}
-                        onClick={() => {
-                          this.sendRequest();
-                        }}
-                      >
-                        Request
-                      </Button>
-                    </GridItem>
-                  </GridContainer>
-                </CardContent>
-              </GridContainer>
+                  <GridItem xs={12} sm={12} md={2}>
+                    <Button
+                      className=""
+                      color="primary"
+                      startIcon={<GetAppIcon />}
+                      onClick={() => {
+                        this.sendRequest();
+                      }}
+                    >
+                      Request
+                    </Button>
+                  </GridItem>
+                </GridContainer>
+              </CardContent>
+              {/* </GridContainer> */}
             </CardBody>
           </Card>
         </GridContainer>
