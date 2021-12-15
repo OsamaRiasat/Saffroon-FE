@@ -195,7 +195,6 @@ export default class ReqForBatchIssuence extends Component {
                         ))}
                       </TextField>
                     </GridItem>
-
                     <GridItem xs={12} sm={12} md={3}>
                       {
                         // console.log("pcode form", this.state.pcode)
