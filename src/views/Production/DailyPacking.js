@@ -23,10 +23,10 @@ import Daily_Packing from "../../Services/Production/Daily_Packing.js";
 import { ContactSupportOutlined } from "@material-ui/icons";
 
 import {
-	PlanNo,
-	ProductByPlanNo,
-	WhenProductIsSelected,
-	PackingLog,
+  PlanNo,
+  ProductByPlanNo,
+  WhenProductIsSelected,
+  PackingLog,
 } from "../../Services/Production/Daily_Packing";
 
 function insertAt(array, index, data) {
@@ -73,7 +73,20 @@ export default class DailyPacking extends Component {
       candelete: false,
       canpost: false,
       selectedRows: [],
+      fieldErrors: {}
+
     };
+  }
+  onChangeClearError = (name) => {
+    let data = {
+      ...this.state.fieldErrors,
+      [name]: ''
+    }
+    console.log("data packing", data)
+    console.log(Object.entries(data))
+    this.setState({
+      fieldErrors: data
+    })
   }
 
   getPcodes = async (planno) => {
@@ -122,6 +135,13 @@ export default class DailyPacking extends Component {
     });
   };
   validationforcart = () => {
+    let { batchNo, noOfPacks } = this.state;
+
+    const fieldErrors = this.validate({ batchNo, noOfPacks });
+
+    this.setState({ fieldErrors: fieldErrors });
+
+    if (Object.keys(fieldErrors).length) return;
     const {
       orderno, //planno
       product, //pcode
@@ -141,6 +161,13 @@ export default class DailyPacking extends Component {
     }
     return true;
   };
+  validate = fields => {
+    const errors = {};
+    if (!fields.batchNo) errors.batchNo = 'Barch No Required';
+    if (!fields.noOfPacks) errors.noOfPacks = 'Product Code Required';
+    // if (!fields.no_of_batches) errors.no_of_batches = 'No Of Batches Required';
+    return errors;
+  }
   clearafteradd = () => {
     this.setState((prevState) => ({
       selected: {
@@ -150,6 +177,7 @@ export default class DailyPacking extends Component {
         batchno: "",
         quantity: "",
         packsize: "",
+        fieldErrors: {}
       },
     }));
     this.setState({
@@ -200,6 +228,7 @@ export default class DailyPacking extends Component {
     //       }
     //     ]
     // }
+
     try {
       const temp = this.state.cart.map((item) => {
         return {
@@ -248,22 +277,19 @@ export default class DailyPacking extends Component {
       );
     }
   };
-  cleardata=()=>{
+  cleardata = () => {
+    this.clearafteradd();
+    this.setState((prevState) => ({
+      selected: {
+        ...prevState.selected,
+        orderno: ''
+      },
+    }));
+    this.setState({
+      cart: [],
+      canpost: false
+    })
 
-      this.clearafteradd();
-      this.setState((prevState) => ({
-        selected: {
-          ...prevState.selected,
-            orderno:''
-         
-        },
-      }));
-      
-      this.setState({
-          cart:[],
-          canpost:false
-      },)
-      
   }
 
   render() {
@@ -466,7 +492,6 @@ export default class DailyPacking extends Component {
                   </TextField>
                 </GridItem>
               </GridContainer>
-
               <GridContainer>
                 <GridItem xs={12} sm={12} md={3}>
                   <TextField
@@ -485,7 +510,10 @@ export default class DailyPacking extends Component {
                     select
                     label="Batch No:"
                     fullWidth="true"
+                    name="batchNo"
                     value={this.state.selected.batchno}
+                    error={this.state.fieldErrors && this.state.fieldErrors.batchNo ? true : false}
+                    helperText={this.state.fieldErrors && this.state.fieldErrors.batchNo}
                     onChange={(event) => {
                       this.setState((prevState) => ({
                         selected: {
@@ -501,6 +529,7 @@ export default class DailyPacking extends Component {
                       //   //   this.getAutoFill();
                       //   }
                       // );
+                      this.onChangeClearError(event.target.name);
                     }}
                   >
                     {this.state.batches.map((batch) => (
@@ -517,19 +546,26 @@ export default class DailyPacking extends Component {
                     variant="outlined"
                     label="Quantity:"
                     type="number"
+                    InputProps={{ inputProps: { min: 0} }}
                     fullWidth="true"
                     value={this.state.selected.quantity}
+                    name="noOfPacks"
+                    error={this.state.fieldErrors && this.state.fieldErrors.noOfPacks ? true : false}
+                    helperText={this.state.fieldErrors && this.state.fieldErrors.noOfPacks}
                     onChange={(event) => {
                       //     this.setState({
                       //         packsno:event.target.value
                       //     })
                       // }
-                      this.setState((prevState) => ({
-                        selected: {
-                          ...prevState.selected, // object that we want to update
-                          quantity: event.target.value,
-                        },
-                      }));
+                      this.setState((prevState) => (
+                        {
+                          selected: {
+                            ...prevState.selected, // object that we want to update
+                            quantity: event.target.value,
+                          },
+                        }
+                      ));
+                      this.onChangeClearError(event.target.name);
                     }}
                   />
                 </GridItem>

@@ -37,11 +37,11 @@ export default class ReqForBatchIssuence extends Component {
     console.log(pcodes);
     this.setState({
       pcodes: pcodes,
+      pcode: pcodes[0].ProductCode,
     });
   };
   getbatchSize = async (pcode) => {
     const batchsize = (await SBS(pcode)).data;
-
     console.log(batchsize);
     this.setState({
       units: batchsize.Units,
