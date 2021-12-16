@@ -12,6 +12,7 @@ import TextField from "@material-ui/core/TextField";
 import { DataGrid } from "@material-ui/data-grid";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import Batch_Track from "../../Services/Production/Batch_Track.js";
+import { toast } from "react-toastify";
 
 import {
   PCodeBPR,
@@ -40,7 +41,7 @@ export default class BatchTaP extends Component {
       uom: "",
       stage_list: [],
       stage: "",
-      result_list: [],
+      result_list: ["Complete", "Partial"],
       result: "",
       selected: {
         batch_no: "",
@@ -57,6 +58,7 @@ export default class BatchTaP extends Component {
       cart1: [],
       cart2: [],
       batch_selected: false,
+      fieldErrors: {},
     };
   }
 
@@ -140,16 +142,23 @@ export default class BatchTaP extends Component {
         PartialStatus: this.state.selected.current_stage,
         remarks: this.state.remarks,
       };
+
+      const fieldErrors = this.validate(this.state);
+
+      this.setState({ fieldErrors: fieldErrors });
+
+      if (Object.keys(fieldErrors).length) return;
+
       const ans = await BatchStages(res);
       console.log(ans);
       if (ans.status === 201) {
-        alert("Data Posted");
+        toast.success("Data Posted");
         this.handleClearForm();
       } else {
-        alert("Data is not posted");
+        toast.error("Data is not posted");
       }
     } catch (error) {
-      alert("Exception Thrown : Something Went Wrong !!!");
+      toast.error("Exception Thrown : Something Went Wrong !!!");
     }
   }
   handleClearForm = () => {
@@ -183,10 +192,52 @@ export default class BatchTaP extends Component {
       start_date: "",
       completion_date: "",
       stage_list: [],
+      P_yield: "",
+      fieldErrors: {},
+    });
+  };
+
+  validate = (fields) => {
+    const errors = {};
+    if (!fields.selected.batch_no) {
+      errors.batch_no = "Batch No Required";
+    }
+    if (!fields.production_code) {
+      errors.production_code = "Production Code Required";
+      return errors;
+    }
+
+    if (!fields.selected.batch_no) {
+      errors.batch_no = "Batch No Required";
+      return errors;
+    }
+
+    if (!fields.start_date) errors.start_date = "Start Date Required";
+    if (!fields.completion_date)
+      errors.completion_date = "Completion Date Required";
+
+    if (!fields.uom) errors.uom = "Unit Required";
+    if (!fields.T_yield) errors.T_yield = "Theoretical Yield Required";
+    if (!fields.A_yield) errors.A_yield = "Actual Yield Required";
+    if (!fields.P_yield) errors.P_yield = "Percentage Yield Required";
+    if (!fields.remarks) errors.remarks = "Remarks Required";
+    if (!fields.stage) errors.stage = "Stage Required";
+
+    return errors;
+  };
+
+  onChangeClearError = (name) => {
+    let data = {
+      ...this.state.fieldErrors,
+      [name]: "",
+    };
+    this.setState({
+      fieldErrors: data,
     });
   };
 
   render() {
+    console.log("SSSSS", this.state);
     var today = new Date();
     let date =
       today.getDate() +
@@ -373,11 +424,23 @@ export default class BatchTaP extends Component {
                           label="Product Code:"
                           fullWidth="true"
                           value={this.state.production_code}
+                          name="production_code"
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.production_code
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.production_code
+                          }
                           onChange={(event) => {
                             this.setState({
                               production_code: event.target.value,
                             });
                             this.handlePCode(event.target.value);
+                            this.onChangeClearError(event.target.name);
                           }}
                         >
                           {this.state.production_code_list.map((pc) => (
@@ -418,6 +481,17 @@ export default class BatchTaP extends Component {
                           variant="outlined"
                           label={"Batch No: "}
                           value={this.state.selected.batch_no}
+                          name="batch_no"
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.batch_no
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.batch_no
+                          }
                           onChange={(event) => {
                             this.setState((prevState) => ({
                               selected: {
@@ -427,6 +501,7 @@ export default class BatchTaP extends Component {
                               },
                             }));
                             this.handleCode(event.target.value);
+                            this.onChangeClearError(event.target.name);
                           }}
                         >
                           {this.state.batch_no_list.map((pc) => (
@@ -478,8 +553,20 @@ export default class BatchTaP extends Component {
                           type="date"
                           InputLabelProps={{ shrink: true }}
                           value={this.state.start_date}
+                          name="start_date"
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.start_date
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.start_date
+                          }
                           onChange={(event) => {
                             this.setState({ start_date: event.target.value });
+                            this.onChangeClearError(event.target.name);
                           }}
                         />
                       </GridItem>
@@ -492,10 +579,22 @@ export default class BatchTaP extends Component {
                           type="date"
                           InputLabelProps={{ shrink: true }}
                           value={this.state.completion_date}
+                          name="completion_date"
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.completion_date
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.completion_date
+                          }
                           onChange={(event) => {
                             this.setState({
                               completion_date: event.target.value,
                             });
+                            this.onChangeClearError(event.target.name);
                           }}
                         />
                       </GridItem>
@@ -523,8 +622,18 @@ export default class BatchTaP extends Component {
                           label={"UOM: "}
                           select
                           value={this.state.uom}
+                          name="uom"
+                          error={
+                            this.state.fieldErrors && this.state.fieldErrors.uom
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors && this.state.fieldErrors.uom
+                          }
                           onChange={(event) => {
                             this.setState({ uom: event.target.value });
+                            this.onChangeClearError(event.target.name);
                           }}
                         >
                           {this.state.uom_list.map((pc) => (
@@ -543,6 +652,17 @@ export default class BatchTaP extends Component {
                           label="Theoretical Yield:"
                           fullWidth="true"
                           value={this.state.T_yield}
+                          name="T_yield"
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.T_yield
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.T_yield
+                          }
                           onChange={(event) => {
                             this.setState(
                               { T_yield: event.target.value },
@@ -550,6 +670,7 @@ export default class BatchTaP extends Component {
                                 this.handleYields();
                               }
                             );
+                            this.onChangeClearError(event.target.name);
                           }}
                         />
                       </GridItem>
@@ -562,6 +683,17 @@ export default class BatchTaP extends Component {
                           label="Actual Yield:"
                           fullWidth="true"
                           value={this.state.A_yield}
+                          name="A_yield"
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.A_yield
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.A_yield
+                          }
                           onChange={(event) => {
                             this.setState(
                               { A_yield: event.target.value },
@@ -569,6 +701,7 @@ export default class BatchTaP extends Component {
                                 this.handleYields();
                               }
                             );
+                            this.onChangeClearError(event.target.name);
                           }}
                         />
                       </GridItem>
@@ -594,8 +727,20 @@ export default class BatchTaP extends Component {
                           multiline
                           fullWidth="true"
                           value={this.state.remarks}
+                          name="remarks"
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.remarks
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.remarks
+                          }
                           onChange={(event) => {
                             this.setState({ remarks: event.target.value });
+                            this.onChangeClearError(event.target.name);
                           }}
                         />
                       </GridItem>
@@ -622,8 +767,20 @@ export default class BatchTaP extends Component {
                           label={"Stage:"}
                           select
                           value={this.state.stage}
+                          name="stage"
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.stage
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.stage
+                          }
                           onChange={(event) => {
                             this.setState({ stage: event.target.value });
+                            this.onChangeClearError(event.target.name);
                           }}
                         >
                           {this.state.listOfStages.map((pc) => (
@@ -642,7 +799,13 @@ export default class BatchTaP extends Component {
                           label={"Result"}
                           select
                           value={this.state.result}
-                        />
+                        >
+                          {this.state.result_list.map((pc) => (
+                            <MenuItem key={pc} value={pc}>
+                              {pc}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={2}>
@@ -651,24 +814,25 @@ export default class BatchTaP extends Component {
                           color="default"
                           startIcon={<CloudUploadIcon />}
                           onClick={() => {
-                            if (
-                              this.state.selected.batch_no == "" ||
-                              this.state.start_date == "" ||
-                              this.state.completion_date == "" ||
-                              this.state.stage == "" ||
-                              this.state.uom == "" ||
-                              this.state.T_yield == "" ||
-                              this.state.A_yield == "" ||
-                              this.state.P_yield == "" ||
-                              this.state.selected.current_stage == "" ||
-                              this.state.remarks == ""
-                            ) {
-                              alert(
-                                "Some data is missing. Complete that first!"
-                              );
-                            } else {
-                              this.handlePost();
-                            }
+                            this.handlePost();
+                            // if (
+                            //   this.state.selected.batch_no == "" ||
+                            //   this.state.start_date == "" ||
+                            //   this.state.completion_date == "" ||
+                            //   this.state.stage == "" ||
+                            //   this.state.uom == "" ||
+                            //   this.state.T_yield == "" ||
+                            //   this.state.A_yield == "" ||
+                            //   this.state.P_yield == "" ||
+                            //   this.state.selected.current_stage == "" ||
+                            //   this.state.remarks == ""
+                            // ) {
+                            //   alert(
+                            //     "Some data is missing. Complete that first!"
+                            //   );
+                            // } else {
+                            //   this.handlePost();
+                            // }
                           }}
                         >
                           Post

@@ -194,6 +194,11 @@ export default class ReqForBatchIssuence extends Component {
                         this.onChangeClearError(select.name);
                       }}
                     />
+                    {this.state.fieldErrors && this.state.fieldErrors.plan && (
+                      <span className="MuiFormHelperText-root Mui-error">
+                        {this.state.fieldErrors.plan}
+                      </span>
+                    )}
                   </GridItem>
 
                   <GridItem xs={12} sm={12} md={3}>
@@ -225,6 +230,11 @@ export default class ReqForBatchIssuence extends Component {
                         this.onChangeClearError(select.name);
                       }}
                     />
+                    {this.state.fieldErrors && this.state.fieldErrors.pcode && (
+                      <span className="MuiFormHelperText-root Mui-error">
+                        {this.state.fieldErrors.pcode}
+                      </span>
+                    )}
                   </GridItem>
 
                   <GridItem xs={12} sm={12} md={3}>
