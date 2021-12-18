@@ -96,7 +96,7 @@ export default class AddPackSize extends Component {
       };
 
       console.log(payload);
-      const data = await AddPackSize(payload);
+      const data = await AddPackSizeAPI(payload);
       console.log(data);
 
       if (data.status === 201) {
