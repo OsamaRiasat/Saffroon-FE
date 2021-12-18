@@ -12,6 +12,7 @@ import CardHeader from "../../components/Card/CardHeader.js";
 import CardBody from "../../components/Card/CardBody.js";
 import CardFooter from "../../components/Card/CardFooter.js";
 import TextField from "@material-ui/core/TextField";
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import MenuItem from "@material-ui/core/MenuItem";
 import {
   DataGrid,
@@ -446,37 +447,22 @@ class PackingMaterialDemand extends React.Component {
                       <GridItem xs={12} sm={12} md={12}>
                         <GridContainer>
                           <GridItem xs={12} sm={12} md={8}>
-                            <TextField
-                              id="material"
-                              select
-                              label="Material"
-                              fullWidth="true"
-                              value={this.state.selected.name}
-                              //onChange={}
-                              // helperText="Your Material Name"
-                              variant="outlined"
-                              onChange={(event) => {
-                                this.setState((prevState) => ({
-                                  selected: {
-                                    // object that we want to update
-                                    ...prevState.selected, // keep all other key-value pairs
-                                    name: event.target.value,
-                                    // update the value of specific key
-                                  },
-                                }));
-
-                                this.handleSetCatRmcode(event.target.value);
-                              }}
-                            >
-                              {this.state.productsName.map((option) => (
-                                <MenuItem
-                                  key={option["Material"]}
-                                  value={option["Material"]}
-                                >
-                                  {option["Material"]}
-                                </MenuItem>
-                              ))}
-                            </TextField>
+                          <Autocomplete
+                            id="material"
+                            options={this.state.productsName}
+                            getOptionLabel={(option) => option.Material}
+                            onChange={(event, value) => {
+                              console.log(value);
+                              this.setState((prevState) => ({
+                                selected: {
+                                  ...prevState.selected,
+                                  name: value.Material,
+                                },
+                              }));
+                              this.handleSetCatRmcode(value);
+                            }}
+                            renderInput={(params) => <TextField {...params} label="Material:" variant="outlined" />}
+                          />
                           </GridItem>
                           <GridItem xs={12} sm={12} md={4}>
                             <TextField
@@ -490,34 +476,21 @@ class PackingMaterialDemand extends React.Component {
 
                         <GridContainer>
                           <GridItem xs={12} sm={12} md={12}>
-                            <TextField
-                              id="pmcode"
-                              select
-                              label="RM Code"
-                              variant="outlined"
-                              fullWidth="true"
-                              value={this.state.selected.pmcode}
-                              // helperText="PM Code"
-                              onChange={(event) => {
+                            <Autocomplete
+                              id="rm-code"
+                              options={this.state.productsRMCode}
+                              getOptionLabel={(option) => option.RMCode}
+                              onChange={(event, value) => {
                                 this.setState((prevState) => ({
                                   selected: {
-                                    // object that we want to update
-                                    ...prevState.selected, // keep all other key-value pairs
-                                    pmcode: event.target.value, // update the value of specific key
+                                    ...prevState.selected,
+                                    pmcode: value,
                                   },
                                 }));
-                                this.handleSetCatMatName(event.target.value);
+                                this.handleSetCatMatName(value);
                               }}
-                            >
-                              {this.state.productsRMCode.map((option) => (
-                                <MenuItem
-                                  key={option.RMCode}
-                                  value={option.RMCode}
-                                >
-                                  {option.RMCode}
-                                </MenuItem>
-                              ))}
-                            </TextField>
+                              renderInput={(params) => <TextField {...params} label="RM Code:" variant="outlined" />}
+                            />
                           </GridItem>
                         </GridContainer>
                         <GridContainer>
