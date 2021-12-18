@@ -113,6 +113,7 @@ import PMNewFormulation from "./views/Production/PMNewFormulation"
 // QA
 import IBatchNo from "./views/QA/issueBtachNo";
 import RMSample from  "./views/QA/Sample/RMSamplingLog"
+import ProductSample from  "./views/QA/Sample/ProductSample"
 import RMNewFormula from "./views/QA/RMNewFormulation"
 import NC from "./views/QA/NonConformance"
 import addProduct from "./views/QA/addaproduct"
@@ -559,6 +560,15 @@ const dashboardRoutes = [
 		name: "RM Sample",
 		icon: LibraryBooks,
 		component: RMSample,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	{
+		path: "/QA/product/sample",
+		name: "Product Sample",
+		icon: LibraryBooks,
+		component: ProductSample,
 		layout: "/saffron",
 		role: "Quality Assurance",
 		showNav: true,
