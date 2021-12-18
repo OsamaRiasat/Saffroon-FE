@@ -26,7 +26,7 @@ export default class AddPackingMaterial extends Component {
 		super(props);
 		this.state = {
 			unit: ["g", "mg", "kg", "numbers"],
-			category: ["Active", "Excipient"],
+			category: ["Primary", "Secondary", "Tertiary", "Assessory"],
 
 			packingMaterialCode: "",
 			material: "",
@@ -55,7 +55,7 @@ export default class AddPackingMaterial extends Component {
 	postButton = async () => {
 		try {
 			const payload = {
-				RMCode: this.state.packingMaterialCode,
+				PMCode: this.state.packingMaterialCode,
 				Material: this.state.material,
 				Units: this.state.selected.unit,
 				Type: this.state.selected.category,
