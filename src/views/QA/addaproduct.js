@@ -157,7 +157,7 @@ export default class addaproduct extends Component {
                     id=""
                     fullWidth="true"
                     variant="outlined"
-                    label={"Registration Code:"}
+                    label={"Registration Number:"}
                     value={this.state.registrationCode}
                     onChange={(event) => {
                       this.setState({
@@ -246,7 +246,7 @@ export default class addaproduct extends Component {
                     id=""
                     fullWidth="true"
                     variant="outlined"
-                    label={"Shelf-Life:"}
+                    label={"Shelf-Life (in Months):"}
                     type="number"
                     value={this.state.shelfLife}
 

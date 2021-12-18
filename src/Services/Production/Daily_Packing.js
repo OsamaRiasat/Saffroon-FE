@@ -13,7 +13,7 @@ export default {
       // List of Plan Numbers
     PlanNo() {
         console.log("Gettting PlanNo");
-        const resp = http.get(Endpoint + "PlanNo/");
+        const resp = http.get(Endpoint + "PlanNoForPacking/");
         console.log(resp);
         return resp;
       },
@@ -21,7 +21,7 @@ export default {
     //when .plqnNo is selected this will be called annd this will return list of  PCodes
     ProductByPlanNo(planNo) {
         console.log("Gettting ProductByPlanNo");
-        const resp = http.get(Endpoint + "ProductByPlanNo/" + planNo + "/");
+        const resp = http.get(Endpoint + "productCodeByPlanNoForPacking/" + planNo + "/");
         console.log(resp);
         return resp;
       },

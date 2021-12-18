@@ -188,7 +188,7 @@ export default class addrawmaterial extends Component {
                     startIcon={<AddCircleOutlineIcon />}
                     onClick={this.postButton}
                   >
-                    Add a Product
+                    Add Raw Material
                   </Button>
                 </GridItem>
               </GridContainer>
