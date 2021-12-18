@@ -33,6 +33,45 @@ import {
 } from "../../Services/Planning/A-Product_Selection.js";
 
 class ProductsSelection extends React.Component {
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			productNameValue: "",
+			productCodeValue: "",
+			cart: [],
+			selected: {
+				pname: "",
+				packsize: "",
+				batches: "",
+				oldBatch: "",
+				inhand: 0,
+				planned: 0,
+				pcode: "",
+				packs: "",
+			},
+			// packs: "",
+			units: "",
+			previousUnit: "",
+			dosageType: "",
+			planno: "",
+			fgs_qty: "",
+			wip_qty: "",
+			isfgs: false,
+			iswip: false,
+			pname_arr: [],
+			packsize_arr: [],
+			pcode_arr: [],
+			selectedRows: "",
+			canChange: true,
+			canDelete: true,
+			canUpDown: true,
+			canGoOnward: true,
+			standardBatch: 1,
+			standardUnits: 1,
+		};
+	}
+
 	async componentDidMount() {
 		const code_list = await ProductCodes();
 		this.setState({ pcode_arr: code_list.data });
@@ -97,21 +136,22 @@ class ProductsSelection extends React.Component {
 
 	handleCodeAutofill = async (code) => {
 		const data = await ProductDetailsByCode(code);
-
 		this.setState({ packsize_arr: data.data.PackSizesList });
-		this.setState({ units: data.data.units });
+		this.setState({ units: data.data.units, previousUnit: data.data.units });
 		this.setState({ standardBatch: data.data["batches"] });
 		this.setState({ standardUnits: data.data["units"] });
+		this.setState({ dosageType: data.data.dosageType });
 		this.setState((prevState) => ({
 			selected: {
 				...prevState.selected,
 				pcode: code,
 				pname: data.data["Product"],
 				batches: data.data["batches"],
+				oldBatch: data.data["batches"],
 				packsize: data.data.PackSizesList[0],
 			},
 		}));
-		if (data.data.PackSizesList.length !== 0) {
+		if (data.data.PackSizesList.length !== 0 && (this.state.dosageType == 'Tablet' || this.state.dosageType == 'Capsule')) {
       let packSizeArr = data.data.PackSizesList[0].split("x");
       let packSize = parseInt(packSizeArr[0]) * parseInt(packSizeArr[1]);
 			packSize = (data.data.units / packSize).toFixed(0);
@@ -121,8 +161,15 @@ class ProductsSelection extends React.Component {
 					packs: packSize,
 				},
 			}));
-			this.setFGSWIP();
+		} else if(this.state.dosageType == 'Vial') {
+			this.setState((prevState) => ({
+				selected: {
+					...prevState.selected,
+					packs: this.state.packsize_arr[0],
+				}
+			}));
 		}
+		this.setFGSWIP();
 	};
 
 	handleNameAutofill = async (code) => {
@@ -157,41 +204,6 @@ class ProductsSelection extends React.Component {
 
 		this.setState({ fgs_qty: data.data.FGS_Packs });
 		this.setState({ wip_qty: data.data.WIP_Packs });
-	}
-
-	constructor(props) {
-		super(props);
-		this.state = {
-			productNameValue: "",
-			productCodeValue: "",
-			cart: [],
-			selected: {
-				pname: "",
-				packsize: "",
-				batches: "",
-				inhand: 0,
-				planned: 0,
-				pcode: "",
-				packs: "",
-			},
-			// packs: "",
-			units: "",
-			planno: "",
-			fgs_qty: "",
-			wip_qty: "",
-			isfgs: false,
-			iswip: false,
-			pname_arr: [],
-			packsize_arr: [],
-			pcode_arr: [],
-			selectedRows: "",
-			canChange: true,
-			canDelete: true,
-			canUpDown: true,
-			canGoOnward: true,
-			standardBatch: 1,
-			standardUnits: 1,
-		};
 	}
 
 	async setCart() {
@@ -314,6 +326,9 @@ class ProductsSelection extends React.Component {
 				inhand: this.state.cart[i].inhand,
 				planned: this.state.cart[i].planned,
 				batches: this.state.cart[i].batches,
+				oldBatch: this.state.cart[i].oldBatch,
+				packs: this.state.cart[i].packs,
+				units: this.state.previousUnit
 			};
 			products_array.push(temp);
 		}
@@ -365,7 +380,7 @@ class ProductsSelection extends React.Component {
 					<GridItem xs={12} sm={12} md={12}>
 						<Card>
 							<CardHeader color="primary">
-								<h2>A- Products Selection </h2>
+								<h2>A- Products Selection</h2>
 							</CardHeader>
 							<CardBody>
 								<GridContainer>
@@ -509,24 +524,20 @@ class ProductsSelection extends React.Component {
 														onInputChange={(event, value) => {
 															this.setState((prevState) => ({
 																selected: {
-																	// object that we want to update
-																	...prevState.selected, // keep all other key-value pairs
-																	packsize: event.target.value, // update the value of specific key
+																	...prevState.selected,
+																	packsize: event.target.value,
 																},
 															}));
-															let packs_temp = parseInt(
-																event.target.value.substring(
-																	event.target.value.indexOf("x") + 1
-																)
-															);
-															packs_temp = (
-																this.state.units / packs_temp
-															).toFixed(0);
-															this.setState(
-																(prevState) => ({
+															let packs_temp;
+															if(this.state.dosageType != 'Vial') {
+																packs_temp = parseInt(event.target.value.substring( event.target.value.indexOf("x") + 1));
+																packs_temp = (this.state.units / packs_temp).toFixed(0);
+															} else {
+																packs_temp = event.target.value;
+															}
+															this.setState((prevState) => ({
 																	selected: {
-																		// object that we want to update
-																		...prevState.selected, // keep all other key-value pairs
+																		...prevState.selected,
 																		packs: packs_temp,
 																	},
 																}),
@@ -555,9 +566,14 @@ class ProductsSelection extends React.Component {
 														label="Packs "
 														value={this.state.selected.packs}
 														onChange={(event) => {
-                              let packSizeArr = this.state.selected.packsize.split("x");
-                              let packSize = parseInt(packSizeArr[0]) * parseInt(packSizeArr[1]);
-                              this.setState({
+                              let packSize;
+                              if(this.state.dosageType != 'Vial') {
+																let packSizeArr = this.state.selected.packsize.split("x");
+																packSize = parseInt(packSizeArr[0]) * parseInt(packSizeArr[1]);
+															} else {
+																packSize = this.state.selected.packsize;
+															}
+															this.setState({
 																units: event.target.value * packSize
 															});
   														this.setState((prevState) => ({
@@ -582,11 +598,17 @@ class ProductsSelection extends React.Component {
 																selected: {
 																	...prevState.selected,
 																	batches: event.target.value,
+																	oldBatch: event.target.value
 																},
 															}));
                               this.setState({units: event.target.value * this.state.standardUnits});
-                              let packSizeArr = this.state.selected.packsize.split("x");
-                              let packSize = parseInt(packSizeArr[0]) * parseInt(packSizeArr[1]);
+															let packSize;
+                              if(this.state.dosageType != 'Vial') {
+																let packSizeArr = this.state.selected.packsize.split("x");
+																packSize = parseInt(packSizeArr[0]) * parseInt(packSizeArr[1]);
+															} else {
+																packSize = this.state.selected.packsize;
+															}
 															this.setState(
 																(prevState) => ({
 																	selected: {
@@ -594,9 +616,6 @@ class ProductsSelection extends React.Component {
 																		packs: ((event.target.value * this.state.standardUnits) / packSize).toFixed(0),
 																	},
 																})
-																// () => {
-																//   this.setCart();
-																// }
 															);
 														}}
 													/>
@@ -610,9 +629,14 @@ class ProductsSelection extends React.Component {
 														value={this.state.units}
 														onChange={(event) => {
 															this.setState({ units: event.target.value });
-
-                              let packSizeArr = this.state.selected.packsize.split("x");
-                              let packSize = parseInt(packSizeArr[0]) * parseInt(packSizeArr[1]);
+                              this.setState({ previousUnit: event.target.value });
+															let packSize;
+															if(this.state.dosageType != 'Vial') {
+																let packSizeArr = this.state.selected.packsize.split("x");
+																packSize = parseInt(packSizeArr[0]) * parseInt(packSizeArr[1]);
+															} else {
+																packSize = this.state.selected.packsize;
+															}
 															this.setState((prevState) => ({
 																selected: {
 																	...prevState.selected,
@@ -620,10 +644,7 @@ class ProductsSelection extends React.Component {
 																	batches: Math.ceil(event.target.value / this.state.standardUnits),
 																},
 															}),
-                              // () => {
-															// 		this.setCart();
-															// 	}
-                              );
+															);
 														}}
 													/>
 												</GridItem>
@@ -802,17 +823,18 @@ class ProductsSelection extends React.Component {
 																		break;
 																	}
 																}
-
 																let temp = {
 																	pcode: products_array[index].pcode,
 																	pname: products_array[index].pname,
 																	packsize: products_array[index].packsize,
 																	inhand: products_array[index].inhand,
 																	planned: products_array[index].planned,
-																	batches: products_array[index].batches,
+																	batches: products_array[index].oldBatch,
+																	packs: products_array[index].packs
 																};
+																let unit = products_array[index].units;
 
-																this.setState({ selected: temp });
+																this.setState({ selected: temp, units:unit });
 
 																if (index !== -1) {
 																	array.splice(index, 1);
