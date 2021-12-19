@@ -57,8 +57,8 @@ export default class CloseOrders extends Component {
 
   validate = fields => {
     const errors = {};
-    if (!fields.planNo) errors.planNo = 'Order No Required';
-    if (!fields.status) errors.status = 'Order Status Required';
+    if (!fields.selectedOrder) errors.selectedOrder = 'Order No Required';
+    if (!fields.orderstatus) errors.orderstatus = 'Order Status Required';
     return errors;
   }
 
@@ -75,11 +75,12 @@ export default class CloseOrders extends Component {
 
   // Submit Form
   changeStatus = async () => {
-    let { planNo, status } = this.state;
-    const fieldErrors = this.validate({ planNo, status });
-    this.setState({ fieldErrors: fieldErrors });
-    if (Object.keys(fieldErrors).length) return;
+
     try {
+      let { selectedOrder, orderstatus } = this.state;
+      const fieldErrors = this.validate({ selectedOrder, orderstatus });
+      this.setState({ fieldErrors: fieldErrors });
+      if (Object.keys(fieldErrors).length) return;
       const payload = {
         "planNo": this.state.selectedOrder,
         "ProductCode": this.state.selectedPcode,
@@ -237,11 +238,11 @@ export default class CloseOrders extends Component {
                           fullWidth="true"
                           variant="outlined"
                           label="Order No:"
-                          name="planNo"
+                          name="selectedOrder"
                           value={this.state.selectedOrder}
-                          InputProps={{ readOnly: true }}
-                          error={this.state.fieldErrors && this.state.fieldErrors.planNo ? true : false}
-                          helperText={this.state.fieldErrors && this.state.fieldErrors.planNo}
+                          // InputProps={{ readOnly: true }}
+                          error={this.state.fieldErrors && this.state.fieldErrors.selectedOrder ? true : false}
+                          helperText={this.state.fieldErrors && this.state.fieldErrors.selectedOrder}
                           onChange={(event) => {
                             this.onChangeClearError(event.target.name);
                           }}
@@ -253,10 +254,10 @@ export default class CloseOrders extends Component {
                           select
                           label="Order"
                           fullWidth="true"
-                          name="status"
+                          name="orderstatus"
                           value={this.state.orderstatus}
-                          error={this.state.fieldErrors && this.state.fieldErrors.status ? true : false}
-                          helperText={this.state.fieldErrors && this.state.fieldErrors.status}
+                          error={this.state.fieldErrors && this.state.fieldErrors.orderstatus ? true : false}
+                          helperText={this.state.fieldErrors && this.state.fieldErrors.orderstatus}
                           onChange={(event) => {
                             this.setState({
                               orderstatus: event.target.value
