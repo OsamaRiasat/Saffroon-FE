@@ -19,7 +19,7 @@ export function BatchNoandBatchesList(PCode) {
 }
 
 export function GeneralDataBPRLog(obj) {
-  console.log("getting GeneralDataBPRLog")
+  console.log("getting GeneralDataBPRLog");
   const resp = http.post(Endpoint + "GeneralDataBPRLog/", obj);
   console.log(resp);
   return resp;
@@ -33,8 +33,15 @@ export function DataFromBPR(PCode) {
 }
 
 export function BatchStages(obj) {
-  console.log("Posting BatchIssuenceRequest")
+  console.log("Posting BatchIssuenceRequest");
   const resp = http.post(Endpoint + "BatchStages/", obj);
   console.log(resp);
-  return resp;   
+  return resp;
+}
+
+export function getProductName(PCode) {
+  console.log("Gettting PnameByPCode");
+  const resp = http.get(Endpoint + "PnameByPCode/" + PCode + "/");
+  console.log(resp);
+  return resp;
 }
