@@ -15,29 +15,29 @@ import SaveIcon from "@material-ui/icons/Save";
 import MenuItem from "@material-ui/core/MenuItem";
 import { toast, ToastContainer } from "react-toastify";
 import { PlanItems, PlanStatus } from "../../Services/Production/Close_Order";
+import Select from "react-select";
 
 export default class CloseOrders extends Component {
-
   async componentDidMount() {
     const data = (await PlanItems()).data;
-    console.log(data)
+    console.log(data);
     this.setState({
-      orders: data
-    })
+      orders: data,
+    });
   }
   constructor(props) {
     super(props);
     this.state = {
       ordersstatus: ["Close Order", "Cancel Order"],
-      orderstatus: '',
+      orderstatus: "",
       orders: [],
-      order: '',
-      orderstatussend: '',
+      order: "",
+      orderstatussend: "",
       canSave: false,
       selectedRow: [],
 
-      selectedOrder: '',
-      selectedPcode: '',
+      selectedOrder: "",
+      selectedPcode: "",
       selectedpackSize: "",
       fieldErrors: {},
     };
@@ -45,52 +45,51 @@ export default class CloseOrders extends Component {
 
   getOrderNo = () => {
     const line = this.state.selectedRow - 1;
-    console.log(line)
+    console.log(line);
     if (line !== "" && line > -1) {
       this.setState({
         selectedOrder: this.state.orders[line].planNo,
         selectedPcode: this.state.orders[line].ProductCode,
         selectedpackSize: this.state.orders[line].PackSize,
-      })
+      });
     }
-  }
+  };
 
-  validate = fields => {
+  validate = (fields) => {
     const errors = {};
-    if (!fields.selectedOrder) errors.selectedOrder = 'Order No Required';
-    if (!fields.orderstatus) errors.orderstatus = 'Order Status Required';
+    if (!fields.selectedOrder) errors.selectedOrder = "Select Order Required";
+    if (!fields.orderstatus) errors.orderstatus = "Order Status Required";
     return errors;
-  }
+  };
 
   onChangeClearError = (name) => {
     let data = {
       ...this.state.fieldErrors,
-      [name]: ''
-    }
-    console.log(Object.entries(data))
+      [name]: "",
+    };
+    console.log(Object.entries(data));
     this.setState({
-      fieldErrors: data
-    })
-  }
+      fieldErrors: data,
+    });
+  };
 
   // Submit Form
   changeStatus = async () => {
-
     try {
       let { selectedOrder, orderstatus } = this.state;
       const fieldErrors = this.validate({ selectedOrder, orderstatus });
       this.setState({ fieldErrors: fieldErrors });
       if (Object.keys(fieldErrors).length) return;
       const payload = {
-        "planNo": this.state.selectedOrder,
-        "ProductCode": this.state.selectedPcode,
-        "PackSize": this.state.selectedpackSize,
-        "status": this.state.orderstatussend //CANCELLED
-      }
+        planNo: this.state.selectedOrder,
+        ProductCode: this.state.selectedPcode,
+        PackSize: this.state.selectedpackSize,
+        status: this.state.orderstatussend, //CANCELLED
+      };
       console.log(payload);
-      const data = (await PlanStatus(payload));
+      const data = await PlanStatus(payload);
       if (data.status === 200) {
-        toast('Request Sent !!', {
+        toast.success("Request Sent !!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -101,19 +100,18 @@ export default class CloseOrders extends Component {
         });
         // alert("Order Status Chnaged");
         const data = (await PlanItems()).data;
-        console.log(data)
+        console.log(data);
         this.setState({
           orders: data,
           selectedRow: "",
           selectedOrder: "",
           orderstatus: "",
-          fieldErrors: {}
-        })
+          fieldErrors: {},
+        });
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error);
-      toast.error('Exception : Order status not chnaged !!!', {
+      toast.error("Exception : Order status not chnaged !!!", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -124,7 +122,7 @@ export default class CloseOrders extends Component {
       });
       // alert("Exception : Order status not chnaged !!!")
     }
-  }
+  };
 
   render() {
     const products_array = [];
@@ -139,7 +137,16 @@ export default class CloseOrders extends Component {
       //   "pendingPacks": 176000,
       //   "status": "OPEN"
 
-      const { planNo, ProductCode, Product, PackSize, requiredPacks, achievedPacks, pendingPacks, status } = this.state.orders[i];
+      const {
+        planNo,
+        ProductCode,
+        Product,
+        PackSize,
+        requiredPacks,
+        achievedPacks,
+        pendingPacks,
+        status,
+      } = this.state.orders[i];
       let temp = {
         id: i + 1,
         orderno: planNo,
@@ -151,7 +158,7 @@ export default class CloseOrders extends Component {
         packed: achievedPacks,
         pending: pendingPacks,
         status: status,
-      }
+      };
       products_array.push(temp);
     }
     const columns = [
@@ -210,7 +217,7 @@ export default class CloseOrders extends Component {
         editable: true,
       },
     ];
-    console.log(this.state)
+    console.log(this.state);
     return (
       <div
         style={{
@@ -219,9 +226,7 @@ export default class CloseOrders extends Component {
       >
         <GridContainer md={12}>
           <Card style={{ marginLeft: "15px", minwidth: "960" }}>
-            <CardHeader
-              color="primary"
-            >
+            <CardHeader color="primary">
               <h2 style={{ textAlign: "center" }}>Close Orders</h2>
             </CardHeader>
             <CardBody>
@@ -240,50 +245,62 @@ export default class CloseOrders extends Component {
                           label="Order No:"
                           name="selectedOrder"
                           value={this.state.selectedOrder}
-                          // InputProps={{ readOnly: true }}
-                          error={this.state.fieldErrors && this.state.fieldErrors.selectedOrder ? true : false}
-                          helperText={this.state.fieldErrors && this.state.fieldErrors.selectedOrder}
+                          InputProps={{ readOnly: true }}
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.selectedOrder
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.selectedOrder
+                          }
                           onChange={(event) => {
                             this.onChangeClearError(event.target.name);
                           }}
                         />
                       </GridItem>
                       <GridItem xs={12} sm={12} md={5}>
-                        <TextField
-                          id="priority"
-                          select
-                          label="Order"
-                          fullWidth="true"
+                        <Select
                           name="orderstatus"
-                          value={this.state.orderstatus}
-                          error={this.state.fieldErrors && this.state.fieldErrors.orderstatus ? true : false}
-                          helperText={this.state.fieldErrors && this.state.fieldErrors.orderstatus}
-                          onChange={(event) => {
+                          placeholder="Select Order Status"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.ordersstatus.map((t) => ({
+                            value: t,
+                            label: t,
+                          }))}
+                          value={
+                            this.state.orderstatus
+                              ? { label: this.state.orderstatus }
+                              : null
+                          }
+                          getOptionValue={(option) => option.value}
+                          getOptionLabel={(option) => option.label}
+                          onChange={(value, select) => {
                             this.setState({
-                              orderstatus: event.target.value
-                            })
-                            if (event.target.value === "Close Order") {
+                              orderstatus: value.value,
+                            });
+                            if (value.value === "Close Order") {
                               this.setState({
-                                orderstatussend: "CLOSED"
-                              })
-                            }
-                            else {
+                                orderstatussend: "CLOSED",
+                              });
+                            } else {
                               this.setState({
-                                orderstatussend: "CANCELLED"
-                              })
+                                orderstatussend: "CANCELLED",
+                              });
                             }
-                            this.onChangeClearError(event.target.name);
-                          }
-
-                          }
-                          variant="outlined"
-                        >
-                          {this.state.ordersstatus.map((pri) => (
-                            <MenuItem key={pri} value={pri}>
-                              {pri}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+                            this.onChangeClearError(select.name);
+                          }}
+                        />
+                        {this.state.fieldErrors &&
+                          this.state.fieldErrors.orderstatus && (
+                            <span className="MuiFormHelperText-root Mui-error">
+                              {this.state.fieldErrors.orderstatus}
+                            </span>
+                          )}
                       </GridItem>
                       <GridItem xs={12} sm={12} md={3}>
                         <Button
@@ -312,17 +329,22 @@ export default class CloseOrders extends Component {
                               console.log(event);
                               if (event.length === 1) {
                                 this.setState({ canSave: true });
-                              }
-                              else {
+                              } else {
                                 this.setState({ canSave: false });
                               }
-                              this.setState({
-                                selectedRow: event[0],
-                              }, () => {
-                                this.getOrderNo()
-                              });
+                              this.setState(
+                                {
+                                  selectedRow: event[0],
+                                },
+                                () => {
+                                  this.getOrderNo();
+                                }
+                              );
                               if (event.length === 0) {
-                                this.setState({ selectedRow: "", selectedOrder: "" });
+                                this.setState({
+                                  selectedRow: "",
+                                  selectedOrder: "",
+                                });
                               }
                               // else {
                               //   this.setState({ canChange: true })
