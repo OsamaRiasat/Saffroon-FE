@@ -7,3 +7,7 @@
 .customSelect .select__control {
     min-height: 55px;
 }
+
+.customSelect {
+    z-index: 99999;
+}
