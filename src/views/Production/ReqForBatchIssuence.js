@@ -256,6 +256,11 @@ export default class ReqForBatchIssuence extends Component {
                       }
                       value={this.state.no_of_batches}
                       type="number"
+                      InputProps={{
+                        inputProps: {
+                          min: 0,
+                        },
+                      }}
                       onChange={(event) => {
                         this.setState({
                           no_of_batches: event.target.value,

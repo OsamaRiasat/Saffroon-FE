@@ -310,8 +310,16 @@ export default class RMAssessment extends Component {
                     variant="outlined"
                     label={"No of Batches: "}
                     value={this.state.noOfBatches}
+                    type="number"
+                    InputProps={{
+                      inputProps: {
+                        min: 1,
+                      },
+                    }}
                     onChange={(event) => {
-                      this.handleNoOfBatches(event.target.value);
+                      this.handleNoOfBatches(
+                        event.target.value < 1 ? 1 : event.target.value
+                      );
                     }}
                   />
                 </GridItem>
@@ -405,6 +413,12 @@ export default class RMAssessment extends Component {
                     label="Quantity"
                     variant="outlined"
                     value={this.state.quantity}
+                    type="number"
+                    InputProps={{
+                      inputProps: {
+                        min: 1,
+                      },
+                    }}
                     onChange={(event) => {
                       this.setState({ quantity: event.target.value });
                       this.handleQuantity(event.target.value);
