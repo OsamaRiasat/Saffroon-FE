@@ -27,17 +27,17 @@ import RM_New_Formulation from "../../Services/Production/New_PMFormulation.js";
 import { Alert, AlertTitle } from '@material-ui/lab';
 
 import {
-	PCodeList,
-	PNameList,
-	RMCodeList,
-	RMNameList,
-	PnameByPCode,
-	PackSize,
-	PCodeByPname,
-	RMNameByRMCode,
-	RMData,
-	RMCodeByName,
-	RMFormulation,
+  PCodeList,
+  PNameList,
+  RMCodeList,
+  RMNameList,
+  PnameByPCode,
+  PackSize,
+  PCodeByPname,
+  RMNameByRMCode,
+  RMData,
+  RMCodeByName,
+  RMFormulation,
 } from "../../Services/Production/New_PMFormulation";
 
 
@@ -65,9 +65,10 @@ export default class RMNewFormulation extends Component {
       canDelete: true,
       canUpDown: true,
       cart: [],
-      error:false,
-      packsizes:[],
-      packsize:'',
+      error: false,
+      packsizes: [],
+      packsize: '',
+      fieldErrors: {},
     };
   }
 
@@ -102,20 +103,20 @@ export default class RMNewFormulation extends Component {
   async handlePCod(cod) {
     const nam = (await PnameByPCode(cod)).data;
     this.setState({ pName: nam.Product });
-    const packsizes=(await PackSize(cod)).data;
+    const packsizes = (await PackSize(cod)).data;
     console.log(packsizes)
     this.setState({
-        packsizes:packsizes
+      packsizes: packsizes
     })
   }
   async handlePName(nam) {
     const cod = (await PCodeByPname(nam)).data;
-    this.setState({ pCode: cod.ProductCode },async ()=>{
-        const packsizes=(await PackSize(this.state.pCode)).data;
-        console.log(packsizes)
-        this.setState({
-            packsizes:packsizes
-        })
+    this.setState({ pCode: cod.ProductCode }, async () => {
+      const packsizes = (await PackSize(this.state.pCode)).data;
+      console.log(packsizes)
+      this.setState({
+        packsizes: packsizes
+      })
     });
   }
   async handleRMCode(cod) {
@@ -153,11 +154,37 @@ export default class RMNewFormulation extends Component {
 
     console.log("code", cod);
   }
+  // Validation
+  validate = (fields) => {
+    const errors = {};
+    if (!fields.pCode) errors.pCode = "Plan No Required";
+    if (!fields.pName) errors.pName = "Product Code Required";
+    if (!fields.packsize) errors.packsize = "Product Code Required";
+    if (!fields.batchSize) errors.batchSize = "Product Code Required";
+    if (!fields.type) errors.type = "Product Code Required";
+    if (!fields.rmCode) errors.rmCode = "Product Code Required";
+    if (!fields.rmName) errors.rmName = "Product Code Required";
+    if (!fields.quantity) errors.quantity = "Product Code Required";
+    return errors;
+  };
+
+  onChangeClearError = (name) => {
+    let data = {
+      ...this.state.fieldErrors,
+      [name]: "",
+    };
+    console.log(Object.entries(data));
+    this.setState({
+      fieldErrors: data,
+    });
+  };
   async handlePost() {
     try {
+
+
       var today = new Date();
       let date =
-        today.getFullYear()+"-" +(today.getMonth() + 1) +"-" +today.getDate();
+        today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
       if (this.state.cart.length !== 0) {
         const items = this.state.cart.map((item) => {
           return {
@@ -167,21 +194,15 @@ export default class RMNewFormulation extends Component {
             quantity: item.quantity,
             date: date,
             docNo: "string",
-            PackSize:this.state.packsize
+            PackSize: this.state.packsize
           };
         });
-
         const payload = {
           fItems: items,
         };
-
         const resp = await RMFormulation(payload);
-
         if (resp.status === 201) {
-          this.setState({ cart: [],error:false });
-          
-            
-          
+          this.setState({ cart: [], error: false });
         } else {
           alert("Exception thrown while sending request !!!");
         }
@@ -201,16 +222,14 @@ export default class RMNewFormulation extends Component {
       );
     });
   }
-  showAlert=()=>{
-    if(this.state.error === false)
-    {
-    return(
-    <Alert severity="success"  style ={{width:"70%",margin:"auto"}}onClose={() => {this.setState({error:''})}}>
-            <AlertTitle>Success</AlertTitle>
-            New Formula Added 
-          </Alert>
-    
-    )
+  showAlert = () => {
+    if (this.state.error === false) {
+      return (
+        <Alert severity="success" style={{ width: "70%", margin: "auto" }} onClose={() => { this.setState({ error: '' }) }}>
+          <AlertTitle>Success</AlertTitle>
+          New Formula Added
+        </Alert>
+      )
     }
   }
   render() {
@@ -265,8 +284,8 @@ export default class RMNewFormulation extends Component {
           marginTop: "50px",
         }}
       >
-        
-        
+
+
         <GridContainer md={12}>
           <Card>
             <CardHeader color="primary">
@@ -275,7 +294,7 @@ export default class RMNewFormulation extends Component {
               </h2>
             </CardHeader>
             <CardBody>
-            {this.showAlert()}
+              {this.showAlert()}
               <GridContainer>
                 <Card style={{ marginLeft: 15, minWidth: 960 }}>
                   <CardContent>
@@ -287,10 +306,22 @@ export default class RMNewFormulation extends Component {
                           variant="outlined"
                           label="Product Code:"
                           select
+                          name="pCode"
                           value={this.state.pCode}
+                          error={
+                            this.state.fieldErrors &&
+                              this.state.fieldErrors.pCode
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.pCode
+                          }
                           onChange={(event) => {
                             this.setState({ pCode: event.target.value });
                             this.handlePCod(event.target.value);
+                            this.onChangeClearError(event.target.name);
                           }}
                         >
                           {this.state.pCodeList.map((pri) => (
@@ -310,10 +341,22 @@ export default class RMNewFormulation extends Component {
                           variant="outlined"
                           label="Product Name:"
                           select
+                          name="pName"
                           value={this.state.pName}
+                          error={
+                            this.state.fieldErrors &&
+                              this.state.fieldErrors.pName
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.pName
+                          }
                           onChange={(event) => {
                             this.setState({ pName: event.target.value });
                             this.handlePName(event.target.value);
+                            this.onChangeClearError(event.target.name);
                           }}
                         >
                           {this.state.pNameList.map((pri) => (
@@ -330,10 +373,22 @@ export default class RMNewFormulation extends Component {
                           variant="outlined"
                           label="Pack Size"
                           select
+                          name="packsize"
                           value={this.state.packsize}
+                          error={
+                            this.state.fieldErrors &&
+                              this.state.fieldErrors.packsize
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.packsize
+                          }
                           onChange={(event) => {
                             this.setState({ packsize: event.target.value });
                             this.handlePName(event.target.value);
+                            this.onChangeClearError(event.target.name);
                           }}
                         >
                           {this.state.packsizes.map((pri) => (
@@ -350,9 +405,21 @@ export default class RMNewFormulation extends Component {
                           fullWidth="true"
                           variant="outlined"
                           label="Batch Size:"
+                          name="batchSize"
                           value={this.state.batchSize}
+                          error={
+                            this.state.fieldErrors &&
+                              this.state.fieldErrors.batchSize
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.batchSize
+                          }
                           onChange={(event) => {
                             this.setState({ batchSize: event.target.value });
+                            this.onChangeClearError(event.target.name);
                           }}
                         />
                       </GridItem>
@@ -362,8 +429,19 @@ export default class RMNewFormulation extends Component {
                           id="priority"
                           label="Type"
                           fullWidth="true"
-                          value={this.state.selected.type}
                           variant="outlined"
+                          name="type"
+                          value={this.state.selected.type}
+                          error={
+                            this.state.fieldErrors &&
+                              this.state.fieldErrors.type
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.type
+                          }
                           onChange={(event) => {
                             this.setState((prevState) => ({
                               selected: {
@@ -372,6 +450,7 @@ export default class RMNewFormulation extends Component {
                                 type: event.target.value, // update the value of specific key
                               },
                             }));
+                            this.onChangeClearError(event.target.name);
                           }}
                         ></TextField>
                       </GridItem>
@@ -385,7 +464,18 @@ export default class RMNewFormulation extends Component {
                           variant="outlined"
                           label="PM Code:"
                           select
+                          name="rmCode"
                           value={this.state.selected.rmCode}
+                          error={
+                            this.state.fieldErrors &&
+                              this.state.fieldErrors.rmCode
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.rmCode
+                          }
                           onChange={(event) => {
                             this.setState((prevState) => ({
                               selected: {
@@ -395,6 +485,7 @@ export default class RMNewFormulation extends Component {
                               },
                             }));
                             this.handleRMCode(event.target.value);
+                            this.onChangeClearError(event.target.name);
                           }}
                         >
                           {this.state.rmCodeList.map((pri) => (
@@ -411,7 +502,18 @@ export default class RMNewFormulation extends Component {
                           variant="outlined"
                           label="Material:"
                           select
+                          name="rmName"
                           value={this.state.selected.rmName}
+                          error={
+                            this.state.fieldErrors &&
+                              this.state.fieldErrors.rmName
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.rmName
+                          }
                           onChange={(event) => {
                             this.setState((prevState) => ({
                               selected: {
@@ -421,6 +523,7 @@ export default class RMNewFormulation extends Component {
                               },
                             }));
                             this.handleRMName(event.target.value);
+                            this.onChangeClearError(event.target.name);
                           }}
                         >
                           {this.state.rmNameList.map((pri) => (
@@ -437,7 +540,18 @@ export default class RMNewFormulation extends Component {
                           fullWidth="true"
                           variant="outlined"
                           label={"Quantity" + "(" + ")"}
+                          name="quantity"
                           value={this.state.selected.quantity}
+                          error={
+                            this.state.fieldErrors &&
+                              this.state.fieldErrors.quantity
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.quantity
+                          }
                           onChange={(event) => {
                             this.setState((prevState) => ({
                               selected: {
@@ -446,6 +560,7 @@ export default class RMNewFormulation extends Component {
                                 quantity: event.target.value, // update the value of specific key
                               },
                             }));
+                            this.onChangeClearError(event.target.name);
                           }}
                         />
                       </GridItem>
@@ -486,6 +601,8 @@ export default class RMNewFormulation extends Component {
                                 break;
                               }
                             }
+
+
                             if (
                               this.state.selected.quantity == "" ||
                               this.state.selected.rmCode == "" ||
@@ -493,9 +610,13 @@ export default class RMNewFormulation extends Component {
                               this.state.selected.type == "" ||
                               this.state.selected.unit == ""
                             ) {
-                              alert(
-                                "Please fill the form first to add product into cart."
-                              );
+                              let { pCode, pName, packsize, batchSize, type, rmCode, rmName, quantity } = this.state;
+                              const fieldErrors = this.validate({ pCode, pName, packsize, batchSize, type, rmCode, rmName, quantity });
+                              this.setState({ fieldErrors: fieldErrors });
+                              if (Object.keys(fieldErrors).length) return;
+                              // alert(
+                              //   "Please fill the form first to add product into cart."
+                              // );
                             } else if (present === true) {
                               alert("This RMCode is already present in cart.");
                             } else {
@@ -521,7 +642,7 @@ export default class RMNewFormulation extends Component {
                           className=""
                           startIcon={<EditIcon />}
                           disabled={this.state.canChange}
-                          onClick={() => {}}
+                          onClick={() => { }}
                           color="primary"
                           onClick={() => {
                             var array = [...this.state.cart];
@@ -684,7 +805,7 @@ export default class RMNewFormulation extends Component {
             </CardBody>
           </Card>
         </GridContainer>
-      </div>
+      </div >
     );
   }
 }
