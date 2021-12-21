@@ -12,6 +12,6 @@
   color: #f44336;
 }
 
-.customSelect {
+.customSelect .select__menu {
   z-index: 99999;
 }
