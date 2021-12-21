@@ -11,14 +11,15 @@ import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 import { DataGrid } from "@material-ui/data-grid";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import Batch_Track from "../../Services/Production/Batch_Track.js";
 import { toast } from "react-toastify";
+import Select from "react-select";
 
 import {
   PCodeBPR,
   BatchNoandBatchesList,
   GeneralDataBPRLog,
   BatchStages,
+  getProductName,
 } from "../../Services/Production/Batch_Track";
 
 export default class BatchTaP extends Component {
@@ -78,6 +79,13 @@ export default class BatchTaP extends Component {
     }
     this.setState({ batch_no_list: temp_batches });
   }
+
+  getProductName = async (pcode) => {
+    const productName = (await getProductName(pcode)).data;
+    this.setState({
+      product: productName.Product,
+    });
+  };
 
   async handleCode(cod) {
     let obj = {
@@ -417,50 +425,43 @@ export default class BatchTaP extends Component {
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={4}>
-                        <TextField
-                          id=""
-                          select
-                          variant="outlined"
-                          label="Product Code:"
-                          fullWidth="true"
-                          value={this.state.production_code}
+                        <Select
                           name="production_code"
-                          error={
-                            this.state.fieldErrors &&
-                            this.state.fieldErrors.production_code
-                              ? true
-                              : false
+                          placeholder="Select Production Code"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.production_code_list}
+                          value={
+                            this.state.production_code
+                              ? { ProductCode: this.state.production_code }
+                              : null
                           }
-                          helperText={
-                            this.state.fieldErrors &&
-                            this.state.fieldErrors.production_code
-                          }
-                          onChange={(event) => {
+                          getOptionValue={(option) => option.ProductCode}
+                          getOptionLabel={(option) => option.ProductCode}
+                          onChange={(value, select) => {
                             this.setState({
-                              production_code: event.target.value,
+                              production_code: value.ProductCode,
                             });
-                            this.handlePCode(event.target.value);
-                            this.onChangeClearError(event.target.name);
+                            this.handlePCode(value.ProductCode);
+                            this.getProductName(value.ProductCode);
+                            this.onChangeClearError(select.name);
                           }}
-                        >
-                          {this.state.production_code_list.map((pc) => (
-                            <MenuItem
-                              key={pc["ProductCode"]}
-                              value={pc["ProductCode"]}
-                            >
-                              {pc["ProductCode"]}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+                        />
+                        {this.state.fieldErrors &&
+                          this.state.fieldErrors.production_code && (
+                            <span className="MuiFormHelperText-root Mui-error">
+                              {this.state.fieldErrors.production_code}
+                            </span>
+                          )}
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={4}>
                         <TextField
-                          id=""
-                          select
-                          variant="outlined"
                           label="Product :"
+                          variant="outlined"
                           fullWidth="true"
+                          InputProps={{ readOnly: true }}
                           value={this.state.product}
                         />
                       </GridItem>
@@ -474,42 +475,41 @@ export default class BatchTaP extends Component {
 
                     <GridContainer>
                       <GridItem xs={12} sm={12} md={2}>
-                        <TextField
-                          id="batchno"
-                          fullWidth="true"
-                          select
-                          variant="outlined"
-                          label={"Batch No: "}
-                          value={this.state.selected.batch_no}
+                        <Select
                           name="batch_no"
-                          error={
-                            this.state.fieldErrors &&
-                            this.state.fieldErrors.batch_no
-                              ? true
-                              : false
+                          placeholder="Select Batch No"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.batch_no_list.map((t) => ({
+                            value: t,
+                            label: t,
+                          }))}
+                          value={
+                            this.state.selected && this.state.selected.batch_no
+                              ? { label: this.state.selected.batch_no }
+                              : null
                           }
-                          helperText={
-                            this.state.fieldErrors &&
-                            this.state.fieldErrors.batch_no
-                          }
-                          onChange={(event) => {
+                          getOptionValue={(option) => option.value}
+                          getOptionLabel={(option) => option.label}
+                          onChange={(value, select) => {
                             this.setState((prevState) => ({
                               selected: {
                                 // object that we want to update
                                 ...prevState.selected, // keep all other key-value pairs
-                                batch_no: event.target.value,
+                                batch_no: value.value,
                               },
                             }));
-                            this.handleCode(event.target.value);
-                            this.onChangeClearError(event.target.name);
+                            this.handleCode(value.value);
+                            this.onChangeClearError(select.name);
                           }}
-                        >
-                          {this.state.batch_no_list.map((pc) => (
-                            <MenuItem key={pc} value={pc}>
-                              {pc}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+                        />
+                        {this.state.fieldErrors &&
+                          this.state.fieldErrors.batch_no && (
+                            <span className="MuiFormHelperText-root Mui-error">
+                              {this.state.fieldErrors.batch_no}
+                            </span>
+                          )}
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={2}>
@@ -614,34 +614,35 @@ export default class BatchTaP extends Component {
                   <CardContent>
                     <GridContainer>
                       <GridItem xs={12} sm={12} md={3}>
-                        <TextField
-                          id=""
-                          fullWidth="true"
-                          select
-                          variant="outlined"
-                          label={"UOM: "}
-                          select
-                          value={this.state.uom}
+                        <Select
                           name="uom"
-                          error={
-                            this.state.fieldErrors && this.state.fieldErrors.uom
-                              ? true
-                              : false
+                          placeholder="Select UOM"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.uom_list.map((t) => ({
+                            value: t,
+                            label: t,
+                          }))}
+                          value={
+                            this.state.uom ? { label: this.state.uom } : null
                           }
-                          helperText={
-                            this.state.fieldErrors && this.state.fieldErrors.uom
-                          }
-                          onChange={(event) => {
-                            this.setState({ uom: event.target.value });
-                            this.onChangeClearError(event.target.name);
+                          getOptionValue={(option) => option.value}
+                          getOptionLabel={(option) => option.label}
+                          onChange={(value, select) => {
+                            this.setState({
+                              uom: value.value,
+                            });
+                            this.onChangeClearError(select.name);
                           }}
-                        >
-                          {this.state.uom_list.map((pc) => (
-                            <MenuItem key={pc} value={pc}>
-                              {pc}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+                        />
+
+                        {this.state.fieldErrors &&
+                          this.state.fieldErrors.uom && (
+                            <span className="MuiFormHelperText-root Mui-error">
+                              {this.state.fieldErrors.uom}
+                            </span>
+                          )}
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={3}>
@@ -760,79 +761,80 @@ export default class BatchTaP extends Component {
                   <CardContent>
                     <GridContainer>
                       <GridItem xs={12} sm={12} md={5}>
-                        <TextField
-                          id=""
-                          fullWidth="true"
-                          variant="outlined"
-                          label={"Stage:"}
-                          select
-                          value={this.state.stage}
+                        <Select
                           name="stage"
-                          error={
-                            this.state.fieldErrors &&
-                            this.state.fieldErrors.stage
-                              ? true
-                              : false
+                          placeholder="Select Stage"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.listOfStages.map((t) => ({
+                            value: t,
+                            label: t,
+                          }))}
+                          value={
+                            this.state.stage
+                              ? { label: this.state.stage }
+                              : null
                           }
-                          helperText={
-                            this.state.fieldErrors &&
-                            this.state.fieldErrors.stage
-                          }
-                          onChange={(event) => {
-                            this.setState({ stage: event.target.value });
-                            this.onChangeClearError(event.target.name);
+                          getOptionValue={(option) => option.value}
+                          getOptionLabel={(option) => option.label}
+                          onChange={(value, select) => {
+                            this.setState({
+                              stage: value.value,
+                            });
+                            this.onChangeClearError(select.name);
                           }}
-                        >
-                          {this.state.listOfStages.map((pc) => (
-                            <MenuItem key={pc} value={pc}>
-                              {pc}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+                        />
+
+                        {this.state.fieldErrors &&
+                          this.state.fieldErrors.stage && (
+                            <span className="MuiFormHelperText-root Mui-error">
+                              {this.state.fieldErrors.stage}
+                            </span>
+                          )}
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={5}>
-                        <TextField
-                          id=""
-                          fullWidth="true"
-                          variant="outlined"
-                          label={"Result"}
-                          select
-                          value={this.state.result}
-                        >
-                          {this.state.result_list.map((pc) => (
-                            <MenuItem key={pc} value={pc}>
-                              {pc}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+                        <Select
+                          name="result"
+                          placeholder="Select Result"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.result_list.map((t) => ({
+                            value: t,
+                            label: t,
+                          }))}
+                          value={
+                            this.state.result
+                              ? { label: this.state.result }
+                              : null
+                          }
+                          getOptionValue={(option) => option.value}
+                          getOptionLabel={(option) => option.label}
+                          onChange={(value, select) => {
+                            this.setState({
+                              result: value.value,
+                            });
+                            this.onChangeClearError(select.name);
+                          }}
+                        />
+
+                        {this.state.fieldErrors &&
+                          this.state.fieldErrors.result && (
+                            <span className="MuiFormHelperText-root Mui-error">
+                              {this.state.fieldErrors.result}
+                            </span>
+                          )}
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={2}>
                         <Button
                           variant="contained"
-                          color="default"
+                          color="primary"
                           startIcon={<CloudUploadIcon />}
                           onClick={() => {
                             this.handlePost();
-                            // if (
-                            //   this.state.selected.batch_no == "" ||
-                            //   this.state.start_date == "" ||
-                            //   this.state.completion_date == "" ||
-                            //   this.state.stage == "" ||
-                            //   this.state.uom == "" ||
-                            //   this.state.T_yield == "" ||
-                            //   this.state.A_yield == "" ||
-                            //   this.state.P_yield == "" ||
-                            //   this.state.selected.current_stage == "" ||
-                            //   this.state.remarks == ""
-                            // ) {
-                            //   alert(
-                            //     "Some data is missing. Complete that first!"
-                            //   );
-                            // } else {
-                            //   this.handlePost();
-                            // }
                           }}
                         >
                           Post

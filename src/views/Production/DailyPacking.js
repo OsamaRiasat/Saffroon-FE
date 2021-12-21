@@ -55,8 +55,7 @@ export default class DailyPacking extends Component {
     });
   };
   getAutoFill = async (pcode) => {
-    const data = (await WhenProductIsSelected(pcode))
-      .data;
+    const data = (await WhenProductIsSelected(pcode)).data;
     console.log(data);
     this.setState({
       dosage: data.DosageForm,
@@ -92,64 +91,30 @@ export default class DailyPacking extends Component {
       candelete: false,
       canpost: false,
       selectedRows: [],
-      fieldErrors: {}
-
+      fieldErrors: {},
     };
   }
-  validationforcart = () => {
-    let { orderno, product, packsize, batchNo, noOfPacks } = this.state;
-    const fieldErrors = this.validate({ orderno, product, packsize, batchNo, noOfPacks });
-    this.setState({ fieldErrors: fieldErrors });
-    if (Object.keys(fieldErrors).length) return;
-    // const {
-    //   orderno, //planno
-    //   product, //pcode
-    //   batchno, //batch
-    //   quantity, //packsno
-    //   packsize,
-    // } = this.state.selected;
-    // if (
-    //   orderno === "" ||
-    //   product === "" ||
-    //   batchno === "" ||
-    //   quantity === "" ||
-    //   packsize === ""
-    // ) {
-    //   let { orderno, product, packsize, batchNo, noOfPacks } = this.state;
-    //   const fieldErrors = this.validate({ orderno, product, packsize, batchNo, noOfPacks });
-    //   this.setState({ fieldErrors: fieldErrors });
-    //   if (Object.keys(fieldErrors).length) return;
-    //   // alert("Please Fill the form please !!!");
-    //   return false;
-    // }
-    // return true;
-  };
 
-
-  validate = fields => {
+  validate = (fields) => {
     const errors = {};
-    if (!fields.orderno) errors.orderno = 'Plan No Required';
-    if (!fields.product) errors.product = 'Product No Required';
-    if (!fields.orderno) errors.orderno = 'Plan No Required';
-    if (!fields.packsize) errors.packsize = 'Pack Size Required';
-    // if (!fields.dosage) errors.dosage = 'Category Required';
-    if (!fields.batchNo) errors.batchNo = 'Batch No Required';
-    if (!fields.noOfPacks) errors.noOfPacks = 'Product Code Required';
+    if (!fields.orderno) errors.orderno = "Plan No Required";
+    if (!fields.selected.product) errors.product = "Product No Required";
+    if (!fields.selected.packsize) errors.packsize = "Pack Size Required";
+    if (!fields.selected.batchno) errors.batchno = "Batch No Required";
+    if (!fields.selected.quantity) errors.quantity = "Product Code Required";
     return errors;
-  }
+  };
   onChangeClearError = (name) => {
     let data = {
       ...this.state.fieldErrors,
-      [name]: ''
-    }
-    console.log("data packing", data)
-    console.log(Object.entries(data))
+      [name]: "",
+    };
+    console.log("data packing", data);
+    console.log(Object.entries(data));
     this.setState({
-      fieldErrors: data
-    })
-  }
-
-
+      fieldErrors: data,
+    });
+  };
 
   clearafteradd = () => {
     this.setState((prevState) => ({
@@ -160,16 +125,20 @@ export default class DailyPacking extends Component {
         batchno: "",
         quantity: "",
         packsize: "",
-        fieldErrors: {}
+        fieldErrors: {},
       },
+      orderno: "",
     }));
     this.setState({
       dosage: "",
     });
   };
 
-
   addCart = () => {
+    const fieldErrors = this.validate(this.state);
+    this.setState({ fieldErrors: fieldErrors });
+    if (Object.keys(fieldErrors).length) return;
+
     return new Promise((resolve) => {
       this.setState(
         {
@@ -315,15 +284,14 @@ export default class DailyPacking extends Component {
     this.setState((prevState) => ({
       selected: {
         ...prevState.selected,
-        orderno: ''
+        orderno: "",
       },
     }));
     this.setState({
       cart: [],
-      canpost: false
-    })
-
-  }
+      canpost: false,
+    });
+  };
 
   render() {
     var today = new Date();
@@ -437,7 +405,6 @@ export default class DailyPacking extends Component {
                           this.getPcodes(value.planNo);
                         }
                       );
-                      console.log(value, select.name);
                       this.onChangeClearError(select.name);
                     }}
                   />
@@ -446,45 +413,6 @@ export default class DailyPacking extends Component {
                       {this.state.fieldErrors.orderno}
                     </span>
                   )}
-                  {/* <TextField
-                    id=""
-                    select
-                    variant="outlined"
-                    label="Plan No:"
-                    fullWidth="true"
-                    name="orderno"
-                    value={this.state.selected.orderno}
-                    error={this.state.fieldErrors && this.state.fieldErrors.orderno ? true : false}
-                    helperText={this.state.fieldErrors && this.state.fieldErrors.orderno}
-                    onChange={(event) => {
-                      this.setState(
-                        (prevState) => ({
-                          selected: {
-                            ...prevState.selected, // object that we want to update
-                            orderno: event.target.value,
-                          },
-                        }),
-                        () => {
-                          this.getPcodes(event.target.value);
-                        }
-                      );
-                      //   this.setState(
-                      //     {
-                      //       plan: event.target.value,
-                      //     },
-                      //     () => {
-                      //       this.getPcodes(event.target.value);
-                      //     }
-                      //   );
-                      this.onChangeClearError(event.target.name);
-                    }}
-                  >
-                    {this.state.plans.map((plan) => (
-                      <MenuItem key={plan.planNo} value={plan.planNo}>
-                        {plan.planNo}
-                      </MenuItem>
-                    ))}
-                  </TextField> */}
                 </GridItem>
 
                 <GridItem xs={12} sm={12} md={3}>
@@ -496,25 +424,24 @@ export default class DailyPacking extends Component {
                     isSearchable={true}
                     options={this.state.pcodes}
                     value={
-                      this.state.selected.product ? { productNo: this.state.selected.product } : null
+                      this.state.selected.product
+                        ? { ProductCode: this.state.selected.product }
+                        : null
                     }
-                    getOptionValue={(option) => option.productNo}
-                    getOptionLabel={(option) => option.productNo}
+                    getOptionValue={(option) => option.ProductCode}
+                    getOptionLabel={(option) => option.ProductCode}
                     onChange={(value, select) => {
                       this.setState(
-                        {
-                          orderno: "",
-                          product: value.productNo,
-                          product: "",
-                          packsize: "",
-                          batchNo: "",
-                          noOfPacks: "",
-                        },
+                        (prevState) => ({
+                          selected: {
+                            ...prevState.selected, // object that we want to update
+                            product: value.ProductCode,
+                          },
+                        }),
                         () => {
-                          this.getAutoFill(value.productNo);
+                          this.getAutoFill(value.ProductCode);
                         }
                       );
-                      console.log(value, select.name);
                       this.onChangeClearError(select.name);
                     }}
                   />
@@ -523,88 +450,39 @@ export default class DailyPacking extends Component {
                       {this.state.fieldErrors.product}
                     </span>
                   )}
-                  {/* <TextField
-                    id=""
-                    select
-                    variant="outlined"
-                    label="Product Code:"
-                    fullWidth="true"
-                    name="product"
-                    value={this.state.selected.product}
-                    error={this.state.fieldErrors && this.state.fieldErrors.product ? true : false}
-                    helperText={this.state.fieldErrors && this.state.fieldErrors.product}
-                    onChange={(event) => {
-                      this.setState(
-                        (prevState) => ({
-                          selected: {
-                            ...prevState.selected, // object that we want to update
-                            product: event.target.value,
-                          },
-                        }),
-                        () => {
-                          this.getAutoFill(event.target.value);
-                        }
-                      );
-                      //   this.setState(
-                      //     {
-                      //       pcode: event.target.value,
-                      //     },
-                      //     () => {
-                      //     this.getAutoFill(event.target.value);
-                      //     }
-                      //   );
-                      this.onChangeClearError(event.target.name);
-                    }}
-                  >
-                    {this.state.pcodes.map((pcode) => (
-                      <MenuItem
-                        key={pcode.ProductCode}
-                        value={pcode.ProductCode}
-                      >
-                        {pcode.ProductCode}
-                      </MenuItem>
-                    ))}
-                  </TextField> */}
                 </GridItem>
                 <GridItem xs={12} sm={12} md={2}>
-                  <TextField
-                    id=""
-                    select
-                    variant="outlined"
-                    label="Pack Sizes:"
-                    fullWidth="true"
+                  <Select
                     name="packsize"
-                    value={this.state.selected.packsize}
-                    error={this.state.fieldErrors && this.state.fieldErrors.packsize ? true : false}
-                    helperText={this.state.fieldErrors && this.state.fieldErrors.packsize}
-                    onChange={(event) => {
+                    placeholder="Select Pack Sizes"
+                    className="customSelect"
+                    classNamePrefix="select"
+                    isSearchable={true}
+                    options={this.state.packsizes}
+                    value={
+                      this.state.selected && this.state.selected.packsize
+                        ? { PackSize: this.state.selected.packsize }
+                        : null
+                    }
+                    getOptionValue={(option) => option.PackSize}
+                    getOptionLabel={(option) => option.PackSize}
+                    onChange={(value, select) => {
                       this.setState((prevState) => ({
                         selected: {
                           ...prevState.selected, // object that we want to update
-                          packsize: event.target.value,
+                          packsize: value.PackSize,
                         },
                       }));
-                      //   this.setState(
-                      //     {
-                      //       packsize: event.target.value,
-                      //     },
-                      //     () => {
-                      //     //   this.getAutoFill();
-                      //     }
-                      //   );
-                      this.onChangeClearError(event.target.name);
+                      this.onChangeClearError(select.name);
+                      this.onChangeClearError(select.name);
                     }}
-
-                  >
-                    {this.state.packsizes.map((packsize) => (
-                      <MenuItem
-                        key={packsize.PackSize}
-                        value={packsize.PackSize}
-                      >
-                        {packsize.PackSize}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                  />
+                  {this.state.fieldErrors &&
+                    this.state.fieldErrors.packsize && (
+                      <span className="MuiFormHelperText-root Mui-error">
+                        {this.state.fieldErrors.packsize}
+                      </span>
+                    )}
                 </GridItem>
               </GridContainer>
               <GridContainer>
@@ -619,41 +497,35 @@ export default class DailyPacking extends Component {
                 </GridItem>
 
                 <GridItem xs={12} sm={12} md={4}>
-                  <TextField
-                    id=""
-                    variant="outlined"
-                    select
-                    label="Batch No:"
-                    // placeholder="Batch No"
-                    fullWidth="true"
-                    name="batchNo"
-                    value={this.state.selected.batchno}
-                    error={this.state.fieldErrors && this.state.fieldErrors.batchNo ? true : false}
-                    helperText={this.state.fieldErrors && this.state.fieldErrors.batchNo}
-                    onChange={(event) => {
+                  <Select
+                    name="batchno"
+                    placeholder="Select Batch No"
+                    className="customSelect"
+                    classNamePrefix="select"
+                    isSearchable={true}
+                    options={this.state.batches}
+                    value={
+                      this.state.selected && this.state.selected.batchno
+                        ? { batchNo: this.state.selected.batchno }
+                        : null
+                    }
+                    getOptionValue={(option) => option.batchNo}
+                    getOptionLabel={(option) => option.batchNo}
+                    onChange={(value, select) => {
                       this.setState((prevState) => ({
                         selected: {
                           ...prevState.selected, // object that we want to update
-                          batchno: event.target.value,
+                          batchno: value.batchNo,
                         },
                       }));
-                      // this.setState(
-                      //   {
-                      //     batch: event.target.value,
-                      //   },
-                      //   () => {
-                      //   //   this.getAutoFill();
-                      //   }
-                      // );
-                      this.onChangeClearError(event.target.name);
+                      this.onChangeClearError(select.name);
                     }}
-                  >
-                    {this.state.batches.map((batch) => (
-                      <MenuItem key={batch.batchNo} value={batch.batchNo}>
-                        {batch.batchNo}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                  />
+                  {this.state.fieldErrors && this.state.fieldErrors.batchno && (
+                    <span className="MuiFormHelperText-root Mui-error">
+                      {this.state.fieldErrors.batchno}
+                    </span>
+                  )}
                 </GridItem>
 
                 <GridItem xs={12} sm={12} md={3}>
@@ -665,22 +537,22 @@ export default class DailyPacking extends Component {
                     InputProps={{ inputProps: { min: 0 } }}
                     fullWidth="true"
                     value={this.state.selected.quantity}
-                    name="noOfPacks"
-                    error={this.state.fieldErrors && this.state.fieldErrors.noOfPacks ? true : false}
-                    helperText={this.state.fieldErrors && this.state.fieldErrors.noOfPacks}
+                    name="quantity"
+                    error={
+                      this.state.fieldErrors && this.state.fieldErrors.quantity
+                        ? true
+                        : false
+                    }
+                    helperText={
+                      this.state.fieldErrors && this.state.fieldErrors.quantity
+                    }
                     onChange={(event) => {
-                      //     this.setState({
-                      //         packsno:event.target.value
-                      //     })
-                      // }
-                      this.setState((prevState) => (
-                        {
-                          selected: {
-                            ...prevState.selected, // object that we want to update
-                            quantity: event.target.value,
-                          },
-                        }
-                      ));
+                      this.setState((prevState) => ({
+                        selected: {
+                          ...prevState.selected, // object that we want to update
+                          quantity: event.target.value,
+                        },
+                      }));
                       this.onChangeClearError(event.target.name);
                     }}
                   />
@@ -708,9 +580,7 @@ export default class DailyPacking extends Component {
                     color="primary"
                     startIcon={<AddIcon />}
                     onClick={() => {
-                      if (this.validationforcart()) {
-                        this.addCart();
-                      }
+                      this.addCart();
                     }}
                   >
                     Add
