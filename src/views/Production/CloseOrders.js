@@ -328,7 +328,13 @@ export default class CloseOrders extends Component {
                             onSelectionModelChange={(event) => {
                               console.log(event);
                               if (event.length === 1) {
-                                this.setState({ canSave: true });
+                                this.setState({
+                                  canSave: true,
+                                  fieldErrors: {
+                                    ...this.state.fieldErrors,
+                                    selectedOrder: "",
+                                  },
+                                });
                               } else {
                                 this.setState({ canSave: false });
                               }
@@ -346,10 +352,6 @@ export default class CloseOrders extends Component {
                                   selectedOrder: "",
                                 });
                               }
-                              // else {
-                              //   this.setState({ canChange: true })
-                              //   this.setState({ canDelete: true })
-                              // }
                             }}
                           />
                         </div>

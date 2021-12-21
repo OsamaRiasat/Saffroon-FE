@@ -650,6 +650,11 @@ export default class BatchTaP extends Component {
                           id=""
                           variant="outlined"
                           type="number"
+                          InputProps={{
+                            inputProps: {
+                              min: 0,
+                            },
+                          }}
                           label="Theoretical Yield:"
                           fullWidth="true"
                           value={this.state.T_yield}
@@ -680,6 +685,11 @@ export default class BatchTaP extends Component {
                         <TextField
                           id=""
                           type="number"
+                          InputProps={{
+                            inputProps: {
+                              min: 0,
+                            },
+                          }}
                           variant="outlined"
                           label="Actual Yield:"
                           fullWidth="true"
