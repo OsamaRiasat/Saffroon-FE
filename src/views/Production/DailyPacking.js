@@ -23,6 +23,10 @@ import Daily_Packing from "../../Services/Production/Daily_Packing.js";
 import { ContactSupportOutlined } from "@material-ui/icons";
 import { toast } from "react-toastify";
 import Select from "react-select";
+import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../variables/genericVariables";
 
 import {
   PlanNo,
@@ -383,6 +387,10 @@ export default class DailyPacking extends Component {
                   <Select
                     name="orderno"
                     placeholder="Select Plan"
+                    components={{
+                      ValueContainer: CustomValueContainer,
+                    }}
+                    styles={CustomSelectStyle}
                     className="customSelect"
                     classNamePrefix="select"
                     isSearchable={true}
@@ -419,6 +427,10 @@ export default class DailyPacking extends Component {
                   <Select
                     name="product"
                     placeholder="Select Product"
+                    components={{
+                      ValueContainer: CustomValueContainer,
+                    }}
+                    styles={CustomSelectStyle}
                     className="customSelect"
                     classNamePrefix="select"
                     isSearchable={true}
@@ -454,7 +466,11 @@ export default class DailyPacking extends Component {
                 <GridItem xs={12} sm={12} md={2}>
                   <Select
                     name="packsize"
-                    placeholder="Select Pack Sizes"
+                    placeholder="Select Pack Size"
+                    components={{
+                      ValueContainer: CustomValueContainer,
+                    }}
+                    styles={CustomSelectStyle}
                     className="customSelect"
                     classNamePrefix="select"
                     isSearchable={true}
@@ -500,6 +516,10 @@ export default class DailyPacking extends Component {
                   <Select
                     name="batchno"
                     placeholder="Select Batch No"
+                    components={{
+                      ValueContainer: CustomValueContainer,
+                    }}
+                    styles={CustomSelectStyle}
                     className="customSelect"
                     classNamePrefix="select"
                     isSearchable={true}

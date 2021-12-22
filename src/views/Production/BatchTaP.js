@@ -12,7 +12,11 @@ import TextField from "@material-ui/core/TextField";
 import { DataGrid } from "@material-ui/data-grid";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import { toast } from "react-toastify";
-import Select from "react-select";
+import Select, { components } from "react-select";
+import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../variables/genericVariables";
 
 import {
   PCodeBPR,
@@ -428,6 +432,10 @@ export default class BatchTaP extends Component {
                         <Select
                           name="production_code"
                           placeholder="Select Production Code"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
                           className="customSelect"
                           classNamePrefix="select"
                           isSearchable={true}
@@ -478,6 +486,10 @@ export default class BatchTaP extends Component {
                         <Select
                           name="batch_no"
                           placeholder="Select Batch No"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
                           className="customSelect"
                           classNamePrefix="select"
                           isSearchable={true}
@@ -617,6 +629,10 @@ export default class BatchTaP extends Component {
                         <Select
                           name="uom"
                           placeholder="Select UOM"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
                           className="customSelect"
                           classNamePrefix="select"
                           isSearchable={true}
@@ -774,6 +790,10 @@ export default class BatchTaP extends Component {
                         <Select
                           name="stage"
                           placeholder="Select Stage"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
                           className="customSelect"
                           classNamePrefix="select"
                           isSearchable={true}
@@ -808,6 +828,10 @@ export default class BatchTaP extends Component {
                         <Select
                           name="result"
                           placeholder="Select Result"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
                           className="customSelect"
                           classNamePrefix="select"
                           isSearchable={true}

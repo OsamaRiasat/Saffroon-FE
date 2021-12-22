@@ -16,6 +16,10 @@ import Batch_Issuance_Request from "../../Services/Production/Batch_Issuance_Req
 import MenuItem from "@material-ui/core/MenuItem";
 import { toast } from "react-toastify";
 import Select from "react-select";
+import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../variables/genericVariables";
 
 import {
   PlanNo,
@@ -170,6 +174,10 @@ export default class ReqForBatchIssuence extends Component {
                     <Select
                       name="plan"
                       placeholder="Select Plan"
+                      components={{
+                        ValueContainer: CustomValueContainer,
+                      }}
+                      styles={CustomSelectStyle}
                       className="customSelect"
                       classNamePrefix="select"
                       isSearchable={true}
@@ -205,6 +213,10 @@ export default class ReqForBatchIssuence extends Component {
                     <Select
                       name="pcode"
                       placeholder="Select Product Code"
+                      components={{
+                        ValueContainer: CustomValueContainer,
+                      }}
+                      styles={CustomSelectStyle}
                       className="customSelect"
                       classNamePrefix="select"
                       isSearchable={true}
@@ -226,7 +238,6 @@ export default class ReqForBatchIssuence extends Component {
                             this.getbatchSize(value.ProductCode);
                           }
                         );
-                        console.log(value, this.state.pcode, select.name);
                         this.onChangeClearError(select.name);
                       }}
                     />

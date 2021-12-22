@@ -29,6 +29,11 @@ import Select from "react-select";
 import { toast } from "react-toastify";
 
 import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../variables/genericVariables";
+
+import {
   PCodeList,
   PNameList,
   RMCodeList,
@@ -308,6 +313,10 @@ export default class RMNewFormulation extends Component {
                         <Select
                           name="pCode"
                           placeholder="Select Product Code"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
                           className="customSelect"
                           classNamePrefix="select"
                           isSearchable={true}
@@ -343,6 +352,10 @@ export default class RMNewFormulation extends Component {
                         <Select
                           name="pName"
                           placeholder="Select Product"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
                           className="customSelect"
                           classNamePrefix="select"
                           isSearchable={true}
@@ -378,6 +391,10 @@ export default class RMNewFormulation extends Component {
                         <Select
                           name="packsize"
                           placeholder="Select Pack Size"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
                           className="customSelect"
                           classNamePrefix="select"
                           isSearchable={true}
@@ -440,6 +457,10 @@ export default class RMNewFormulation extends Component {
                         <Select
                           name="rmCode"
                           placeholder="Select PM Code"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
                           className="customSelect"
                           classNamePrefix="select"
                           isSearchable={true}
@@ -479,6 +500,10 @@ export default class RMNewFormulation extends Component {
                         <Select
                           name="rmName"
                           placeholder="Select Material"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
                           className="customSelect"
                           classNamePrefix="select"
                           isSearchable={true}

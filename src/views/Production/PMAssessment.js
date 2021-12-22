@@ -17,6 +17,11 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Select from "react-select";
 
 import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../variables/genericVariables";
+
+import {
   ListOfPCodeForAssessment,
   ListOfPNameForAssessment,
   PackSizesList,
@@ -247,6 +252,10 @@ export default class RMAssessment extends Component {
                   <Select
                     name="pCode"
                     placeholder="Select PCode"
+                    components={{
+                      ValueContainer: CustomValueContainer,
+                    }}
+                    styles={CustomSelectStyle}
                     className="customSelect"
                     classNamePrefix="select"
                     isSearchable={true}
@@ -284,6 +293,10 @@ export default class RMAssessment extends Component {
                   <Select
                     name="product"
                     placeholder="Select Product"
+                    components={{
+                      ValueContainer: CustomValueContainer,
+                    }}
+                    styles={CustomSelectStyle}
                     className="customSelect"
                     classNamePrefix="select"
                     isSearchable={true}
@@ -344,6 +357,10 @@ export default class RMAssessment extends Component {
                   <Select
                     name="packSize"
                     placeholder="Select Pack Size"
+                    components={{
+                      ValueContainer: CustomValueContainer,
+                    }}
+                    styles={CustomSelectStyle}
                     className="customSelect"
                     classNamePrefix="select"
                     isSearchable={true}

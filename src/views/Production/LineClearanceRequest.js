@@ -14,6 +14,10 @@ import PrintIcon from "@material-ui/icons/Print";
 import MenuItem from "@material-ui/core/MenuItem";
 import Line_Clearance from "../../Services/Production/Line_Clearance.js";
 import Select from "react-select";
+import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../variables/genericVariables";
 
 import {
   PCodesForLineClearance,
@@ -219,6 +223,10 @@ export default class LineClearanceRequest extends Component {
                         <Select
                           name="pcode"
                           placeholder="Select Product Code"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
                           className="customSelect"
                           classNamePrefix="select"
                           isSearchable={true}
@@ -274,6 +282,10 @@ export default class LineClearanceRequest extends Component {
                         <Select
                           name="batch"
                           placeholder="Select Batch No"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
                           className="customSelect"
                           classNamePrefix="select"
                           isSearchable={true}

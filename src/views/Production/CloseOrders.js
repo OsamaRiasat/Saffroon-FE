@@ -16,6 +16,10 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { toast, ToastContainer } from "react-toastify";
 import { PlanItems, PlanStatus } from "../../Services/Production/Close_Order";
 import Select from "react-select";
+import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../variables/genericVariables";
 
 export default class CloseOrders extends Component {
   async componentDidMount() {
@@ -265,6 +269,10 @@ export default class CloseOrders extends Component {
                         <Select
                           name="orderstatus"
                           placeholder="Select Order Status"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
                           className="customSelect"
                           classNamePrefix="select"
                           isSearchable={true}
