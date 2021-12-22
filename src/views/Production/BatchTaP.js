@@ -395,7 +395,7 @@ export default class BatchTaP extends Component {
           <Card>
             <CardHeader color="primary">
               <h2 style={{ textAlign: "center" }}>
-                Batch Tracking and Posting
+                Batchs Tracking and Posting
               </h2>
             </CardHeader>
             <CardBody>
