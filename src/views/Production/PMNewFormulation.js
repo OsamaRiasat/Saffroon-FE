@@ -384,12 +384,12 @@ export default class RMNewFormulation extends Component {
                             this.onChangeClearError(select.name);
                           }}
                         />
-                        {this.state.packsizes &&
-                          this.state.packsizes.map((pri) => (
-                            <MenuItem key={pri.PackSize} value={pri.PackSize}>
-                              {pri.PackSize}
-                            </MenuItem>
-                          ))}
+                        {this.state.fieldErrors &&
+                          this.state.fieldErrors.packsize && (
+                            <span className="MuiFormHelperText-root Mui-error">
+                              {this.state.fieldErrors.packsize}
+                            </span>
+                          )}
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={3}>
