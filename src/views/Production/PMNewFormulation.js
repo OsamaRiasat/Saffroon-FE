@@ -24,7 +24,9 @@ import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import MenuItem from "@material-ui/core/MenuItem";
 import RM_New_Formulation from "../../Services/Production/New_PMFormulation.js";
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Alert, AlertTitle } from "@material-ui/lab";
+import Select from "react-select";
+import { toast } from "react-toastify";
 
 import {
   PCodeList,
@@ -39,7 +41,6 @@ import {
   RMCodeByName,
   RMFormulation,
 } from "../../Services/Production/New_PMFormulation";
-
 
 export default class RMNewFormulation extends Component {
   constructor(props) {
@@ -67,22 +68,27 @@ export default class RMNewFormulation extends Component {
       cart: [],
       error: false,
       packsizes: [],
-      packsize: '',
+      packsize: "",
       fieldErrors: {},
     };
   }
 
   clearSelect() {
     this.setState((prevState) => ({
+      // pCode: "",
+      // pName: "",
+      // packsize: "",
+      // batchSize: "",
       selected: {
         // object that we want to update
         ...prevState.selected, // keep all other key-value pairs
         type: "", // update the value of specific key
-        unit: "",
-        rmName: "",
         rmCode: "",
+        rmName: "",
         quantity: "",
+        unit: "",
       },
+      fieldErrors: "",
     }));
     // this.setState({pCode: ""});
     // this.setState({ pName: "" });
@@ -104,19 +110,19 @@ export default class RMNewFormulation extends Component {
     const nam = (await PnameByPCode(cod)).data;
     this.setState({ pName: nam.Product });
     const packsizes = (await PackSize(cod)).data;
-    console.log(packsizes)
+    console.log(packsizes);
     this.setState({
-      packsizes: packsizes
-    })
+      packsizes: packsizes,
+    });
   }
   async handlePName(nam) {
     const cod = (await PCodeByPname(nam)).data;
     this.setState({ pCode: cod.ProductCode }, async () => {
       const packsizes = (await PackSize(this.state.pCode)).data;
-      console.log(packsizes)
+      console.log(packsizes);
       this.setState({
-        packsizes: packsizes
-      })
+        packsizes: packsizes,
+      });
     });
   }
   async handleRMCode(cod) {
@@ -161,10 +167,10 @@ export default class RMNewFormulation extends Component {
     if (!fields.pName) errors.pName = "Product Code Required";
     if (!fields.packsize) errors.packsize = "Product Code Required";
     if (!fields.batchSize) errors.batchSize = "Product Code Required";
-    if (!fields.type) errors.type = "Product Code Required";
-    if (!fields.rmCode) errors.rmCode = "Product Code Required";
-    if (!fields.rmName) errors.rmName = "Product Code Required";
-    if (!fields.quantity) errors.quantity = "Product Code Required";
+    if (!fields.selected.type) errors.type = "Product Code Required";
+    if (!fields.selected.rmCode) errors.rmCode = "Product Code Required";
+    if (!fields.selected.rmName) errors.rmName = "Product Code Required";
+    if (!fields.selected.quantity) errors.quantity = "Product Code Required";
     return errors;
   };
 
@@ -180,11 +186,13 @@ export default class RMNewFormulation extends Component {
   };
   async handlePost() {
     try {
-
-
       var today = new Date();
       let date =
-        today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+        today.getFullYear() +
+        "-" +
+        (today.getMonth() + 1) +
+        "-" +
+        today.getDate();
       if (this.state.cart.length !== 0) {
         const items = this.state.cart.map((item) => {
           return {
@@ -194,7 +202,7 @@ export default class RMNewFormulation extends Component {
             quantity: item.quantity,
             date: date,
             docNo: "string",
-            PackSize: this.state.packsize
+            PackSize: this.state.packsize,
           };
         });
         const payload = {
@@ -221,16 +229,6 @@ export default class RMNewFormulation extends Component {
         () => resolve()
       );
     });
-  }
-  showAlert = () => {
-    if (this.state.error === false) {
-      return (
-        <Alert severity="success" style={{ width: "70%", margin: "auto" }} onClose={() => { this.setState({ error: '' }) }}>
-          <AlertTitle>Success</AlertTitle>
-          New Formula Added
-        </Alert>
-      )
-    }
   }
   render() {
     console.log(this.state);
@@ -284,8 +282,6 @@ export default class RMNewFormulation extends Component {
           marginTop: "50px",
         }}
       >
-
-
         <GridContainer md={12}>
           <Card>
             <CardHeader color="primary">
@@ -294,101 +290,98 @@ export default class RMNewFormulation extends Component {
               </h2>
             </CardHeader>
             <CardBody>
-              {this.showAlert()}
               <GridContainer>
                 <Card style={{ marginLeft: 15, minWidth: 960 }}>
                   <CardContent>
                     <GridContainer>
                       <GridItem xs={12} sm={12} md={3}>
-                        <TextField
-                          id=""
-                          fullWidth="true"
-                          variant="outlined"
-                          label="Product Code:"
-                          select
+                        <Select
                           name="pCode"
-                          value={this.state.pCode}
-                          error={
-                            this.state.fieldErrors &&
-                              this.state.fieldErrors.pCode
-                              ? true
-                              : false
+                          placeholder="Select Product Code"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.pCodeList}
+                          value={
+                            this.state.pCode
+                              ? { ProductCode: this.state.pCode }
+                              : null
                           }
-                          helperText={
-                            this.state.fieldErrors &&
-                            this.state.fieldErrors.pCode
-                          }
-                          onChange={(event) => {
-                            this.setState({ pCode: event.target.value });
-                            this.handlePCod(event.target.value);
-                            this.onChangeClearError(event.target.name);
+                          getOptionValue={(option) => option.ProductCode}
+                          getOptionLabel={(option) => option.ProductCode}
+                          onChange={(value, select) => {
+                            this.setState({
+                              pCode: value.ProductCode,
+                              fieldErrors: {
+                                ...this.state.fieldErrors,
+                                pName: "",
+                                pCode: "",
+                              },
+                            });
+                            this.handlePCod(value.ProductCode);
                           }}
-                        >
-                          {this.state.pCodeList.map((pri) => (
-                            <MenuItem
-                              key={pri.ProductCode}
-                              value={pri.ProductCode}
-                            >
-                              {pri.ProductCode}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+                        />
+                        {this.state.fieldErrors &&
+                          this.state.fieldErrors.pCode && (
+                            <span className="MuiFormHelperText-root Mui-error">
+                              {this.state.fieldErrors.pCode}
+                            </span>
+                          )}
                       </GridItem>
-                      <GridItem xs={12} sm={12} md={2}>
-                        <TextField
-                          id=""
-                          fullWidth="true"
-                          variant="outlined"
-                          label="Product Name:"
-                          select
+                      <GridItem xs={12} sm={12} md={3}>
+                        <Select
                           name="pName"
-                          value={this.state.pName}
-                          error={
-                            this.state.fieldErrors &&
-                              this.state.fieldErrors.pName
-                              ? true
-                              : false
+                          placeholder="Select Product"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.pNameList}
+                          value={
+                            this.state.pName
+                              ? { Product: this.state.pName }
+                              : null
                           }
-                          helperText={
-                            this.state.fieldErrors &&
-                            this.state.fieldErrors.pName
-                          }
-                          onChange={(event) => {
-                            this.setState({ pName: event.target.value });
-                            this.handlePName(event.target.value);
-                            this.onChangeClearError(event.target.name);
+                          getOptionValue={(option) => option.Product}
+                          getOptionLabel={(option) => option.Product}
+                          onChange={(value, select) => {
+                            this.setState({
+                              pName: value.Product,
+                              fieldErrors: {
+                                ...this.state.fieldErrors,
+                                pName: "",
+                                pCode: "",
+                              },
+                            });
+                            this.handlePName(value.Product);
                           }}
-                        >
-                          {this.state.pNameList.map((pri) => (
-                            <MenuItem key={pri.Product} value={pri.Product}>
-                              {pri.Product}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+                        />
+                        {this.state.fieldErrors &&
+                          this.state.fieldErrors.pName && (
+                            <span className="MuiFormHelperText-root Mui-error">
+                              {this.state.fieldErrors.pName}
+                            </span>
+                          )}
                       </GridItem>
-                      <GridItem xs={12} sm={12} md={1}>
-                        <TextField
-                          id=""
-                          fullWidth="true"
-                          variant="outlined"
-                          label="Pack Size"
-                          select
+
+                      <GridItem xs={12} sm={12} md={3}>
+                        <Select
                           name="packsize"
-                          value={this.state.packsize}
-                          error={
-                            this.state.fieldErrors &&
-                              this.state.fieldErrors.packsize
-                              ? true
-                              : false
+                          placeholder="Select Pack Size"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.packsizes}
+                          value={
+                            this.state.packsize
+                              ? { PackSize: this.state.packsize }
+                              : null
                           }
-                          helperText={
-                            this.state.fieldErrors &&
-                            this.state.fieldErrors.packsize
-                          }
-                          onChange={(event) => {
-                            this.setState({ packsize: event.target.value });
-                            this.handlePName(event.target.value);
-                            this.onChangeClearError(event.target.name);
+                          getOptionValue={(option) => option.PackSize}
+                          getOptionLabel={(option) => option.PackSize}
+                          onChange={(value, select) => {
+                            this.setState({ packsize: value.PackSize });
+                            // this.handlePName(value.PackSize);
+                            this.onChangeClearError(select.name);
                           }}
                         >
                           {this.state.packsizes
@@ -409,9 +402,15 @@ export default class RMNewFormulation extends Component {
                           label="Batch Size:"
                           name="batchSize"
                           value={this.state.batchSize}
+                          type="number"
+                          InputProps={{
+                            inputProps: {
+                              min: 0,
+                            },
+                          }}
                           error={
                             this.state.fieldErrors &&
-                              this.state.fieldErrors.batchSize
+                            this.state.fieldErrors.batchSize
                               ? true
                               : false
                           }
@@ -425,8 +424,84 @@ export default class RMNewFormulation extends Component {
                           }}
                         />
                       </GridItem>
+                    </GridContainer>
+
+                    <GridContainer>
+                      <GridItem xs={12} sm={12} md={3}>
+                        <Select
+                          name="rmCode"
+                          placeholder="Select PM Code"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.rmCodeList}
+                          value={
+                            this.state.selected && this.state.selected.rmCode
+                              ? { PMCode: this.state.selected.rmCode }
+                              : null
+                          }
+                          getOptionValue={(option) => option.PMCode}
+                          getOptionLabel={(option) => option.PMCode}
+                          onChange={(value, select) => {
+                            this.setState((prevState) => ({
+                              selected: {
+                                ...prevState.selected,
+                                rmCode: value.PMCode,
+                              },
+                              fieldErrors: {
+                                ...this.state.fieldErrors,
+                                rmCode: "",
+                                rmName: "",
+                                type: "",
+                              },
+                            }));
+                            this.handleRMCode(value.PMCode);
+                          }}
+                        />
+                        {this.state.fieldErrors &&
+                          this.state.fieldErrors.rmCode && (
+                            <span className="MuiFormHelperText-root Mui-error">
+                              {this.state.fieldErrors.rmCode}
+                            </span>
+                          )}
+                      </GridItem>
 
                       <GridItem xs={12} sm={12} md={3}>
+                        <Select
+                          name="rmName"
+                          placeholder="Select Material"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.rmNameList}
+                          value={
+                            this.state.selected && this.state.selected.rmName
+                              ? { Material: this.state.selected.rmName }
+                              : null
+                          }
+                          getOptionValue={(option) => option.Material}
+                          getOptionLabel={(option) => option.Material}
+                          onChange={(value, select) => {
+                            this.setState((prevState) => ({
+                              selected: {
+                                ...prevState.selected,
+                                rmName: value.Material,
+                              },
+                            }));
+                            this.handleRMName(value.Material);
+                            this.onChangeClearError(select.name);
+                            console.log(value.Material);
+                          }}
+                        />
+                        {this.state.fieldErrors &&
+                          this.state.fieldErrors.rmName && (
+                            <span className="MuiFormHelperText-root Mui-error">
+                              {this.state.fieldErrors.rmName}
+                            </span>
+                          )}
+                      </GridItem>
+
+                      <GridItem xs={12} sm={12} md={2}>
                         <TextField
                           id="priority"
                           label="Type"
@@ -436,7 +511,7 @@ export default class RMNewFormulation extends Component {
                           value={this.state.selected.type}
                           error={
                             this.state.fieldErrors &&
-                              this.state.fieldErrors.type
+                            this.state.fieldErrors.type
                               ? true
                               : false
                           }
@@ -456,97 +531,24 @@ export default class RMNewFormulation extends Component {
                           }}
                         ></TextField>
                       </GridItem>
-                    </GridContainer>
 
-                    <GridContainer>
-                      <GridItem xs={12} sm={12} md={3}>
+                      <GridItem xs={12} sm={12} md={2}>
                         <TextField
                           id=""
                           fullWidth="true"
                           variant="outlined"
-                          label="PM Code:"
-                          select
-                          name="rmCode"
-                          value={this.state.selected.rmCode}
-                          error={
-                            this.state.fieldErrors &&
-                              this.state.fieldErrors.rmCode
-                              ? true
-                              : false
-                          }
-                          helperText={
-                            this.state.fieldErrors &&
-                            this.state.fieldErrors.rmCode
-                          }
-                          onChange={(event) => {
-                            this.setState((prevState) => ({
-                              selected: {
-                                // object that we want to update
-                                ...prevState.selected, // keep all other key-value pairs
-                                rmCode: event.target.value, // update the value of specific key
-                              },
-                            }));
-                            this.handleRMCode(event.target.value);
-                            this.onChangeClearError(event.target.name);
-                          }}
-                        >
-                          {this.state.rmCodeList.map((pri) => (
-                            <MenuItem key={pri.PMCode} value={pri.PMCode}>
-                              {pri.PMCode}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      </GridItem>
-                      <GridItem xs={12} sm={12} md={3}>
-                        <TextField
-                          id=""
-                          fullWidth="true"
-                          variant="outlined"
-                          label="Material:"
-                          select
-                          name="rmName"
-                          value={this.state.selected.rmName}
-                          error={
-                            this.state.fieldErrors &&
-                              this.state.fieldErrors.rmName
-                              ? true
-                              : false
-                          }
-                          helperText={
-                            this.state.fieldErrors &&
-                            this.state.fieldErrors.rmName
-                          }
-                          onChange={(event) => {
-                            this.setState((prevState) => ({
-                              selected: {
-                                // object that we want to update
-                                ...prevState.selected, // keep all other key-value pairs
-                                rmName: event.target.value, // update the value of specific key
-                              },
-                            }));
-                            this.handleRMName(event.target.value);
-                            this.onChangeClearError(event.target.name);
-                          }}
-                        >
-                          {this.state.rmNameList.map((pri) => (
-                            <MenuItem key={pri.Material} value={pri.Material}>
-                              {pri.Material}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      </GridItem>
-
-                      <GridItem xs={12} sm={12} md={3}>
-                        <TextField
-                          id=""
-                          fullWidth="true"
-                          variant="outlined"
-                          label={"Quantity" + "(" + ")"}
+                          label={"Quantity"}
                           name="quantity"
                           value={this.state.selected.quantity}
+                          type="number"
+                          InputProps={{
+                            inputProps: {
+                              min: 0,
+                            },
+                          }}
                           error={
                             this.state.fieldErrors &&
-                              this.state.fieldErrors.quantity
+                            this.state.fieldErrors.quantity
                               ? true
                               : false
                           }
@@ -567,7 +569,7 @@ export default class RMNewFormulation extends Component {
                         />
                       </GridItem>
 
-                      <GridItem xs={12} sm={12} md={3}>
+                      <GridItem xs={12} sm={12} md={2}>
                         <TextField
                           id=""
                           variant="outlined"
@@ -604,23 +606,24 @@ export default class RMNewFormulation extends Component {
                               }
                             }
 
-
                             if (
-                              this.state.selected.quantity == "" ||
+                              this.state.pCode == "" ||
+                              this.state.pName == "" ||
+                              this.state.packsize == "" ||
+                              this.state.batchSize == "" ||
+                              this.state.selected.type == "" ||
                               this.state.selected.rmCode == "" ||
                               this.state.selected.rmName == "" ||
-                              this.state.selected.type == "" ||
+                              this.state.selected.quantity == "" ||
                               this.state.selected.unit == ""
                             ) {
-                              let { pCode, pName, packsize, batchSize, type, rmCode, rmName, quantity } = this.state;
-                              const fieldErrors = this.validate({ pCode, pName, packsize, batchSize, type, rmCode, rmName, quantity });
+                              const fieldErrors = this.validate(this.state);
                               this.setState({ fieldErrors: fieldErrors });
                               if (Object.keys(fieldErrors).length) return;
-                              // alert(
-                              //   "Please fill the form first to add product into cart."
-                              // );
                             } else if (present === true) {
-                              alert("This RMCode is already present in cart.");
+                              toast.error(
+                                "This RMCode is already present in cart."
+                              );
                             } else {
                               this.updateCart();
                               this.clearSelect();
@@ -644,7 +647,7 @@ export default class RMNewFormulation extends Component {
                           className=""
                           startIcon={<EditIcon />}
                           disabled={this.state.canChange}
-                          onClick={() => { }}
+                          onClick={() => {}}
                           color="primary"
                           onClick={() => {
                             var array = [...this.state.cart];
@@ -807,7 +810,7 @@ export default class RMNewFormulation extends Component {
             </CardBody>
           </Card>
         </GridContainer>
-      </div >
+      </div>
     );
   }
 }
