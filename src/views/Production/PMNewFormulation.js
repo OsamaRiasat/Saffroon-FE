@@ -40,6 +40,7 @@ import {
   RMData,
   RMCodeByName,
   RMFormulation,
+  batchsize,
 } from "../../Services/Production/New_PMFormulation";
 
 export default class RMNewFormulation extends Component {
@@ -106,6 +107,14 @@ export default class RMNewFormulation extends Component {
     this.setState({ rmNameList: rmNam });
   }
 
+  async handleProductSizeCod(cod) {
+    const batchSize = (await batchsize(cod)).data;
+    console.log(batchSize);
+    this.setState({
+      batchSize: batchSize.BatchSize,
+    });
+  }
+
   async handlePCod(cod) {
     const nam = (await PnameByPCode(cod)).data;
     this.setState({ pName: nam.Product });
@@ -150,11 +159,11 @@ export default class RMNewFormulation extends Component {
       (prevState) => ({
         selected: {
           ...prevState.selected,
-          rmCode: cod.RMCode,
+          rmCode: cod.PMCode,
         },
       }),
       () => {
-        this.handleRMCode(this.state.selected.rmCode);
+        this.handleRMCode(cod.PMCode);
       }
     );
 
@@ -210,13 +219,14 @@ export default class RMNewFormulation extends Component {
         };
         const resp = await RMFormulation(payload);
         if (resp.status === 201) {
+          toast.success("Data Saved!");
           this.setState({ cart: [], error: false });
         } else {
-          alert("Exception thrown while sending request !!!");
+          toast.error("Exception thrown while sending request !!!");
         }
       }
     } catch (error) {
-      alert("Something Went Wrong");
+      toast.error("Something Went Wrong");
     }
   }
 
@@ -319,6 +329,7 @@ export default class RMNewFormulation extends Component {
                               },
                             });
                             this.handlePCod(value.ProductCode);
+                            this.handleProductSizeCod(value.ProductCode);
                           }}
                         />
                         {this.state.fieldErrors &&
@@ -380,7 +391,6 @@ export default class RMNewFormulation extends Component {
                           getOptionLabel={(option) => option.PackSize}
                           onChange={(value, select) => {
                             this.setState({ packsize: value.PackSize });
-                            // this.handlePName(value.PackSize);
                             this.onChangeClearError(select.name);
                           }}
                         />
@@ -404,6 +414,7 @@ export default class RMNewFormulation extends Component {
                           InputProps={{
                             inputProps: {
                               min: 0,
+                              readOnly: true,
                             },
                           }}
                           error={
@@ -488,7 +499,6 @@ export default class RMNewFormulation extends Component {
                             }));
                             this.handleRMName(value.Material);
                             this.onChangeClearError(select.name);
-                            console.log(value.Material);
                           }}
                         />
                         {this.state.fieldErrors &&
@@ -506,6 +516,9 @@ export default class RMNewFormulation extends Component {
                           fullWidth="true"
                           variant="outlined"
                           name="type"
+                          InputProps={{
+                            readOnly: true,
+                          }}
                           value={this.state.selected.type}
                           error={
                             this.state.fieldErrors &&
@@ -573,6 +586,7 @@ export default class RMNewFormulation extends Component {
                           variant="outlined"
                           label="Units"
                           fullWidth="true"
+                          InputProps={{ readOnly: true }}
                           value={this.state.selected.unit}
                           onChange={(event) => {
                             this.setState((prevState) => ({
@@ -635,7 +649,11 @@ export default class RMNewFormulation extends Component {
                           className=""
                           startIcon={<SaveIcon />}
                           onClick={() => {
-                            this.handlePost();
+                            if (this.state.cart.length < 1) {
+                              toast.error("Enter Some Data First");
+                            } else {
+                              this.handlePost();
+                            }
                           }}
                           color="primary"
                         >
@@ -666,6 +684,7 @@ export default class RMNewFormulation extends Component {
                                 rmCode: products_array[index].rmCode,
                                 rmName: products_array[index].rmName,
                                 unit: products_array[index].unit,
+                                quantity: products_array[index].quantity,
                               };
 
                               this.setState({ selected: temp });
