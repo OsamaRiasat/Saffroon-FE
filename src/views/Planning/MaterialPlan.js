@@ -261,6 +261,7 @@ export default class MaterialPlan extends Component {
                                             <GridItem xs={12} sm={12} md={7}>
                                                 <Button className="" startIcon={<ArrowBackIosIcon />} onClick={() => {
                                                     this.props.form_handle(1);
+                                                    localStorage.setItem('backToPorductSelection', true);
                                                 }} color="primary">Back To Products Selection</Button>
                                                 <Button className="" endIcon={<ArrowForwardIosIcon />} onClick={() => {
                                                     this.props.form_handle(3);

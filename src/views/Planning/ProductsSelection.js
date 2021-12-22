@@ -20,6 +20,8 @@ import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import PrintIcon from "@material-ui/icons/Print";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import {
   BackToProductSelection,
@@ -30,6 +32,7 @@ import {
   ProductDetailsByName,
   GoodsStockDetails,
   PostPlan,
+	updatePostPlan
 } from "../../Services/Planning/A-Product_Selection.js";
 
 class ProductsSelection extends React.Component {
@@ -69,6 +72,8 @@ class ProductsSelection extends React.Component {
 			canGoOnward: true,
 			standardBatch: 1,
 			standardUnits: 1,
+			backButton: false,
+			showError: false,
 		};
 	}
 
@@ -77,17 +82,12 @@ class ProductsSelection extends React.Component {
 		this.setState({ pcode_arr: code_list.data });
 		const name_list = await ProductNames();
 		this.setState({ pname_arr: name_list.data });
-		const dm = (await highestPlanNo()).data.planNo__max;
-		this.setState({ planno: dm + 1 });
-		this.props.handle_plan(dm + 1);
-		this.setState({
-			planno: this.props.planno,
-		});
-		// this.props.handle_plan(this.state.planno);
 
-		if (sessionStorage.getItem("isBack") === "true") {
-			sessionStorage.setItem("isBack", false);
-			const cart_data = (await BackToProductSelection(this.props.planno - 1))
+		if(localStorage.getItem('backToPorductSelection')) {
+			this.setState({ backButton: true });
+			this.setState({ planno: this.props.planno });
+			localStorage.setItem('planNumber', this.state.planno);
+			const cart_data = (await BackToProductSelection(this.props.planno))
 				.data;
 
 			// this.setState({
@@ -110,6 +110,13 @@ class ProductsSelection extends React.Component {
 				this.updateCart();
 				this.clearForm();
 			}
+		} else {
+			const dm = (await highestPlanNo()).data.planNo__max;
+			this.setState({ planno: dm + 1 });
+			this.props.handle_plan(dm + 1);
+			this.setState({
+				planno: this.props.planno,
+			});
 		}
 	}
 
@@ -130,7 +137,11 @@ class ProductsSelection extends React.Component {
 				planItems: items,
 			};
 
-			await PostPlan(payload);
+			if(this.state.planno == localStorage.getItem('planNumber')) {
+				await updatePostPlan(payload);
+			} else {
+				await PostPlan(payload);
+			}
 		}
 	}
 
@@ -376,6 +387,18 @@ class ProductsSelection extends React.Component {
 
 		return (
 			<div style={{ marginTop: 50 }}>
+				<ToastContainer
+					position="top-center"
+					autoClose={10000}
+					hideProgressBar
+					newestOnTop={false}
+					closeOnClick
+					rtl={false}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+					style={{ width: "auto" }}
+				/>
 				<GridContainer md={12}>
 					<GridItem xs={12} sm={12} md={12}>
 						<Card>
@@ -457,10 +480,13 @@ class ProductsSelection extends React.Component {
 														inputValue={this.state.selected.pcode}
 														options={this.state.pcode_arr}
 														getOptionLabel={(option) => option.ProductCode}
-														onChange={(newValue) => {
+														onChange={(newValue, value) => {
 															this.setState({
 																productCodeValue: newValue.ProductCode,
 															});
+															if(value?.productCodeValue != '') {
+																this.handleCodeAutofill(value?.ProductCode);
+															}
 														}}
 														onInputChange={(event, value) => {
 															this.setState((prevState) => ({
@@ -469,7 +495,6 @@ class ProductsSelection extends React.Component {
 																	pcode: value,
 																},
 															}));
-															this.handleCodeAutofill(value);
 														}}
 														renderInput={(params) => (
 															<TextField
@@ -732,6 +757,7 @@ class ProductsSelection extends React.Component {
 													<Button
 														disabled={this.state.canGoOnward}
 														onClick={() => {
+															localStorage.setItem('backToPorductSelection', false);
 															this.saveForm();
 															this.props.form_handle(2);
 														}}
@@ -753,42 +779,21 @@ class ProductsSelection extends React.Component {
 															// planned: 0,
 															// pcode: "",
 															// packs: "",
-															if (
-																this.state.selected.batches === "" ||
-																this.state.selected.pcode === "" ||
-																this.state.selected.packs === "" ||
-																this.state.selected.packsize === "" ||
-																this.state.selected.pname === "" ||
-																this.state.fgs_qty === "" ||
-																this.state.wip_qty === ""
-															) {
-																alert("Alert !! Kindly Provide All Data ");
+															if (this.state.selected.batches === "" || this.state.selected.pcode === "" || this.state.selected.packs === "" || this.state.selected.packsize === "" || this.state.selected.pname === "") {
+																this.setState({showError: true});
+																toast.error('Alert !! Kindly Provide All Data', this.state.showError);
 															} else {
 																let present = false;
-																for (
-																	let i = 0;
-																	i < this.state.cart.length;
-																	++i
-																) {
-																	if (
-																		this.state.cart[i].pcode ===
-																		this.state.selected.pcode
-																	) {
+																for (let i = 0; i < this.state.cart.length; ++i) {
+																	if (this.state.cart[i].pcode === this.state.selected.pcode) {
 																		present = true;
 																		break;
 																	}
 																}
-																if (
-																	this.state.selected.pcode == "" ||
-																	this.state.selected.pname == ""
-																) {
-																	alert(
-																		"Please fill the form first to add product into cart."
-																	);
+																if (this.state.selected.pcode == "" || this.state.selected.pname == "") {
+																	toast.error('Please fill the form first to add product into cart.', this.state.showError);
 																} else if (present === true) {
-																	alert(
-																		"This product is already present in cart."
-																	);
+																	toast.error('This product is already present in cart.', this.state.showError);
 																} else {
 																	this.setCartAdd();
 																}
@@ -796,7 +801,7 @@ class ProductsSelection extends React.Component {
 														}}
 														color="primary"
 													>
-														Add
+														{ this.state.backButton == false ? 'Add' : 'Update' }
 													</Button>
 													<Button
 														className=""
@@ -804,21 +809,10 @@ class ProductsSelection extends React.Component {
 														disabled={this.state.canChange}
 														onClick={() => {
 															var array = [...this.state.cart];
-															for (
-																let x = 0;
-																x < this.state.selectedRows.length;
-																++x
-															) {
+															for (let x = 0; x < this.state.selectedRows.length; ++x) {
 																var index = -1;
-																for (
-																	let i = 0;
-																	i < products_array.length;
-																	++i
-																) {
-																	if (
-																		products_array[i].id ===
-																		this.state.selectedRows[x]
-																	) {
+																for (let i = 0; i < products_array.length; ++i) {
+																	if (products_array[i].id === this.state.selectedRows[x]) {
 																		index = i;
 																		break;
 																	}
@@ -833,9 +827,7 @@ class ProductsSelection extends React.Component {
 																	packs: products_array[index].packs
 																};
 																let unit = products_array[index].units;
-
 																this.setState({ selected: temp, units:unit });
-
 																if (index !== -1) {
 																	array.splice(index, 1);
 																	this.setState({ cart: array });

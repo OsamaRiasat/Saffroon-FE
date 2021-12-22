@@ -17,8 +17,10 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import PrintIcon from '@material-ui/icons/Print';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import { ProductionCalculation } from "../../Services/Planning/C-Production_Calculation";
+import { ProductionCalculation, saveProductionPlan, deleteProductionPlan } from "../../Services/Planning/C-Production_Calculation";
 export default class ProductionPlan extends Component {
     
     async componentDidMount() {
@@ -41,9 +43,6 @@ export default class ProductionPlan extends Component {
         // this.setState({cart: temp_list});
     }
 
-    handleSavePaln=()=>{
-       
-    }
     state = {
         firstline: true,
         secondline: true,
@@ -86,6 +85,27 @@ export default class ProductionPlan extends Component {
             },
         ]
     };
+
+    handleSavePlan = async () => {
+        const data = (await saveProductionPlan(parseInt(this.props.planno)));
+        if(data.status == 200) {
+            toast.success('Plan saved successfully.');
+            localStorage.removeItem('planNumber');
+            localStorage.removeItem('backToPorductSelection');
+            this.props.form_handle(1);
+        }
+    }
+
+    handleDeletePlan = async () => {
+        const data = (await deleteProductionPlan(parseInt(this.props.planno)));
+        if(data.status == 204) {
+            toast.success('Plan deleted successfully.');
+            localStorage.removeItem('planNumber');
+            localStorage.removeItem('backToPorductSelection');
+            this.props.form_handle(1);
+        }
+    }
+
     handlePlanBatches=async ()=>{
         const data = (await ProductionCalculation(this.props.planno));
         
@@ -181,6 +201,18 @@ export default class ProductionPlan extends Component {
 
         return (
             <div style={{marginTop:50}}>
+                <ToastContainer
+					position="top-center"
+					autoClose={10000}
+					hideProgressBar
+					newestOnTop={false}
+					closeOnClick
+					rtl={false}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+					style={{ width: "auto" }}
+				/>
                 <GridContainer md={12}>
                 <GridItem xs={12} sm={12} md={12}>
                     <Card>
@@ -269,10 +301,11 @@ export default class ProductionPlan extends Component {
                                                     //add code to print
                                                 }} color="primary">Print Plan</Button>
                                                 <Button className="" startIcon={<SaveIcon />} onClick={() => {
-                                                    this.handleSavePaln();
+                                                    this.handleSavePlan();
                                                     //call the api function to send back all the data of CART
                                                 }} color="primary">Save Plan</Button>
                                                 <Button className="" startIcon={<DeleteIcon />} onClick={() => {
+                                                    this.handleDeletePlan();
                                                     //call the api function to send a plannumber back to database to delete plan
                                                 }} color="secondary">Delete Plan</Button>
                                             </GridItem>

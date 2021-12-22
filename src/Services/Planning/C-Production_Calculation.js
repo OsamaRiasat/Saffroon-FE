@@ -14,6 +14,16 @@ export function ProductionCalculation(planNo) {
 
 }
 
+export function saveProductionPlan(planNo) {
+    const resp = http.get(Endpoint + "save_plan/" + planNo);
+    return resp;
+}
+
+export function deleteProductionPlan(planNo) {
+    const resp = http.delete(Endpoint + "DeletePlan/" + planNo);
+    return resp;
+}
+
 
 
 // RM Purchase Order
