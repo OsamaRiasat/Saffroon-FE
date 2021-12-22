@@ -62,6 +62,15 @@ export function PostPlan(data) {
 
 }
 
+export function updatePostPlan(data) {
+
+    console.log("Update Posting Plan");
+    const resp = http.post(Endpoint + "Update_Plan_And_PlanItems/", data);
+    console.log(resp);
+    return resp;
+
+}
+
 // RM Back to production plan
 
 export function BackToProductSelection(planNo) {
