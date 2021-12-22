@@ -383,15 +383,13 @@ export default class RMNewFormulation extends Component {
                             // this.handlePName(value.PackSize);
                             this.onChangeClearError(select.name);
                           }}
-                        >
-                          {this.state.packsizes
-                          &&
+                        />
+                        {this.state.packsizes &&
                           this.state.packsizes.map((pri) => (
                             <MenuItem key={pri.PackSize} value={pri.PackSize}>
                               {pri.PackSize}
                             </MenuItem>
                           ))}
-                        </TextField>
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={3}>
