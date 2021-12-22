@@ -391,7 +391,9 @@ export default class RMNewFormulation extends Component {
                             this.onChangeClearError(event.target.name);
                           }}
                         >
-                          {this.state.packsizes.map((pri) => (
+                          {this.state.packsizes
+                          &&
+                          this.state.packsizes.map((pri) => (
                             <MenuItem key={pri.PackSize} value={pri.PackSize}>
                               {pri.PackSize}
                             </MenuItem>
