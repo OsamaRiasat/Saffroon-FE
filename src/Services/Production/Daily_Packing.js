@@ -6,14 +6,16 @@ const Endpoint = apiUrl + data;
 
 export function PlanNo() {
   console.log("Gettting PlanNo");
-  const resp = http.get(Endpoint + "PlanNo/");
+  const resp = http.get(Endpoint + "PlanNoForPacking/");
   console.log(resp);
   return resp;
 }
- 
+
 export function ProductByPlanNo(planNo) {
   console.log("Gettting ProductByPlanNo");
-  const resp = http.get(Endpoint + "ProductByPlanNo/" + planNo + "/");
+  const resp = http.get(
+    Endpoint + "productCodeByPlanNoForPacking/" + planNo + "/"
+  );
   console.log(resp);
   return resp;
 }
@@ -26,7 +28,7 @@ export function WhenProductIsSelected(PCode) {
 }
 
 export function PackingLog(obj) {
-  console.log("posting PackingLog")
+  console.log("posting PackingLog");
   const resp = http.post(Endpoint + "PackingLog/", obj);
   console.log(resp);
   return resp;

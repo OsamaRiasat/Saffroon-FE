@@ -1,5 +1,17 @@
 .product-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.customSelect .select__control {
+  min-height: 55px;
+}
+
+.MuiFormHelperText-root.Mui-error {
+  color: #f44336;
+}
+
+.customSelect .select__menu {
+  z-index: 99999;
 }

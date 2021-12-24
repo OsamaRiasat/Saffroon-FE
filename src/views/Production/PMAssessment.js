@@ -15,6 +15,7 @@ import PrintIcon from "@material-ui/icons/Print";
 import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "react-select";
+
 import {
   CustomValueContainer,
   CustomSelectStyle,
@@ -26,7 +27,7 @@ import {
   PackSizesList,
   PCodeByPNameAssessment,
   ViewFormulationForAssessment,
-} from "../../Services/Production/RM_Assessment";
+} from "../../Services/Production/PM_Assessment";
 
 export default class RMAssessment extends Component {
   constructor(props) {
@@ -64,6 +65,7 @@ export default class RMAssessment extends Component {
     const errors = {};
     if (!fields.pCode) errors.pCode = "Product No Required";
     if (!fields.product) errors.product = "Product Required";
+    if (!fields.packSize) errors.packSize = "Product Required";
     return errors;
   };
 
@@ -126,7 +128,8 @@ export default class RMAssessment extends Component {
       await ViewFormulationForAssessment(
         this.state.pCode,
         this.state.batchSize,
-        this.state.noOfBatches
+        this.state.noOfBatches,
+        this.state.packSize
       )
     ).data;
     this.setState({ cart: res });
@@ -266,10 +269,15 @@ export default class RMAssessment extends Component {
                     getOptionValue={(option) => option.value}
                     getOptionLabel={(option) => option.label}
                     onChange={(value, select) => {
-                      this.setState({ pCode: value.value });
+                      this.setState({
+                        pCode: value.value,
+                        fieldErrors: {
+                          ...this.state.fieldErrors,
+                          product: "",
+                          pCode: "",
+                        },
+                      });
                       this.handleCode(value.value);
-                      this.onChangeClearError(select.name);
-                      this.setState({ fieldErrors: "" });
                     }}
                   />
                   {this.state.fieldErrors && this.state.fieldErrors.pCode && (
@@ -342,8 +350,42 @@ export default class RMAssessment extends Component {
                     variant="outlined"
                     label={"Batch Size: "}
                     value={this.state.batchSize}
-                    InputProps={{ readOnly: this.state.editBatchSize }}
+                    InputProps={{ readOnly: true }}
                   />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={2}>
+                  <Select
+                    name="packSize"
+                    placeholder="Select Pack Size"
+                    components={{
+                      ValueContainer: CustomValueContainer,
+                    }}
+                    styles={CustomSelectStyle}
+                    className="customSelect"
+                    classNamePrefix="select"
+                    isSearchable={true}
+                    options={this.state.packSizeList.map((t) => ({
+                      value: t,
+                      label: t,
+                    }))}
+                    value={
+                      this.state.packSize
+                        ? { label: this.state.packSize }
+                        : null
+                    }
+                    getOptionValue={(option) => option.value}
+                    getOptionLabel={(option) => option.label}
+                    onChange={(value, select) => {
+                      this.setState({ packSize: value.value });
+                      this.onChangeClearError(select.name);
+                    }}
+                  />
+                  {this.state.fieldErrors &&
+                    this.state.fieldErrors.packSize && (
+                      <span className="MuiFormHelperText-root Mui-error">
+                        {this.state.fieldErrors.packSize}
+                      </span>
+                    )}
                 </GridItem>
               </GridContainer>
 

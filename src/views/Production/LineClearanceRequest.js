@@ -13,11 +13,16 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import PrintIcon from "@material-ui/icons/Print";
 import MenuItem from "@material-ui/core/MenuItem";
 import Line_Clearance from "../../Services/Production/Line_Clearance.js";
+import Select from "react-select";
+import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../variables/genericVariables";
 
 import {
-	PCodesForLineClearance,
-	BatchNoBYPCode,
-	WhenBatchNoIsSelected,
+  PCodesForLineClearance,
+  BatchNoBYPCode,
+  WhenBatchNoIsSelected,
 } from "../../Services/Production/Line_Clearance";
 
 export default class LineClearanceRequest extends Component {
@@ -30,38 +35,36 @@ export default class LineClearanceRequest extends Component {
   }
   printData = () => {
     var divToPrint = document.getElementById("hide");
-    if(divToPrint==="" || divToPrint === null)
-    {
-      return
-    }
-    else{
-    console.log("hi", divToPrint);
-    var newWin = window.open("");
-   
-    newWin.document.write(divToPrint.outerHTML);
-    // console.log("FI",divToPrint.outerHTML)
-    // newWin.focus();
-    newWin.print();
+    if (divToPrint === "" || divToPrint === null) {
+      return;
+    } else {
+      console.log("hi", divToPrint);
+      var newWin = window.open("");
 
-    if (newWin.stop) {
-      newWin.location.reload(); //triggering unload (e.g. reloading the page) makes the print dialog appear
-      newWin.stop(); //immediately stop reloading
-  }
-     newWin.close();
+      newWin.document.write(divToPrint.outerHTML);
+      // console.log("FI",divToPrint.outerHTML)
+      // newWin.focus();
+      newWin.print();
 
-    this.setState({
-      show: !this.state.show,
-      pcode: "",
-      pname: "",
-      batch: "",
-      batchsize: "",
-      mfg_date: "",
-      exp_date: "",
-      status: "",
-      batches: [],
-      canprint:false
+      if (newWin.stop) {
+        newWin.location.reload(); //triggering unload (e.g. reloading the page) makes the print dialog appear
+        newWin.stop(); //immediately stop reloading
+      }
+      newWin.close();
 
-    });
+      this.setState({
+        show: !this.state.show,
+        pcode: "",
+        pname: "",
+        batch: "",
+        batchsize: "",
+        productName: "",
+        mfg_date: "",
+        exp_date: "",
+        status: "",
+        batches: [],
+        canprint: false,
+      });
     }
   };
 
@@ -77,6 +80,7 @@ export default class LineClearanceRequest extends Component {
       batches: [],
       batch: "",
       batchsize: "",
+      productName: "",
       mfg_date: "",
       exp_date: "",
       status: "",
@@ -94,8 +98,7 @@ export default class LineClearanceRequest extends Component {
     });
   };
   handleGetPrintData = async (batchno) => {
-    const data = (await WhenBatchNoIsSelected(batchno))
-      .data;
+    const data = (await WhenBatchNoIsSelected(batchno)).data;
     console.log(data);
     const startdate = data.mfgDate.split("-");
     const completiondate = data.expDate.split("-");
@@ -105,6 +108,7 @@ export default class LineClearanceRequest extends Component {
         stages: data.stagesList,
         status: data.currentStage,
         batchsize: data.batchSize,
+        productName: data.product,
         mfg_date: startdate[2] + "-" + startdate[1] + "-" + startdate[0],
         exp_date:
           completiondate[2] + "-" + completiondate[1] + "-" + completiondate[0],
@@ -120,6 +124,15 @@ export default class LineClearanceRequest extends Component {
     this.setState({ show: !this.state.show }, () => {
       this.printData();
     });
+
+  getLastestStatus = (arr) => {
+    let length = arr.length;
+    if (length > 0) {
+      return arr[length - 1].stage;
+    } else {
+      return "Previous";
+    }
+  };
 
   Generatestages = () => {
     try {
@@ -207,39 +220,54 @@ export default class LineClearanceRequest extends Component {
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={4}>
-                        <TextField
-                          id=""
-                          select
-                          variant="outlined"
-                          label="Product Code:"
-                          fullWidth="true"
-                          value={this.state.pcode}
-                          onChange={(event) => {
+                        <Select
+                          name="pcode"
+                          placeholder="Select Product Code"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.pcodes.map((t) => ({
+                            value: t,
+                            label: t,
+                          }))}
+                          value={
+                            this.state.pcode
+                              ? { label: this.state.pcode }
+                              : null
+                          }
+                          getOptionValue={(option) => option.value}
+                          getOptionLabel={(option) => option.label}
+                          onChange={(value, select) => {
                             this.setState(
                               {
-                                pcode: event.target.value,
+                                pcode: value.value,
+                                batch: "",
+                                productName: "",
+                                batchsize: "",
+                                mfg_date: "",
+                                exp_date: "",
+                                canprint: false,
                               },
                               () => {
-                                this.handleGetBatches(event.target.value);
+                                this.handleGetBatches(value.value);
                               }
                             );
                           }}
-                        >
-                          {this.state.pcodes.map((pcode) => (
-                            <MenuItem key={pcode} value={pcode}>
-                              {pcode}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+                        />
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={3}>
                         <TextField
                           id=""
-                          select
                           variant="outlined"
                           label="Products Name :"
                           fullWidth="true"
+                          InputProps={{ readOnly: true }}
+                          value={this.state.productName}
                         />
                       </GridItem>
                       <GridItem xs={12} sm={12} md={2}>
@@ -251,30 +279,35 @@ export default class LineClearanceRequest extends Component {
 
                     <GridContainer>
                       <GridItem xs={12} sm={12} md={3}>
-                        <TextField
-                          id="date"
-                          fullWidth="true"
-                          select
-                          variant="outlined"
-                          label={"Batch No: "}
-                          value={this.state.batch}
-                          onChange={(event) => {
+                        <Select
+                          name="batch"
+                          placeholder="Select Batch No"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.batches}
+                          value={
+                            this.state.batch
+                              ? { batchNo: this.state.batch }
+                              : null
+                          }
+                          getOptionValue={(option) => option.batchNo}
+                          getOptionLabel={(option) => option.batchNo}
+                          onChange={(value) => {
                             this.setState(
                               {
-                                batch: event.target.value,
+                                batch: value.batchNo,
                               },
                               () => {
-                                this.handleGetPrintData(event.target.value);
+                                this.handleGetPrintData(value.batchNo);
                               }
                             );
                           }}
-                        >
-                          {this.state.batches.map((batch) => (
-                            <MenuItem key={batch.batchNo} value={batch.batchNo}>
-                              {batch.batchNo}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+                        />
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={4}>
@@ -385,7 +418,7 @@ export default class LineClearanceRequest extends Component {
               <p>
                 <strong>
                   Line Clearance is required for{" "}
-                  <span> {this.state.status} </span>{" "}
+                  <span> {this.getLastestStatus(this.state.stages)} </span>{" "}
                 </strong>
               </p>
               <p>Batch History of Previous Stages:</p>

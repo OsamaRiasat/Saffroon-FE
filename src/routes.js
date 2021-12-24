@@ -105,6 +105,7 @@ import LCR from "./views/Production/LineClearanceRequest"
 import DailyPacking from "./views/Production/DailyPacking"
 import CloseOrder from "./views/Production/CloseOrders.js"
 import RMAssessment from "./views/Production/RMAssessment.js"
+import PMAssessment from "./views/Production/PMAssessment.js"
 import PMNewFormulation from "./views/Production/PMNewFormulation"
 //Line Clearance
 // import LCR from "./views/LineClearance/LineClearanceRequest";
@@ -532,6 +533,14 @@ const dashboardRoutes = [
 		name: "RM Assessment",
 		icon: LibraryBooks,
 		component: RMAssessment,
+		layout: "/saffron",
+		role: "Production",
+	},
+	{
+		path: "/production/PM/Assessment",
+		name: "PM Assessment",
+		icon: LibraryBooks,
+		component: PMAssessment,
 		layout: "/saffron",
 		role: "Production",
 	},
