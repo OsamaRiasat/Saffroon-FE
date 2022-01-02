@@ -52,7 +52,7 @@ export default{
         RMEditSpecificationView(code) {
 
             console.log("Gettting Acquirespecifications/")
-            const resp = http.get(Endpoint + "RMEditSpecifications/"+code);
+            const resp = http.get(Endpoint + "RMEditSpecifications/"+code + "/");
             console.log(resp);
             return resp;
         
