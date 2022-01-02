@@ -19,9 +19,9 @@ import {
   GRNOList,
   RecievingDetailByGRNo,
   Sample,
-} from "../../../Services/QA/RM_Sample";
+} from "../../../Services/QA/PM_Sample";
 
-export default class RMSamplingLog extends Component {
+export default class PMSamplingLog extends Component {
   constructor(props) {
     super(props);
 
@@ -62,7 +62,7 @@ export default class RMSamplingLog extends Component {
     console.log(resp);
     this.setState({
       material: resp.Material,
-      code: resp.RMCode,
+      code: resp.PMCode,
       mfg: resp.MFG_Date,
       exp: resp.EXP_Date,
       batchNo: resp.Batch_No,
@@ -119,7 +119,7 @@ export default class RMSamplingLog extends Component {
       console.log(resp.message);
       
       if (resp.status === 201) {
-        toast.success("Request Sent !!", {
+        toast.success("Sample Sent to QC !!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -130,7 +130,7 @@ export default class RMSamplingLog extends Component {
         });
         
       } else {
-        toast.error("Request Not Sent", {
+        toast.error("Sample could'nt be sent!!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -192,7 +192,7 @@ export default class RMSamplingLog extends Component {
           <Card>
             <CardHeader color="primary">
               <h2>
-                <center>Raw Material- Sampling Log</center>{" "}
+                <center>Packing Material- Sampling Log</center>{" "}
               </h2>
             </CardHeader>
             <CardBody>

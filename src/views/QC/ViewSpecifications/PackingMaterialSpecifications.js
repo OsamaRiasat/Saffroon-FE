@@ -13,6 +13,11 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { DataGrid , GridToolbarContainer, GridToolbarExport } from "@material-ui/data-grid";
 import RMSpecs from "../../../Services/QC/PM/PM_View_Specs.js"
 import MenuItem from '@material-ui/core/MenuItem';
+import Select from "react-select";
+import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../../variables/genericVariables";
 
 function CustomToolbar() {
   return (
@@ -146,7 +151,7 @@ constructor(props){
                   <CardContent>
                     <GridContainer>
                       <GridItem xs={12} sm={12} md={8}>
-                        <TextField
+                        {/* <TextField
                        
                        select
                        label="Material Code"
@@ -170,10 +175,39 @@ constructor(props){
                            {mcode.Material}
                          </MenuItem>
                        ))}
-                     </TextField>
+                     </TextField> */}
+
+                  <Select
+                    name="Material"
+                    placeholder="Material"
+                    components={{
+                      ValueContainer: CustomValueContainer,
+                    }}
+                    styles={CustomSelectStyle}
+                    className="customSelect"
+                    classNamePrefix="select"
+                    isSearchable={true}
+                    options={this.state.mcodes.map((t) => ({
+                      value: t.Material,
+                      label: t.Material,
+                    }))}
+                    // options = {Object.entries(this.state.mcodes)
+                    //   .map( ([key, value]) => `My key is ${key} and my value is ${value}`)}
+                    value={
+                      this.state.mcode ? { label: this.state.mcode } : null
+                    }
+                    getOptionValue={(option) => option.value}
+                    getOptionLabel={(option) => option.label}
+                    onChange={(value, select) => {
+                      this.setState({ mcode: value.value });
+                      this.handlegetcodebyname(value.value);
+                      // this.onChangeClearError(select.name);
+                      // this.setState({ fieldErrors: "" });
+                    }}
+                  />
                       </GridItem>
                       <GridItem xs={12} sm={12} md={4}>
-                      <TextField
+                      {/* <TextField
                        
                         select
                         label="RMCode"
@@ -197,7 +231,40 @@ constructor(props){
                             {rmcode.PMCode}
                           </MenuItem>
                         ))}
-                      </TextField>
+                      </TextField> */}
+
+                  <Select
+                    name="PMCode"
+                    placeholder="PMCode"
+                    components={{
+                      ValueContainer: CustomValueContainer,
+                    }}
+                    styles={CustomSelectStyle}
+                    className="customSelect"
+                    classNamePrefix="select"
+                    isSearchable={true}
+                    options={this.state.rmcodes.map((t) => ({
+                      value: t.PMCode,
+                      label: t.PMCode,
+                    }))}
+                    // options = {Object.entries(this.state.rmcodes)
+                    //   .map( ([key, value]) => `My key is ${key} and my value is ${value}`)}
+                   
+                    value={
+                      this.state.rmcode ? { label: this.state.rmcode } : null
+                    }
+                    getOptionValue={(option) => option.value}
+                    getOptionLabel={(option) => option.label}
+                    onChange={(value, select) => {
+                      // this.setState({ rmcode: value.value });
+                      // this.handlegetcodebyname(value.value);
+                      // this.onChangeClearError(select.name);
+                      // this.setState({ fieldErrors: "" });
+                      this.setState({ rmcode:value.value});
+                      this.handlegetSpecs(value.value);
+                      this.handlegetnamebycode(value.value);
+                    }}
+                  />
                         {/* <Autocomplete
                           {...rmcodeProps}
                           id=""

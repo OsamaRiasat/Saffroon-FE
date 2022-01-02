@@ -1,26 +1,31 @@
 import React, { Component } from "react";
-import {getRMDemandHighestDNo, RawMaterialNames ,RawMaterialCodes,RawMaterialSearchByRMCode,RawMaterialSearchByName,RMDemands} from "../Services/Inventory/inventory.js";
+// import {getRMDemandHighestDNo, RawMaterialNames ,RawMaterialCodes,RawMaterialSearchByRMCode,RawMaterialSearchByName,RMDemands} from "../Services/Inventory/inventory.js";
 
-import { GRNoList, RMRecievingDetailByGRNo, RMBinCard } from '../Services/Inventory/Post_GRN';
+import { AddSupplier} from '../Services/QA/Add_Supplier';
 
 class Products extends Component{
 async componentDidMount() {
     
 
 //  Post GRN Testing
-    const GRNoListData=await GRNoList();
-    console.log(GRNoListData.data);
+    // const GRNoListData=await RawMaterialCodesppliers();
+    // console.log(GRNoListData.data);
 
-    const details=await RMRecievingDetailByGRNo(1);
-    console.log(details.data);
+    // const details=await RMRecievingDetailByGRNo(1);
+    // console.log(details.data);
 
-   const ok=await  RMBinCard(
-      {
-        
-        "GRNo": 1,
-
-      });
-      console.log("RmBinCard :"+ok.data)    
+  //  const ok=await  AddSupplier(
+  //   {
+  //     "S_Name": "temp2",
+  //     "S_Email": "user@example.com",
+  //     "S_Address": "Home",
+  //     "S_City": "lhr",
+  //     "S_Country": "Pak",
+  //     "S_Phone": "string",
+  //     "contactPersonName": "Usama",
+  //     "contactPersonPhone": "000222"
+  //   });
+  //     console.log("Post :"+ok.data)    
   }
   render()
   {

@@ -49,7 +49,7 @@ export default class CloseOrders extends Component {
 
   getOrderNo = () => {
     const line = this.state.selectedRow - 1;
-    console.log(line);
+    console.log("line", line);
     if (line !== "" && line > -1) {
       this.setState({
         selectedOrder: this.state.orders[line].planNo,
@@ -334,7 +334,7 @@ export default class CloseOrders extends Component {
                             checkboxSelection
                             disableSelectionOnClick
                             onSelectionModelChange={(event) => {
-                              console.log(event);
+                              console.log("event", event);
                               if (event.length === 1) {
                                 this.setState({
                                   canSave: true,

@@ -13,6 +13,11 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { DataGrid , GridToolbarContainer, GridToolbarExport } from "@material-ui/data-grid";
 import RMSpecs from "../../../Services/QC/RM/RM_View_Specs.js"
 import MenuItem from '@material-ui/core/MenuItem';
+import Select from "react-select";
+import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../../variables/genericVariables";
 
 function CustomToolbar() {
   return (
@@ -21,6 +26,8 @@ function CustomToolbar() {
     </GridToolbarContainer>
   );
 }
+
+
 
 export default class RawMaterialSpecifications extends Component {
   async componentDidMount() {
@@ -144,7 +151,7 @@ constructor(props){
                   <CardContent>
                     <GridContainer>
                       <GridItem xs={12} sm={12} md={8}>
-                        <TextField
+                        {/* <TextField
                        
                        select
                        label="Material Code"
@@ -152,7 +159,7 @@ constructor(props){
                        fullWidth="true"
                        
                        value={this.state.mcode}
-                       
+                       w
                        //onChange={}
                        // helperText="_____________________________"
                        // variant="outlined"
@@ -168,10 +175,39 @@ constructor(props){
                            {mcode.Material}
                          </MenuItem>
                        ))}
-                     </TextField>
+                     </TextField> */}
+
+<Select
+                    name="Material"
+                    placeholder="Material"
+                    components={{
+                      ValueContainer: CustomValueContainer,
+                    }}
+                    styles={CustomSelectStyle}
+                    className="customSelect"
+                    classNamePrefix="select"
+                    isSearchable={true}
+                    options={this.state.mcodes.map((t) => ({
+                      value: t.Material,
+                      label: t.Material,
+                    }))}
+                    // options = {Object.entries(this.state.mcodes)
+                    //   .map( ([key, value]) => `My key is ${key} and my value is ${value}`)}
+                    value={
+                      this.state.mcode ? { label: this.state.mcode } : null
+                    }
+                    getOptionValue={(option) => option.value}
+                    getOptionLabel={(option) => option.label}
+                    onChange={(value, select) => {
+                      this.setState({ mcode: value.value });
+                      this.handlegetcodebyname(value.value);
+                      // this.onChangeClearError(select.name);
+                      // this.setState({ fieldErrors: "" });
+                    }}
+                  />
                       </GridItem>
                       <GridItem xs={12} sm={12} md={4}>
-                      <TextField
+                      {/* <TextField
                        
                         select
                         label="RMCode"
@@ -195,24 +231,42 @@ constructor(props){
                             {rmcode.RMCode}
                           </MenuItem>
                         ))}
-                      </TextField>
-                        {/* <Autocomplete
-                          {...rmcodeProps}
-                          id=""
-                          onChange={(event, newValue) => {
-                            this.setState({ rmcode: newValue["RMCode"] });
-                            this.handlegetSpecs(newValue["RMCode"]);
-                            this.handlegetnamebycode(newValue["RMCode"]);
-                          }}
-                          clearOnEscape
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="RM Code"
-                              value={this.state.rmcode}
-                            />
-                          )}
-                        /> */}
+                        
+                      </TextField> */}
+                      
+                  <Select
+                    name="RMCode"
+                    placeholder="RMCode"
+                    components={{
+                      ValueContainer: CustomValueContainer,
+                    }}
+                    styles={CustomSelectStyle}
+                    className="customSelect"
+                    classNamePrefix="select"
+                    isSearchable={true}
+                    options={this.state.rmcodes.map((t) => ({
+                      value: t.RMCode,
+                      label: t.RMCode,
+                    }))}
+                    // options = {Object.entries(this.state.rmcodes)
+                    //   .map( ([key, value]) => `My key is ${key} and my value is ${value}`)}
+                   
+                    value={
+                      this.state.rmcode ? { label: this.state.rmcode } : null
+                    }
+                    getOptionValue={(option) => option.value}
+                    getOptionLabel={(option) => option.label}
+                    onChange={(value, select) => {
+                      // this.setState({ rmcode: value.value });
+                      // this.handlegetcodebyname(value.value);
+                      // this.onChangeClearError(select.name);
+                      // this.setState({ fieldErrors: "" });
+                      this.setState({ rmcode:value.value});
+                      this.handlegetSpecs(value.value);
+                      this.handlegetnamebycode(value.value);
+                    }}
+                  />
+                       
                       </GridItem>
                     </GridContainer>
 

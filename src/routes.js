@@ -114,12 +114,13 @@ import PMNewFormulation from "./views/Production/PMNewFormulation"
 // QA
 import IBatchNo from "./views/QA/issueBtachNo";
 import RMSample from  "./views/QA/Sample/RMSamplingLog"
+import PMSample from  "./views/QA/Sample/PMSamplingLog"
 import ProductSample from  "./views/QA/Sample/ProductSample"
 import RMNewFormula from "./views/QA/RMNewFormulation"
 import NC from "./views/QA/NonConformance"
 import addProduct from "./views/QA/addaproduct"
 import addRM from "./views/QA/addrawmaterial"
-import AddPackingMaterial from "./views/QA/AddPackingMaterial";
+import addPM from "./views/QA/AddPackingMaterial";
 import batchDeviation from "./views/QA/BatchDeviationForm"
 import changeControl from "./views/QA/ChangeControl"
 import CloseBatch from "./views/QA/CloseBatch"
@@ -127,7 +128,9 @@ import ViewProduct from "./views/QA/ViewProduct"
 import ViewRM from "./views/QA/ViewRawMaterial"
 import batchReview from "./views/QA/batchReview"
 import AddPackSize from "./views/QA/AddPackSize"
-
+import addSupplier from "./views/QA/AddSupplier"
+import addMaterialToSupplier from "./views/QA/AddMaterialToSupplier"
+import QADashboard from "./views/QA/Dashboard";
 
 //------------------ Admin Routes ------------------------ 
 
@@ -554,7 +557,14 @@ const dashboardRoutes = [
 	},
 
 	//Quality Assurance
-
+	{
+		path: "/QA/dashboard",
+		name: "Dashboard",
+		icon: Dashboard,
+		component: QADashboard,
+		layout: "/saffron",
+		role: "Quality Assurance",
+	},
 	{
 		path: "/QA/batch/issue",
 		name: "Issue Batch No",
@@ -569,6 +579,15 @@ const dashboardRoutes = [
 		name: "RM Sample",
 		icon: LibraryBooks,
 		component: RMSample,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	{
+		path: "/QA/PM/sample",
+		name: "PM Sample",
+		icon: LibraryBooks,
+		component: PMSample,
 		layout: "/saffron",
 		role: "Quality Assurance",
 		showNav: true,
@@ -631,7 +650,7 @@ const dashboardRoutes = [
 		path: "/QA/RM/packing-material/add",
 		name: "Add Packing Material",
 		icon: LibraryBooks,
-		component: AddPackingMaterial,
+		component: addPM,
 		layout: "/saffron",
 		role: "Quality Assurance",
 		showNav: true,
@@ -708,6 +727,27 @@ const dashboardRoutes = [
 		role: "Quality Assurance",
 		showNav: true,
 	},
+	{
+		path: "/QA/AddSupplier",
+		name: "Add Supplier",
+		icon: LibraryBooks,
+		component: addSupplier,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	{
+		path: "/QA/AddMaterialToSupplier",
+		name: "Approve Material",
+		icon: LibraryBooks,
+		component: addMaterialToSupplier,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+
+	
+	
 ];
 
 export default dashboardRoutes;

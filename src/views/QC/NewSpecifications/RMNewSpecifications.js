@@ -4,11 +4,11 @@ import GridContainer from "../../../components/Grid/GridContainer.js";
 import Button from "../../../components/CustomButtons/Button.js";
 import Card from "../../../components/Card/Card.js";
 import CardM from "@material-ui/core/Card";
+import MenuItem from '@material-ui/core/MenuItem';
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "../../../components/Card/CardHeader.js";
 import CardBody from "../../../components/Card/CardBody.js";
 import CardFooter from "../../../components/Card/CardFooter.js";
-import MenuItem from '@material-ui/core/MenuItem';
 import TextField from "@material-ui/core/TextField";
 import { Checkbox } from "@material-ui/core";
 import { FormControlLabel } from "@material-ui/core";
@@ -23,37 +23,23 @@ import SaveIcon from "@material-ui/icons/Save";
 import ImportExportIcon from "@material-ui/icons/ImportExport";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
-import RM_New_Specs from "../../../Services/QC/RM/RM_New_Specs.js";
-export default class RMNewSpecifications extends Component {
+import RM_Edit_Specs from "../../../Services/QC/RM/RM_Edit_Specs.js";
+import Select from "react-select";
+import { toast } from "react-toastify";
 
-  async componentDidMount() {
-    const cl = (await (RM_New_Specs.methods.CodeList())).data;
-    this.setState({ codes: cl });
-
-    const cn = (await (RM_New_Specs.methods.MaterialList())).data;
-    this.setState({ names: cn });
-
-    const re = (await (RM_New_Specs.methods.Reference())).data;
-    this.setState({ references: re });
-
-    const pa = (await (RM_New_Specs.methods.Parameters())).data;
-    this.setState({ parameters: pa });
-    const ac = (await (RM_New_Specs.methods.AcquireCode())).data;
-    this.setState({ acc_codes: ac });
-    const am = (await (RM_New_Specs.methods.Acquirematerial())).data;
-    this.setState({ acc_names: am });
-  }
-
+export default class RMEditSpecifications extends Component {
   constructor(props) {
     super(props);
     this.state = {
       show: false,
       cart: [],
+      sop_no: '',
       codes: [],
       names: [],
       code: '',
       name: '',
       ref: '',
+      date: '',
       references: [],
       selectedRows: [],
       issue_no: 1,
@@ -69,11 +55,31 @@ export default class RMNewSpecifications extends Component {
       canChange: true,
       canDelete: true,
       canArrow: true,
+      reason: '',
     }
   }
 
- 
+  async componentDidMount() {
+    const cl = (await (RM_Edit_Specs.methods.AcquireCode())).data;
+    this.setState({ codes: cl });
 
+    const cn = (await (RM_Edit_Specs.methods.Acquirematerial())).data;
+    this.setState({ names: cn });
+
+    const re = (await (RM_Edit_Specs.methods.Reference())).data;
+    this.setState({ references: re });
+
+    const pa = (await (RM_Edit_Specs.methods.Parameters())).data;
+    this.setState({ parameters: pa });
+    const ac = (await (RM_Edit_Specs.methods.AcquireCode())).data;
+    this.setState({ acc_codes: ac });
+    const am = (await (RM_Edit_Specs.methods.Acquirematerial())).data;
+    this.setState({ acc_names: am });
+
+    // var today = new Date();
+    // let date = today.getDate() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear();
+    // this.setState({date: date})
+  }
   clearForm = () => {
     this.setState(prevState => ({
       selected: {                   // object that we want to update
@@ -89,6 +95,7 @@ export default class RMNewSpecifications extends Component {
       // acc_name: '',
       // acc_code: '',
       // ref: '',
+
       show: false,
     })
   }
@@ -99,58 +106,113 @@ export default class RMNewSpecifications extends Component {
       }, () => resolve());
     })
   }
-
   async fillCode(nam) {
-    const temp = (await (RM_New_Specs.methods.CodeByName(nam))).data;
+    const temp = (await (RM_Edit_Specs.methods.CodeByName(nam))).data;
     this.setState({ code: temp.RMCode })
+    this.fillSpecs(temp.RMCode)
   }
   async fillName(cod) {
-    const temp = (await (RM_New_Specs.methods.NameByCode(cod))).data
+    const temp = (await (RM_Edit_Specs.methods.NameByCode(cod))).data
     this.setState({ name: temp.Material })
   }
   async fillAccCode(nam) {
-    const temp = (await (RM_New_Specs.methods.CodeByNameforaccuire(nam))).data;
+    const temp = (await (RM_Edit_Specs.methods.CodeByName(nam))).data;
     this.setState({ acc_code: temp.RMCode })
-    this.fillSpecs(temp.RMCode)
+    this.fillAccSpecs(temp.RMCode)
   }
   async fillAccName(cod) {
-    const temp = (await (RM_New_Specs.methods.NameByCodeforaccuire(cod))).data
+    const temp = (await (RM_Edit_Specs.methods.NameByCode(cod))).data
     this.setState({ acc_name: temp.Material })
   }
   async fillSpecs(cod) {
-    const temp = (await (RM_New_Specs.methods.Acquirespecifications(cod))).data
+    console.log("codee", cod)
+    debugger
+    const temp = (await (RM_Edit_Specs.methods.RMEditSpecificationView(cod))).data
+    console.log("codee", temp)
+    console.log(temp)
     this.setState({ cart: [] })
     const temp_array = []
-    for (let i = 0; i < temp.length; ++i) {
+    for (let i = 0; i < temp.items.length; ++i) {
       const t = {
-        para: temp[i].parameter,
-        specs: temp[i].specification,
+        para: temp.items[i].parameter,
+        specs: temp.items[i].specification,
+      }
+      temp_array.push(t)
+    }
+    this.setState({ cart: temp_array })
+    this.setState({ code: temp.RMCode })
+    this.setState({ sop_no: temp.SOPNo })
+    this.setState({ date: temp.date })
+    this.setState({ ref: temp.reference })
+    this.setState({ issue_no: temp.version })
+  }
+  async fillAccSpecs(cod) {
+    const temp = (await (RM_Edit_Specs.methods.RMEditSpecificationView(cod))).data
+    console.log(temp)
+    this.setState({ cart: [] })
+    const temp_array = []
+    for (let i = 0; i < temp.items.length; ++i) {
+      const t = {
+        para: temp.items[i].parameter,
+        specs: temp.items[i].specification,
       }
       temp_array.push(t)
     }
     this.setState({ cart: temp_array })
   }
 
-  handlePostData =async()=>{
+  toggle = () =>
+    this.setState((currentState) => ({ show: !currentState.show }));
 
-    const temp= this.state.cart.map(item=>{
-      return{
-        parameter:item.para,
-        specification:item.specs
+  handlepostData = async () => {
+    let { code, name, ref } = this.state;
+    // let { para, specs } = this.state.selected;
+    const fieldErrors = this.validateSave({ code, name, ref });
+    this.setState({ fieldErrors: fieldErrors });
+    if (Object.keys(fieldErrors).length) return;
+
+    console.log("Add");
+    const temp = this.state.cart.map(item => {
+      return {
+        parameter: item.para,
+        specification: item.specs
       }
     })
-
-    const payload ={
+    const payload = {
       "RMCode": this.state.code,
+      "SOPNo": this.state.sop_no,
       "reference": this.state.ref,
+      "version": this.state.issue_no,
       "items": temp,
     }
 
-    console.log(payload);
-
-    const resp = (await RM_New_Specs.methods.postSpecifications(payload));
+    const resp = (await RM_Edit_Specs.methods.updateSpecification(payload));
     console.log(resp);
-    alert("Specs Added");
+    if (resp.status === 201) {
+      toast.success("Request Sent !!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      // alert("Request Sent !!");
+      this.clearForm();
+    } else {
+      toast.error("Request Not sent", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      // alert("Request Not sent");
+    }
+    // alert("Specs Edited");
     this.setState(prevState => ({
       selected: {                   // object that we want to update
         ...prevState.selected,    // keep all other key-value pairs
@@ -166,23 +228,42 @@ export default class RMNewSpecifications extends Component {
       acc_code: '',
       ref: '',
       show: false,
-      cart:[]
+      reason: '',
+      issue_no: '',
+      sop_no: '',
+      cart: [],
+      date: '',
     })
-
-
   }
-  toggle = () =>
-    this.setState((currentState) => ({ show: !currentState.show }));
+  validateSave = (fields) => {
+    const errors = {};
+    if (!fields.code) errors.code = "Material Code Required";
+    if (!fields.name) errors.name = "Material Name Required";
+    if (!fields.ref) errors.ref = "Reference Required";
+    return errors;
+  };
+  validateAdd = (fields) => {
+    const errors = {};
+    if (!fields.para) errors.para = "Parameter Required";
+    if (!fields.specs) errors.specs = "Specification Required";
+    return errors;
+  };
 
+  onChangeClearError = (name) => {
+    let data = {
+      ...this.state.fieldErrors,
+      [name]: "",
+    };
+    console.log(Object.entries(data));
+    this.setState({
+      fieldErrors: data,
+    });
+  };
   render() {
-    var today = new Date();
-    let date =
-      today.getDate() +
-      "-" +
-      (today.getMonth() + 1) +
-      "-" +
-      today.getFullYear();
-
+    console.log("codes", this.state.codes)
+    console.log("names", this.state.names)
+    console.log("refernces", this.state.references)
+    console.log("parameters", this.state.parameters)
     const products_array = []
     for (let i = 0; i < this.state.cart.length; ++i) {
       let temp = {
@@ -201,15 +282,16 @@ export default class RMNewSpecifications extends Component {
       {
         field: "specifications",
         headerName: "Specification",
-        width: 400,
+        width: 300,
       },
     ];
     return (
-      <div>
+      <div style={{ marginTop: 50 }}>
+        {console.log(this.state)}
         <GridContainer md={12}>
           <Card>
             <CardHeader color="primary">
-              <h4>New Raw Material Specification </h4>
+              <h2>Edit Specification-Raw Material </h2>
             </CardHeader>
             <CardBody>
               <GridContainer>
@@ -217,8 +299,32 @@ export default class RMNewSpecifications extends Component {
                   <CardContent>
                     <GridContainer>
                       <GridItem xs={12} sm={12} md={2}>
-                        <TextField
-                          id="MC"
+                        <Select
+                          name="code"
+                          placeholder="Material Code"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.codes}
+                          value={
+                            this.state.code ? { RMCode: this.state.code } : null
+                          }
+                          getOptionValue={(option) => option.RMCode}
+                          getOptionLabel={(option) => option.RMCode}
+                          onChange={(value, select) => {
+                            this.setState({ code: value.RMCode })
+                            this.fillName(value.RMCode);
+                            this.fillSpecs(value.RMCode);
+                            this.onChangeClearError(select.name);
+                          }}
+                        />
+                        {this.state.fieldErrors && this.state.fieldErrors.code && (
+                          <span className="MuiFormHelperText-root Mui-error">
+                            {this.state.fieldErrors.code}
+                          </span>
+                        )}
+                        {/* <TextField
+                          id=""
                           select
                           label="Material Code:"
                           fullWidth="true"
@@ -226,6 +332,7 @@ export default class RMNewSpecifications extends Component {
                           onChange={(event) => {
                             this.setState({ code: event.target.value })
                             this.fillName(event.target.value);
+                            this.fillSpecs(event.target.value);
                           }}
                         >
                           {this.state.codes.map((cod) => (
@@ -233,11 +340,35 @@ export default class RMNewSpecifications extends Component {
                               {cod['RMCode']}
                             </MenuItem>
                           ))}
-                        </TextField>
+                        </TextField> */}
                       </GridItem>
                       <GridItem xs={12} sm={12} md={2}>
-                        <TextField
-                          id="RM"
+                        <Select
+                          name="name"
+                          placeholder="Material Name"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.names}
+                          value={
+                            this.state.name ? { Material: this.state.name } : null
+                          }
+                          getOptionValue={(option) => option.Material}
+                          getOptionLabel={(option) => option.Material}
+                          onChange={(value, select) => {
+                            this.setState({ name: value.Material })
+                            this.fillCode(value.Material);
+                            console.log(value, select.name);
+                            this.onChangeClearError(select.name);
+                          }}
+                        />
+                        {this.state.fieldErrors && this.state.fieldErrors.name && (
+                          <span className="MuiFormHelperText-root Mui-error">
+                            {this.state.fieldErrors.name}
+                          </span>
+                        )}
+                        {/* <TextField
+                          id=""
                           select
                           label="Material Name:"
                           fullWidth="true"
@@ -252,12 +383,34 @@ export default class RMNewSpecifications extends Component {
                               {nam['Material']}
                             </MenuItem>
                           ))}
-                        </TextField>
+                        </TextField> */}
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={2}>
-                        <TextField
-                          id="REF"
+                        <Select
+                          name="ref"
+                          placeholder="Reference"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.references}
+                          value={
+                            this.state.ref ? { reference: this.state.ref } : null
+                          }
+                          getOptionValue={(option) => option.reference}
+                          getOptionLabel={(option) => option.reference}
+                          onChange={(value, select) => {
+                            this.setState({ ref: value.reference })
+                            this.onChangeClearError(select.name);
+                          }}
+                        />
+                        {this.state.fieldErrors && this.state.fieldErrors.ref && (
+                          <span className="MuiFormHelperText-root Mui-error">
+                            {this.state.fieldErrors.ref}
+                          </span>
+                        )}
+                        {/* <TextField
+                          id=""
                           variant="outlined"
                           label="Reference "
                           fullWidth="true"
@@ -272,13 +425,14 @@ export default class RMNewSpecifications extends Component {
                               {ref['reference']}
                             </MenuItem>
                           ))}
-                        </TextField>
+                        </TextField> */}
                       </GridItem>
                       <GridItem xs={12} sm={12} md={2}>
                         <TextField
-                          id="SOP"
+                          id=""
                           variant="outlined"
                           label="SOP/Dmd No"
+                          value={this.state.sop_no}
                           style={{ backgroundColor: "#ebebeb" }}
                           fullWidth="true"
                           InputProps={{ readOnly: true }}
@@ -292,13 +446,14 @@ export default class RMNewSpecifications extends Component {
                           InputProps={{ readOnly: true }}
                           variant="outlined"
                           label="Date"
-                          defaultValue={date}
+                          value={this.state.date}
+                        //defaultValue={date}
                         />
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={2}>
                         <TextField
-                          id="ISSUE"
+                          id=""
                           variant="outlined"
                           label="Issue No."
                           fullWidth="true"
@@ -310,8 +465,36 @@ export default class RMNewSpecifications extends Component {
 
                     <GridContainer>
                       <GridItem xs={12} sm={12} md={2}>
-                        <TextField
-                          id="PARA"
+                        <Select
+                          name="para"
+                          placeholder="Parameter"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.parameters}
+                          value={
+                            this.state.selected.para ? { parameter: this.state.selected.para } : null
+                          }
+                          getOptionValue={(option) => option.parameter}
+                          getOptionLabel={(option) => option.parameter}
+                          onChange={(value, select) => {
+                            this.setState((prevState) => ({
+                              selected: {
+                                ...prevState.selected,
+                                para: value.parameter,
+                              }
+                            }))
+                            console.log(value, select.name);
+                            this.onChangeClearError(select.name);
+                          }}
+                        />
+                        {this.state.fieldErrors && this.state.fieldErrors.para && (
+                          <span className="MuiFormHelperText-root Mui-error">
+                            {this.state.fieldErrors.para}
+                          </span>
+                        )}
+                        {/* <TextField
+                          id=""
                           select
                           label="Parameter:"
                           fullWidth="true"
@@ -330,15 +513,27 @@ export default class RMNewSpecifications extends Component {
                               {par['parameter']}
                             </MenuItem>
                           ))}
-                        </TextField>
+                        </TextField> */}
                       </GridItem>
                       <GridItem xs={12} sm={12} md={6}>
                         <TextField
-                          id="SPECS"
+                          id=""
+                          style={{ width: "100%" }}
                           label="Specifications"
+                          multiline
                           variant="outlined"
-                          fullWidth="true"
+                          name="specs"
                           value={this.state.selected.specs}
+                          error={
+                            this.state.fieldErrors &&
+                              this.state.fieldErrors.specs
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.specs
+                          }
                           onChange={(event) => {
                             this.setState(prevState => ({
                               selected: {                  // object that we want to update
@@ -346,9 +541,11 @@ export default class RMNewSpecifications extends Component {
                                 specs: event.target.value  // update the value of specific key
                               }
                             }))
+                            this.onChangeClearError(event.target.name);
                           }}
                         />
                       </GridItem>
+
                       <GridItem xs={12} sm={12} md={4}>
                         <Button
                           className=""
@@ -365,16 +562,34 @@ export default class RMNewSpecifications extends Component {
                       <div id="hide">
                         <GridContainer>
                           <GridItem xs={12} sm={12} md={6}>
-                            <TextField
-                              id="ARM"
+                            <Select
+                              name="acc_code"
+                              placeholder="Material Code"
+                              className="customSelect"
+                              classNamePrefix="select"
+                              isSearchable={true}
+                              options={this.state.acc_codes}
+                              value={
+                                this.state.acc_code ? { RMCode: this.state.acc_code } : null
+                              }
+                              getOptionValue={(option) => option.RMCode}
+                              getOptionLabel={(option) => option.RMCode}
+                              onChange={(value, select) => {
+                                this.setState({ acc_code: value.RMCode })
+                                this.fillAccName(value.RMCode);
+                                this.fillAccSpecs(value.RMCode);
+                              }}
+                            />
+                            {/* <TextField
+                              id=""
                               select
                               label="Material Code:"
                               fullWidth="true"
                               value={this.state.acc_code}
                               onChange={(event) => {
-                                this.setState({ acc_code: event.target.value })
+                                this.setState({ acc_code: event.target.value });
                                 this.fillAccName(event.target.value);
-                                this.fillSpecs(event.target.value);
+                                this.fillAccSpecs(event.target.value);
                               }}
                             >
                               {this.state.acc_codes.map((obj) => (
@@ -382,17 +597,34 @@ export default class RMNewSpecifications extends Component {
                                   {obj['RMCode']}
                                 </MenuItem>
                               ))}
-                            </TextField>
+                            </TextField> */}
                           </GridItem>
                           <GridItem xs={12} sm={12} md={6}>
-                            <TextField
-                              id="AMC"
+                            <Select
+                              name="acc_name"
+                              placeholder="Material Name"
+                              className="customSelect"
+                              classNamePrefix="select"
+                              isSearchable={true}
+                              options={this.state.acc_names}
+                              value={
+                                this.state.acc_name ? { Material: this.state.acc_name } : null
+                              }
+                              getOptionValue={(option) => option.Material}
+                              getOptionLabel={(option) => option.Material}
+                              onChange={(value) => {
+                                this.setState({ acc_name: value.Material })
+                                this.fillAccCode(value.Material);
+                              }}
+                            />
+                            {/* <TextField
+                              id=""
                               select
                               label="Material Name:"
                               fullWidth="true"
                               value={this.state.acc_name}
                               onChange={(event) => {
-                                this.setState({ acc_name: event.target.value })
+                                this.setState({ acc_name: event.target.value });
                                 this.fillAccCode(event.target.value);
                               }}
                             >
@@ -401,21 +633,37 @@ export default class RMNewSpecifications extends Component {
                                   {obj['Material']}
                                 </MenuItem>
                               ))}
-                            </TextField>
+                            </TextField> */}
                           </GridItem>
                         </GridContainer>
                       </div>
                     )}
+
+                    <GridItem xs={12} sm={12} md={12}>
+                      <TextField
+                        id=""
+                        style={{ width: "100%" }}
+                        label="Reason of Change"
+                        multiline
+                        variant="outlined"
+                        value={this.state.reason}
+                        onChange={(event) => {
+                          this.setState({ reason: event.target.value });
+                        }}
+                      />
+                    </GridItem>
 
                     <GridContainer>
                       <GridItem xs={12} sm={12} md={8}>
                         <Button
                           className=""
                           startIcon={<AddCircleOutlineIcon />}
+                          onClick={() => { }}
+                          color="primary"
                           onClick={() => {
                             let present = false;
                             for (let i = 0; i < this.state.cart.length; ++i) {
-                              if (this.state.cart[i].paramter === this.state.selected.para) {
+                              if (this.state.cart[i].para === this.state.selected.para) {
                                 present = true;
                                 break;
                               }
@@ -423,7 +671,11 @@ export default class RMNewSpecifications extends Component {
                             if (this.state.selected.para == '' || this.state.ref == '' ||
                               this.state.selected.specs == '' ||
                               this.state.code == '' || this.state.name == '') {
-                              alert("Please fill the form first to add into cart.")
+                              let { para, specs } = this.state.selected;
+                              const fieldErrors = this.validateAdd({ para, specs });
+                              this.setState({ fieldErrors: fieldErrors });
+                              if (Object.keys(fieldErrors).length) return;
+                              // alert("Please fill the form first to add into cart.")
                             }
                             else if (present === true) {
                               alert("This Parameter is already present in cart.")
@@ -434,20 +686,25 @@ export default class RMNewSpecifications extends Component {
                               this.clearForm();
                             }
                           }}
-                        > Add </Button>
+                        >
+                          Add
+                        </Button>
                         <Button
                           className=""
                           startIcon={<SaveIcon />}
                           onClick={() => {
-                            this.handlePostData();
-                           }}
+                            this.handlepostData();
+                          }}
                           color="primary"
+
                         >
                           Save
                         </Button>
                         <Button
                           className=""
                           startIcon={<EditIcon />}
+                          onClick={() => { }}
+                          color="primary"
                           onClick={() => {
                             var array = [...this.state.cart];
                             var index = -1;
@@ -470,7 +727,6 @@ export default class RMNewSpecifications extends Component {
                               this.setState({ cart: array });
                             }
                           }}
-                          color="primary"
                           disabled={this.state.canChange}
                         >
                           Change
@@ -478,6 +734,8 @@ export default class RMNewSpecifications extends Component {
                         <Button
                           className=""
                           startIcon={<DeleteOutlineIcon />}
+                          onClick={() => { }}
+                          color="secondary"
                           onClick={() => {
                             var array = [...this.state.cart];
                             for (let x = 0; x < this.state.selectedRows.length; ++x) {
@@ -496,7 +754,6 @@ export default class RMNewSpecifications extends Component {
                               }
                             }
                           }}
-                          color="secondary"
                           disabled={this.state.canDelete}
                         >
                           Delete
@@ -545,8 +802,8 @@ export default class RMNewSpecifications extends Component {
                           variant="contained"
                           color="primary"
                           size="small"
-                          disabled={this.state.canArrow}
                           startIcon={<ArrowDownwardIcon />}
+                          disabled={this.state.canArrow}
                           onClick={() => {
                             var array = [...this.state.cart];
                             for (
