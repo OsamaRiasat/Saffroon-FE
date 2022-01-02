@@ -24,6 +24,8 @@ import ImportExportIcon from "@material-ui/icons/ImportExport";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import RM_Edit_Specs from "../../../Services/QC/RM/RM_Edit_Specs.js";
+import Select from "react-select";
+import { toast } from "react-toastify";
 
 export default class RMEditSpecifications extends Component {
   constructor(props) {
@@ -40,7 +42,7 @@ export default class RMEditSpecifications extends Component {
       date: '',
       references: [],
       selectedRows: [],
-      issue_no: "",
+      issue_no: 1,
       parameters: [],
       selected: {
         para: '',
@@ -93,7 +95,7 @@ export default class RMEditSpecifications extends Component {
       // acc_name: '',
       // acc_code: '',
       // ref: '',
-      
+
       show: false,
     })
   }
@@ -123,7 +125,10 @@ export default class RMEditSpecifications extends Component {
     this.setState({ acc_name: temp.Material })
   }
   async fillSpecs(cod) {
+    console.log("codee", cod)
+    debugger
     const temp = (await (RM_Edit_Specs.methods.RMEditSpecificationView(cod))).data
+    console.log("codee", temp)
     console.log(temp)
     this.setState({ cart: [] })
     const temp_array = []
@@ -135,11 +140,11 @@ export default class RMEditSpecifications extends Component {
       temp_array.push(t)
     }
     this.setState({ cart: temp_array })
-    this.setState({code: temp.RMCode})
-    this.setState({sop_no: temp.SOPNo})
-    this.setState({date: temp.date})
-    this.setState({ref: temp.reference})
-    this.setState({ issue_no:temp.version})
+    this.setState({ code: temp.RMCode })
+    this.setState({ sop_no: temp.SOPNo })
+    this.setState({ date: temp.date })
+    this.setState({ ref: temp.reference })
+    this.setState({ issue_no: temp.version })
   }
   async fillAccSpecs(cod) {
     const temp = (await (RM_Edit_Specs.methods.RMEditSpecificationView(cod))).data
@@ -159,25 +164,55 @@ export default class RMEditSpecifications extends Component {
   toggle = () =>
     this.setState((currentState) => ({ show: !currentState.show }));
 
-    handlepostData=async()=>{
-      console.log("Add");
-      const temp= this.state.cart.map(item=>{
-        return{
-          parameter:item.para,
-          specification:item.specs
-        }
-      })
-      const payload={
-        "RMCode": this.state.code,
-        "SOPNo": this.state.sop_no,
-        "reference": this.state.ref,
-        "version": this.state.issue_no,
-        "items": temp,
-      }
+  handlepostData = async () => {
+    let { code, name, ref } = this.state;
+    // let { para, specs } = this.state.selected;
+    const fieldErrors = this.validateSave({ code, name, ref });
+    this.setState({ fieldErrors: fieldErrors });
+    if (Object.keys(fieldErrors).length) return;
 
-      const resp = (await RM_Edit_Specs.methods.updateSpecification(payload));
+    console.log("Add");
+    const temp = this.state.cart.map(item => {
+      return {
+        parameter: item.para,
+        specification: item.specs
+      }
+    })
+    const payload = {
+      "RMCode": this.state.code,
+      "SOPNo": this.state.sop_no,
+      "reference": this.state.ref,
+      "version": this.state.issue_no,
+      "items": temp,
+    }
+
+    const resp = (await RM_Edit_Specs.methods.updateSpecification(payload));
     console.log(resp);
-    alert("Specs Edited");
+    if (resp.status === 201) {
+      toast.success("Request Sent !!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      // alert("Request Sent !!");
+      this.clearForm();
+    } else {
+      toast.error("Request Not sent", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      // alert("Request Not sent");
+    }
+    // alert("Specs Edited");
     this.setState(prevState => ({
       selected: {                   // object that we want to update
         ...prevState.selected,    // keep all other key-value pairs
@@ -193,14 +228,42 @@ export default class RMEditSpecifications extends Component {
       acc_code: '',
       ref: '',
       show: false,
-      reason:'',
-      issue_no:'',
+      reason: '',
+      issue_no: '',
       sop_no: '',
-      cart:[],
+      cart: [],
       date: '',
     })
-    }
+  }
+  validateSave = (fields) => {
+    const errors = {};
+    if (!fields.code) errors.code = "Material Code Required";
+    if (!fields.name) errors.name = "Material Name Required";
+    if (!fields.ref) errors.ref = "Reference Required";
+    return errors;
+  };
+  validateAdd = (fields) => {
+    const errors = {};
+    if (!fields.para) errors.para = "Parameter Required";
+    if (!fields.specs) errors.specs = "Specification Required";
+    return errors;
+  };
+
+  onChangeClearError = (name) => {
+    let data = {
+      ...this.state.fieldErrors,
+      [name]: "",
+    };
+    console.log(Object.entries(data));
+    this.setState({
+      fieldErrors: data,
+    });
+  };
   render() {
+    console.log("codes", this.state.codes)
+    console.log("names", this.state.names)
+    console.log("refernces", this.state.references)
+    console.log("parameters", this.state.parameters)
     const products_array = []
     for (let i = 0; i < this.state.cart.length; ++i) {
       let temp = {
@@ -223,7 +286,7 @@ export default class RMEditSpecifications extends Component {
       },
     ];
     return (
-      <div style={{marginTop:50}}>
+      <div style={{ marginTop: 50 }}>
         {console.log(this.state)}
         <GridContainer md={12}>
           <Card>
@@ -236,7 +299,31 @@ export default class RMEditSpecifications extends Component {
                   <CardContent>
                     <GridContainer>
                       <GridItem xs={12} sm={12} md={2}>
-                        <TextField
+                        <Select
+                          name="code"
+                          placeholder="Material Code"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.codes}
+                          value={
+                            this.state.code ? { RMCode: this.state.code } : null
+                          }
+                          getOptionValue={(option) => option.RMCode}
+                          getOptionLabel={(option) => option.RMCode}
+                          onChange={(value, select) => {
+                            this.setState({ code: value.RMCode })
+                            this.fillName(value.RMCode);
+                            this.fillSpecs(value.RMCode);
+                            this.onChangeClearError(select.name);
+                          }}
+                        />
+                        {this.state.fieldErrors && this.state.fieldErrors.code && (
+                          <span className="MuiFormHelperText-root Mui-error">
+                            {this.state.fieldErrors.code}
+                          </span>
+                        )}
+                        {/* <TextField
                           id=""
                           select
                           label="Material Code:"
@@ -253,15 +340,39 @@ export default class RMEditSpecifications extends Component {
                               {cod['RMCode']}
                             </MenuItem>
                           ))}
-                        </TextField>
+                        </TextField> */}
                       </GridItem>
                       <GridItem xs={12} sm={12} md={2}>
-                        <TextField
+                        <Select
+                          name="name"
+                          placeholder="Material Name"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.names}
+                          value={
+                            this.state.name ? { Material: this.state.name } : null
+                          }
+                          getOptionValue={(option) => option.Material}
+                          getOptionLabel={(option) => option.Material}
+                          onChange={(value, select) => {
+                            this.setState({ name: value.Material })
+                            this.fillCode(value.Material);
+                            console.log(value, select.name);
+                            this.onChangeClearError(select.name);
+                          }}
+                        />
+                        {this.state.fieldErrors && this.state.fieldErrors.name && (
+                          <span className="MuiFormHelperText-root Mui-error">
+                            {this.state.fieldErrors.name}
+                          </span>
+                        )}
+                        {/* <TextField
                           id=""
                           select
                           label="Material Name:"
                           fullWidth="true"
-                          value = {this.state.name}
+                          value={this.state.name}
                           onChange={(event) => {
                             this.setState({ name: event.target.value });
                             this.fillCode(event.target.value);
@@ -272,11 +383,33 @@ export default class RMEditSpecifications extends Component {
                               {nam['Material']}
                             </MenuItem>
                           ))}
-                          </TextField>
+                        </TextField> */}
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={2}>
-                        <TextField
+                        <Select
+                          name="ref"
+                          placeholder="Reference"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.references}
+                          value={
+                            this.state.ref ? { reference: this.state.ref } : null
+                          }
+                          getOptionValue={(option) => option.reference}
+                          getOptionLabel={(option) => option.reference}
+                          onChange={(value, select) => {
+                            this.setState({ ref: value.reference })
+                            this.onChangeClearError(select.name);
+                          }}
+                        />
+                        {this.state.fieldErrors && this.state.fieldErrors.ref && (
+                          <span className="MuiFormHelperText-root Mui-error">
+                            {this.state.fieldErrors.ref}
+                          </span>
+                        )}
+                        {/* <TextField
                           id=""
                           variant="outlined"
                           label="Reference "
@@ -292,7 +425,7 @@ export default class RMEditSpecifications extends Component {
                               {ref['reference']}
                             </MenuItem>
                           ))}
-                          </TextField>
+                        </TextField> */}
                       </GridItem>
                       <GridItem xs={12} sm={12} md={2}>
                         <TextField
@@ -314,7 +447,7 @@ export default class RMEditSpecifications extends Component {
                           variant="outlined"
                           label="Date"
                           value={this.state.date}
-                          //defaultValue={date}
+                        //defaultValue={date}
                         />
                       </GridItem>
 
@@ -332,7 +465,35 @@ export default class RMEditSpecifications extends Component {
 
                     <GridContainer>
                       <GridItem xs={12} sm={12} md={2}>
-                        <TextField
+                        <Select
+                          name="para"
+                          placeholder="Parameter"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          isSearchable={true}
+                          options={this.state.parameters}
+                          value={
+                            this.state.selected.para ? { parameter: this.state.selected.para } : null
+                          }
+                          getOptionValue={(option) => option.parameter}
+                          getOptionLabel={(option) => option.parameter}
+                          onChange={(value, select) => {
+                            this.setState((prevState) => ({
+                              selected: {
+                                ...prevState.selected,
+                                para: value.parameter,
+                              }
+                            }))
+                            console.log(value, select.name);
+                            this.onChangeClearError(select.name);
+                          }}
+                        />
+                        {this.state.fieldErrors && this.state.fieldErrors.para && (
+                          <span className="MuiFormHelperText-root Mui-error">
+                            {this.state.fieldErrors.para}
+                          </span>
+                        )}
+                        {/* <TextField
                           id=""
                           select
                           label="Parameter:"
@@ -352,7 +513,7 @@ export default class RMEditSpecifications extends Component {
                               {par['parameter']}
                             </MenuItem>
                           ))}
-                          </TextField>
+                        </TextField> */}
                       </GridItem>
                       <GridItem xs={12} sm={12} md={6}>
                         <TextField
@@ -361,7 +522,18 @@ export default class RMEditSpecifications extends Component {
                           label="Specifications"
                           multiline
                           variant="outlined"
+                          name="specs"
                           value={this.state.selected.specs}
+                          error={
+                            this.state.fieldErrors &&
+                              this.state.fieldErrors.specs
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.specs
+                          }
                           onChange={(event) => {
                             this.setState(prevState => ({
                               selected: {                  // object that we want to update
@@ -369,6 +541,7 @@ export default class RMEditSpecifications extends Component {
                                 specs: event.target.value  // update the value of specific key
                               }
                             }))
+                            this.onChangeClearError(event.target.name);
                           }}
                         />
                       </GridItem>
@@ -389,12 +562,30 @@ export default class RMEditSpecifications extends Component {
                       <div id="hide">
                         <GridContainer>
                           <GridItem xs={12} sm={12} md={6}>
-                            <TextField
+                            <Select
+                              name="acc_code"
+                              placeholder="Material Code"
+                              className="customSelect"
+                              classNamePrefix="select"
+                              isSearchable={true}
+                              options={this.state.acc_codes}
+                              value={
+                                this.state.acc_code ? { RMCode: this.state.acc_code } : null
+                              }
+                              getOptionValue={(option) => option.RMCode}
+                              getOptionLabel={(option) => option.RMCode}
+                              onChange={(value, select) => {
+                                this.setState({ acc_code: value.RMCode })
+                                this.fillAccName(value.RMCode);
+                                this.fillAccSpecs(value.RMCode);
+                              }}
+                            />
+                            {/* <TextField
                               id=""
                               select
                               label="Material Code:"
                               fullWidth="true"
-                              value = {this.state.acc_code}
+                              value={this.state.acc_code}
                               onChange={(event) => {
                                 this.setState({ acc_code: event.target.value });
                                 this.fillAccName(event.target.value);
@@ -406,15 +597,32 @@ export default class RMEditSpecifications extends Component {
                                   {obj['RMCode']}
                                 </MenuItem>
                               ))}
-                            </TextField>
+                            </TextField> */}
                           </GridItem>
                           <GridItem xs={12} sm={12} md={6}>
-                            <TextField
+                            <Select
+                              name="acc_name"
+                              placeholder="Material Name"
+                              className="customSelect"
+                              classNamePrefix="select"
+                              isSearchable={true}
+                              options={this.state.acc_names}
+                              value={
+                                this.state.acc_name ? { Material: this.state.acc_name } : null
+                              }
+                              getOptionValue={(option) => option.Material}
+                              getOptionLabel={(option) => option.Material}
+                              onChange={(value) => {
+                                this.setState({ acc_name: value.Material })
+                                this.fillAccCode(value.Material);
+                              }}
+                            />
+                            {/* <TextField
                               id=""
                               select
                               label="Material Name:"
                               fullWidth="true"
-                              value = {this.state.acc_name}
+                              value={this.state.acc_name}
                               onChange={(event) => {
                                 this.setState({ acc_name: event.target.value });
                                 this.fillAccCode(event.target.value);
@@ -425,7 +633,7 @@ export default class RMEditSpecifications extends Component {
                                   {obj['Material']}
                                 </MenuItem>
                               ))}
-                            </TextField>
+                            </TextField> */}
                           </GridItem>
                         </GridContainer>
                       </div>
@@ -439,8 +647,8 @@ export default class RMEditSpecifications extends Component {
                         multiline
                         variant="outlined"
                         value={this.state.reason}
-                        onChange={(event)=>{
-                          this.setState({reason: event.target.value});
+                        onChange={(event) => {
+                          this.setState({ reason: event.target.value });
                         }}
                       />
                     </GridItem>
@@ -450,7 +658,7 @@ export default class RMEditSpecifications extends Component {
                         <Button
                           className=""
                           startIcon={<AddCircleOutlineIcon />}
-                          onClick={() => {}}
+                          onClick={() => { }}
                           color="primary"
                           onClick={() => {
                             let present = false;
@@ -463,7 +671,11 @@ export default class RMEditSpecifications extends Component {
                             if (this.state.selected.para == '' || this.state.ref == '' ||
                               this.state.selected.specs == '' ||
                               this.state.code == '' || this.state.name == '') {
-                              alert("Please fill the form first to add into cart.")
+                              let { para, specs } = this.state.selected;
+                              const fieldErrors = this.validateAdd({ para, specs });
+                              this.setState({ fieldErrors: fieldErrors });
+                              if (Object.keys(fieldErrors).length) return;
+                              // alert("Please fill the form first to add into cart.")
                             }
                             else if (present === true) {
                               alert("This Parameter is already present in cart.")
@@ -491,7 +703,7 @@ export default class RMEditSpecifications extends Component {
                         <Button
                           className=""
                           startIcon={<EditIcon />}
-                          onClick={() => {}}
+                          onClick={() => { }}
                           color="primary"
                           onClick={() => {
                             var array = [...this.state.cart];
@@ -522,7 +734,7 @@ export default class RMEditSpecifications extends Component {
                         <Button
                           className=""
                           startIcon={<DeleteOutlineIcon />}
-                          onClick={() => {}}
+                          onClick={() => { }}
                           color="secondary"
                           onClick={() => {
                             var array = [...this.state.cart];

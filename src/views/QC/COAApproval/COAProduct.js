@@ -15,6 +15,13 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import Checkbox from "@material-ui/core/Checkbox";
 import RM_COA_Approval from "../../../Services/QC/Product/Product_COA_Approval.js";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { toast } from "react-toastify";
+import Select from "react-select";
+import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../../variables/genericVariables";
+
 export default class COARM extends Component {
   constructor(props) {
     super(props);
@@ -47,6 +54,11 @@ export default class COARM extends Component {
       reason: "",
       fdata: "",
       sdata: "",
+      fieldErrors: {},
+      options1 : [
+        { value1: 'Released'  },
+        { value1: 'Rejected' }
+      ]
     };
   }
 
@@ -92,6 +104,13 @@ export default class COARM extends Component {
 
   async postData() {
     try{
+      let { qc_no , result} = this.state;
+
+      const fieldErrors = this.validate({ qc_no, result });
+
+      this.setState({ fieldErrors: fieldErrors });
+      
+      if (Object.keys(fieldErrors).length) return;
     const payload = {
       remarks: this.state.remarks,
       isRetest: this.state.show,
@@ -101,11 +120,20 @@ export default class COARM extends Component {
     const qc = this.state.qc_no;
     const resp = await RM_COA_Approval.methods.PostRMCOAApproval(qc, payload);
     console.log(resp);
-    alert("Certified !!");
+    // alert("Certified !!");
+    if (this.state.result === "Rejected"){
+      toast.success("Material Rejected");
+    }
+    else{
+      toast.success("Material Released");
+    }
+    this.handleClearForm();
+    
   }
   catch(error){
     console.log(error);
-    alert("Something Went Wrong !!")
+    // alert("Something Went Wrong !!")
+    toast.error("Data cannot be posted");
   }
   }
 handleValidate=()=>{
@@ -119,39 +147,60 @@ handleValidate=()=>{
     }
     return true
 }
-handleClearForm=()=>{
-  this.setState({ sampling_date:""  });
-  this.setState({ exp_date: "" });
-  this.setState({ igp_sample_req_no: "" });
-  this.setState({ mfg_date: "" });
-  this.setState({ name: "" });
-  this.setState({ code: "" });
-  this.setState({ units: "" });
-  this.setState({ igp_sample_req_no:""  });
-  this.setState({ analyst: "" });
-  this.setState({ assigned_date: "" });
-  this.setState({ batch_lot:"" });
-  this.setState({ qty: "" });
+validate = (fields) => {
+  const errors = {};
+  if (!fields.qc_no) errors.qc_no = "QC No Required*";
+  if (!fields.result) errors.result = "Result Required*";
+ 
+  return errors;
+};
+onChangeClearError = (name) => {
+  let data = {
+    ...this.state.fieldErrors,
+    [name]: "",
+  };
+  console.log(Object.entries(data));
   this.setState({
-    fdata: "",
-    sdata: "",
-    qc_no:"",
-    assigned_date: "",
-    analysis_date: "",
-    analysis_time: "",
-    retest_date: "",
+    fieldErrors: data,
+  });
+};
+
+handleClearForm=()=>{
+  this.setState({
+    sampling_date: "",
+    analyst: "",
+    qc_list: [],
+    qc_no: "",
+    igp_sample_req_no: "",
+    code: "",
+    name: "",
+    mfg_date: "",
+    exp_date: "",
+    batch_lot: "",
+    qty: "",
     approved_qty: "",
     rejected_qty: "",
     raw_data_ref: "",
     working_std_no: "",
-    
+    assigned_date: "",
+    analysis_date: "",
+    analysis_time: "",
+    retest_date: "",
+    cart: [],
+    result: "",
+    units: "",
+    selectedRows: [],
+    remarks: "",
+    show: false,
+    reason: "",
+    fdata: "",
+    sdata: "",
   });
-  this.setState({
-    cart:""
-  })
-  this.handleClearResultsparas();
-}
-  toggle = () =>
+   
+
+  // this.handleClearResultsparas();
+} 
+toggle = () =>
     this.setState((currentState) => ({ show: !currentState.show }));
 
   render() {
@@ -203,29 +252,51 @@ handleClearForm=()=>{
                   <CardContent>
                     
                       <CardHeader color="info">
-                        <h4>PM Sampling Information</h4>
+                        <h4>COA APPROVAL</h4>
                       </CardHeader>
                       <CardContent>
                         <GridContainer>
                         <GridItem xs={12} sm={12} md={3}>
-                            <TextField
-                              id=""
-                              select
-                              variant="outlined"
-                              label="QC No."
-                              fullWidth="true"
-                              value={this.state.qc_no}
-                              onChange={(event) => {
-                                this.setState({ qc_no: event.target.value });
-                                this.fillSpecs(event.target.value);
-                              }}
-                            >
-                              {this.state.qc_list.map((qc) => (
-                                <MenuItem key={qc["QCNo"]} value={qc["QCNo"]}>
-                                  {qc["QCNo"]}
-                                </MenuItem>
-                              ))}
-                            </TextField>
+                        <Select
+                      name="QC No"
+                      placeholder="Select QC No"
+                      components={{
+                        ValueContainer: CustomValueContainer,
+                      }}
+                      styles={CustomSelectStyle}
+                      className="customSelect"
+                      classNamePrefix="select"
+                      isSearchable={true}
+                      options={this.state.qc_list}
+                      value={
+                        this.state.qc_no
+                          ? { QCNo: this.state.qc_no }
+                          : null
+                      }
+                      getOptionValue={(option) => option.QCNo}
+                      getOptionLabel={(option) => option.QCNo}
+                      onChange={(value, select) => {
+                        this.setState(
+                          {
+                            qc_no: value.QCNo,
+                           
+                          },
+                          () => {
+                            // this.getPcodes(value.planNo);
+                            this.fillSpecs(value.QCNo);
+                          }
+                        );
+                        console.log(value, select.name);
+                        this.onChangeClearError(select.name);
+                      }}
+                    />
+                    {this.state.fieldErrors && this.state.fieldErrors.qc_no&& (
+                      <span className="MuiFormHelperText-root Mui-error">
+                        {this.state.fieldErrors.qc_no}
+                      </span>
+                    )}
+
+
                           </GridItem>
                           <GridItem xs={12} sm={12} md={3}>
                             <TextField
@@ -448,29 +519,39 @@ handleClearForm=()=>{
                         </GridItem>
 
                         <GridContainer>
-                          <GridItem xs={12} sm={12} md={2}>
-                            <TextField
-                              id=""
-                              select
-                              style={{ width: "100%" }}
-                              label="Results"
-                              variant="outlined"
-                              value={this.state.result}
-                              onChange={(event) => {
-                                  console.log("Chnage");
-                                this.setState({
-                                  result: event.target.value,
-                                });
-                              }}
-                            >
-                              <MenuItem key="1" value="Released">
-                                Released
-                              </MenuItem>
-                              <MenuItem key="2" value="Reject">
-                                Rejected
-                              </MenuItem>
-                            </TextField>
-                          </GridItem>
+                        <GridItem xs={50} sm={50} md={4}>
+                    <Select
+                      name="Results"
+                      placeholder="Select Result"
+                      components={{
+                        ValueContainer: CustomValueContainer,
+                      }}
+                      styles={CustomSelectStyle}
+                      className="customSelect"
+                      classNamePrefix="select"
+                      isSearchable={true}
+                      options={this.state.options1}
+                      value={
+                        this.state.result
+                          ? { value1: this.state.result }
+                          : null
+                      }
+                      getOptionValue={(option) => option.value1}
+                      getOptionLabel={(option) => option.value1}
+                      onChange={(value) => {
+                        console.log("Chnage");
+                      this.setState({
+                        result: value.value1,
+                      });
+                    }}
+                    />
+                      {this.state.fieldErrors &&
+                          this.state.fieldErrors.result && (
+                            <span className="MuiFormHelperText-root Mui-error">
+                              {this.state.fieldErrors.result}
+                            </span>
+                          )}
+                          </GridItem> 
 
                           <GridItem xs={12} sm={12} md={3}>
                             <FormControlLabel
@@ -522,13 +603,14 @@ handleClearForm=()=>{
                               
                               startIcon={<CloudUploadIcon />}
                               onClick={() => {
-                                if (this.state.qc_no === "") {
-                                  alert("Please select a QC number first!");
-                                } else if(this.handleValidate()) {
-                                  this.postData();
-                                }else{
-                                    alert("Soe Data is missing ")
-                                }
+                                // if (this.state.qc_no === "") {
+                                //   alert("Please select a QC number first!");
+                                // } else if(this.handleValidate()) {
+                                //   this.postData();
+                                // }else{
+                                //     alert("Soe Data is missing ")
+                                // }
+                                this.postData();
                               }}
                             >
                               Post

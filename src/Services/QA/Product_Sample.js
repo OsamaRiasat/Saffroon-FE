@@ -1,12 +1,12 @@
 import http from "../http/httpService.js";
 import { apiUrl } from "../../config.json";
 
-const data = "QualityAssurance/";   // Its products intentially
+const data = "QualityAssurance/"; // Its products intentially
 const Endpoint = apiUrl + data;
 
 export function PSPCode() {
-const resp = http.get(Endpoint + "PSPCode/");
-return resp;
+  const resp = http.get(Endpoint + "PSPCode/");
+  return resp;
 }
 
 export function PSBatchNo(Pcode) {
@@ -19,12 +19,17 @@ export function PSBatchDetail(batchNo) {
   return resp;
 }
 
+export function stagesList(PCode) {
+  const resp = http.get(Endpoint + "stagesList/" + PCode );
+  return resp;
+}
+
 export function AllUsers() {
   const resp = http.get(Endpoint + "AllUsers/");
   return resp;
 }
 
-export function ProductSample(obj) {
+export function Sample(obj) {
   const resp = http.post(Endpoint + "ProductSample/", obj);
   return resp;
 }

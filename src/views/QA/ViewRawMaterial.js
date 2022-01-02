@@ -16,8 +16,14 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import BackupIcon from "@material-ui/icons/Backup";
 import PrintIcon from "@material-ui/icons/Print";
+import RMDetail from "../../Services/QA/View_Raw_Material";
 
 export default class ViewRawMaterial extends Component {
+
+  async componentDidMount() {
+    const rmList = (await RMDetail.methods.RMDetail()).data;
+    console.log("Getting list of Raw Materials", rmList); 
+  }
   render() {
     const products_array = [];
     const columns = [

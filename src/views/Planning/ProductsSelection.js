@@ -32,7 +32,7 @@ import {
   ProductDetailsByName,
   GoodsStockDetails,
   PostPlan,
-	updatePostPlan
+  updatePostPlan
 } from "../../Services/Planning/A-Product_Selection.js";
 
 class ProductsSelection extends React.Component {
