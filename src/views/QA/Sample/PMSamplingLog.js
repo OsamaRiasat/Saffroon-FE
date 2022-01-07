@@ -62,7 +62,7 @@ export default class PMSamplingLog extends Component {
     console.log(resp);
     this.setState({
       material: resp.Material,
-      code: resp.PMCode,
+      code: resp.RMCode,
       mfg: resp.MFG_Date,
       exp: resp.EXP_Date,
       batchNo: resp.Batch_No,

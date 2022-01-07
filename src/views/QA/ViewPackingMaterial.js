@@ -16,7 +16,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import BackupIcon from "@material-ui/icons/Backup";
 import PrintIcon from "@material-ui/icons/Print";
-import RMDetail from "../../Services/QA/View_Raw_Material";
+import RMDetail from "../../Services/QA/View_Packing_Material";
 import Select from "react-select";
 
 export default class ViewRawMaterial extends Component {
@@ -40,25 +40,25 @@ export default class ViewRawMaterial extends Component {
       stype: "",
 
       materials: [],
-      rmCodes: [],
+      PMCodes: [],
       units: [],
       categories: [],
     };
   }
 
   handleMakeLists = () => {
-    //RMCode
-    var rmCode = this.state.cart.map((item) => {
+    //PMCode
+    var PMCode = this.state.cart.map((item) => {
       return {
-        rmCode: item.RMCode,
+        PMCode: item.PMCode,
       };
     });
-    rmCode = rmCode.filter(
-      (v, i, a) => a.findIndex((t) => t.rmCode === v.rmCode) === i
+    PMCode = PMCode.filter(
+      (v, i, a) => a.findIndex((t) => t.PMCode === v.PMCode) === i
     );
-    console.log("datadata parameter", rmCode);
+    console.log("datadata parameter", PMCode);
     this.setState({
-      rmCodes: rmCode,
+      PMCodes: PMCode,
     });
 
     //Material
@@ -148,7 +148,7 @@ export default class ViewRawMaterial extends Component {
       count = count + 1;
       let temp = {
         id: count,
-        rmcode: this.state.cart[i].RMCode,
+        PMCode: this.state.cart[i].PMCode,
         material: this.state.cart[i].Material,
         unit: this.state.cart[i].Units,
         type: this.state.cart[i].Type,
@@ -158,8 +158,8 @@ export default class ViewRawMaterial extends Component {
 
     const columns = [
       {
-        field: "rmcode",
-        headerName: "Raw Material Code",
+        field: "PMCode",
+        headerName: "PM Code",
         width: 200,
         editable: true,
       },
@@ -191,24 +191,24 @@ export default class ViewRawMaterial extends Component {
         <GridContainer md={12}>
           <Card>
             <CardHeader color="primary">
-              <h2 style={{ textAlign: "center" }}>View Raw Material</h2>
+              <h2 style={{ textAlign: "center" }}>View Packing Material</h2>
             </CardHeader>
             <CardBody style={{ marginLeft: 15, minWidth: 960 }}>
               <GridContainer>
                 <GridItem xs={12} sm={12} md={3}>
                   <Select
-                    placeholder="RMCode:"
+                    placeholder="PMCode:"
                     className="customSelect"
                     classNamePrefix="select"
                     isSearchable={true}
-                    options={this.state.rmCodes}
+                    options={this.state.PMCodes}
                     value={
-                      this.state.scode ? { rmCode: this.state.scode } : null
+                      this.state.scode ? { PMCode: this.state.scode } : null
                     }
-                    getOptionValue={(option) => option.rmCode}
-                    getOptionLabel={(option) => option.rmCode}
+                    getOptionValue={(option) => option.PMCode}
+                    getOptionLabel={(option) => option.PMCode}
                     onChange={(value) => {
-                      this.setState({ scode: value.rmCode }, () => {
+                      this.setState({ scode: value.PMCode }, () => {
                         this.handleGetData();
                       });
                     }}

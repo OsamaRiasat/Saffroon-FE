@@ -11,7 +11,7 @@ import TextField from "@material-ui/core/TextField";
 import { DataGrid } from "@material-ui/data-grid";
 import PrintIcon from "@material-ui/icons/Print";
 import RM_Reporting from "../../../Services/QC/RM/RM_Reporting.js";
-import MenuItem from '@material-ui/core/MenuItem';
+import MenuItem from "@material-ui/core/MenuItem";
 import Select from "react-select";
 
 export default class DARM extends Component {
@@ -20,7 +20,7 @@ export default class DARM extends Component {
     console.log(data);
     this.setState({
       cart: data,
-    })
+    });
     this.handleMakeLists();
     // QCNo: "RM23232"
     // analysisDateTime: "2021-08-29 05:35:19.945000+00:00"
@@ -33,90 +33,118 @@ export default class DARM extends Component {
   handleMakeLists = () => {
     var material = this.state.cart.map((item) => {
       return {
-        material: item.material
-      }
-    })
-    console.log("datadata 1", material)
-    material = material.filter((v, i, a) => a.findIndex(t => (t.material === v.material)) === i)
+        material: item.material,
+      };
+    });
+    console.log("datadata 1", material);
+    material = material.filter(
+      (v, i, a) => a.findIndex((t) => t.material === v.material) === i
+    );
     console.log("datadata 2", material);
     this.setState({
       materials: material,
-    })
+    });
 
     // parmeters
     var parameter = this.state.cart.map((item) => {
       return {
-        parameter: item.parameter
-      }
-    })
-    parameter = parameter.filter((v, i, a) => a.findIndex(t => (t.parameter === v.parameter)) === i)
+        parameter: item.parameter,
+      };
+    });
+    parameter = parameter.filter(
+      (v, i, a) => a.findIndex((t) => t.parameter === v.parameter) === i
+    );
     console.log("datadata parameter", parameter);
     this.setState({
       parameters: parameter,
-    })
+    });
     //supplier
     var supplier = this.state.cart.map((item) => {
       return {
-        supplierName: item.supplierName
-      }
-    })
-    supplier = supplier.filter((v, i, a) => a.findIndex(t => (t.supplierName === v.supplierName)) === i)
+        supplierName: item.supplierName,
+      };
+    });
+    supplier = supplier.filter(
+      (v, i, a) => a.findIndex((t) => t.supplierName === v.supplierName) === i
+    );
     console.log("supplier", supplier);
 
     this.setState({
       suppliers: supplier,
-    })
+    });
 
     //QC
     var QClist = this.state.cart.map((item) => {
       return {
-        QCNo: item.QCNo
-      }
-    })
-    QClist = QClist.filter((v, i, a) => a.findIndex(t => (t.QCNo === v.QCNo)) === i)
+        QCNo: item.QCNo,
+      };
+    });
+    QClist = QClist.filter(
+      (v, i, a) => a.findIndex((t) => t.QCNo === v.QCNo) === i
+    );
     console.log("QClist", QClist);
 
     this.setState({
       QClist: QClist,
-    })
+    });
     //Batch
     var batchesreset = this.state.cart.map((item) => {
       return {
-        batchNo: item.batchNo
-      }
-    })
-    var batches = batchesreset.filter((v, i, a) => a.findIndex(t => (t.batchNo === v.batchNo)) === i)
+        batchNo: item.batchNo,
+      };
+    });
+    var batches = batchesreset.filter(
+      (v, i, a) => a.findIndex((t) => t.batchNo === v.batchNo) === i
+    );
     console.log("batches check", batches);
     this.setState({
       batches: batches,
-    })
-  }
+    });
+  };
   resetField = async () => {
-    this.setState({ material: "" })
-    this.setState({ batch: "" })
-    this.setState({ supplier: "" })
-    this.setState({ QCNo: "" })
-    this.setState({ parameter: "" })
+    this.setState({ material: "" });
+    this.setState({ batch: "" });
+    this.setState({ supplier: "" });
+    this.setState({ QCNo: "" });
+    this.setState({ parameter: "" });
     const data = (await RM_Reporting.methods.RMDataAnalysis()).data;
     console.log(data);
     this.setState({
       cart: data,
-    })
-    this.handleMakeLists()
-  }
+    });
+    this.handleMakeLists();
+  };
   handleGetData = async () => {
-    console.log("Get Data", this.state.material, this.state.batch, this.state.QCNo, this.state.parameter, this.state.supplier)
-    const data = (await RM_Reporting.methods.RMDataAnalysis(this.state.material, this.state.batch, this.state.QCNo, this.state.parameter, this.state.supplier)).data;
-    console.log("datadata", data)
-    this.setState({
-      cart: data
-    }, () => {
-      this.handleMakeLists()
-    })
-  }
+    console.log(
+      "Get Data",
+      this.state.material,
+      this.state.batch,
+      this.state.QCNo,
+      this.state.parameter,
+      this.state.supplier
+    );
+    const data = (
+      await RM_Reporting.methods.RMDataAnalysis(
+        this.state.material,
+        this.state.batch,
+        this.state.QCNo,
+        this.state.parameter,
+        this.state.supplier
+      )
+    ).data;
+    console.log("datadata", data);
+    this.setState(
+      {
+        cart: data,
+      },
+      () => {
+        this.handleMakeLists();
+      }
+    );
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       materials: [],
       batches: [],
@@ -130,16 +158,16 @@ export default class DARM extends Component {
       QCNo: "",
       parameter: "",
 
-      cart: []
-    }
+      cart: [],
+    };
   }
   render() {
-    console.log("materials", this.statematerials)
-    console.log("materials", this.state)
-    console.log("batches", this.state.batches)
-    console.log("QClist", this.state.QClist)
-    console.log("suppliers", this.state.suppliers)
-    console.log("parameters", this.stateparameters)
+    console.log("materials", this.statematerials);
+    console.log("materials", this.state);
+    console.log("batches", this.state.batches);
+    console.log("QClist", this.state.QClist);
+    console.log("suppliers", this.state.suppliers);
+    console.log("parameters", this.stateparameters);
     const products_array = [];
     var count = 0;
     for (let i = 0; i < this.state.cart.length; ++i) {
@@ -152,9 +180,8 @@ export default class DARM extends Component {
         parameter: this.state.cart[i].parameter,
         supplier: this.state.cart[i].supplierName,
         analysisdate: this.state.cart[i].analysisDateTime,
-      }
+      };
       products_array.push(temp);
-
     }
 
     const columns = [
@@ -207,7 +234,7 @@ export default class DARM extends Component {
             </CardHeader>
             <CardBody>
               <GridContainer>
-                <CardM style={{ marginLeft: 15, minWidth: 1150 }}>
+                <CardM style={{ marginLeft: 15, minWidth: 960 }}>
                   <CardContent>
                     <CardHeader color="info">
                       <h4>RM Reports Parameter</h4>
@@ -223,15 +250,19 @@ export default class DARM extends Component {
                             isSearchable={true}
                             options={this.state.materials}
                             value={
-                              this.state.material ? { material: this.state.material } : null
+                              this.state.material
+                                ? { material: this.state.material }
+                                : null
                             }
                             getOptionValue={(option) => option.material}
                             getOptionLabel={(option) => option.material}
                             onChange={(value) => {
-                              this.setState({ material: value.material },
+                              this.setState(
+                                { material: value.material },
                                 () => {
-                                  this.handleGetData()
-                                })
+                                  this.handleGetData();
+                                }
+                              );
                             }}
                           />
                           {/* <TextField
@@ -267,17 +298,17 @@ export default class DARM extends Component {
                             isSearchable={true}
                             options={this.state.batches}
                             value={
-                              this.state.batch ? { batchNo: this.state.batch } : null
+                              this.state.batch
+                                ? { batchNo: this.state.batch }
+                                : null
                             }
                             getOptionValue={(option) => option.batchNo}
                             getOptionLabel={(option) => option.batchNo}
                             onChange={(value) => {
-                              this.setState({ batch: value.batchNo },
-                                () => {
-                                  this.handleGetData()
-                                })
+                              this.setState({ batch: value.batchNo }, () => {
+                                this.handleGetData();
+                              });
                               // this.fillAccCode(value.RMCode);
-
                             }}
                           />
                           {/* <TextField
@@ -317,10 +348,9 @@ export default class DARM extends Component {
                             getOptionValue={(option) => option.QCNo}
                             getOptionLabel={(option) => option.QCNo}
                             onChange={(value) => {
-                              this.setState({ QCNo: value.QCNo },
-                                () => {
-                                  this.handleGetData()
-                                })
+                              this.setState({ QCNo: value.QCNo }, () => {
+                                this.handleGetData();
+                              });
                             }}
                           />
                           {/* <TextField
@@ -354,15 +384,19 @@ export default class DARM extends Component {
                             isSearchable={true}
                             options={this.state.suppliers}
                             value={
-                              this.state.supplier ? { supplierName: this.state.supplier } : null
+                              this.state.supplier
+                                ? { supplierName: this.state.supplier }
+                                : null
                             }
                             getOptionValue={(option) => option.supplierName}
                             getOptionLabel={(option) => option.supplierName}
                             onChange={(value) => {
-                              this.setState({ supplier: value.supplierName },
+                              this.setState(
+                                { supplier: value.supplierName },
                                 () => {
-                                  this.handleGetData()
-                                })
+                                  this.handleGetData();
+                                }
+                              );
                             }}
                           />
                           {/* <TextField
@@ -397,15 +431,19 @@ export default class DARM extends Component {
                             isSearchable={true}
                             options={this.state.parameters}
                             value={
-                              this.state.parameter ? { parameter: this.state.parameter } : null
+                              this.state.parameter
+                                ? { parameter: this.state.parameter }
+                                : null
                             }
                             getOptionValue={(option) => option.parameter}
                             getOptionLabel={(option) => option.parameter}
                             onChange={(value) => {
-                              this.setState({ parameter: value.parameter },
+                              this.setState(
+                                { parameter: value.parameter },
                                 () => {
-                                  this.handleGetData()
-                                })
+                                  this.handleGetData();
+                                }
+                              );
                             }}
                           />
                           {/* <TextField
@@ -434,7 +472,7 @@ export default class DARM extends Component {
                           <Button
                             color="primary"
                             onClick={this.resetField}
-                          // onClick={this.handleGetData}
+                            // onClick={this.handleGetData}
                           >
                             Reset
                           </Button>
@@ -461,7 +499,6 @@ export default class DARM extends Component {
                         </GridContainer>
                       </GridItem>
                     </CardContent>
-
                   </CardContent>
                 </CardM>
               </GridContainer>

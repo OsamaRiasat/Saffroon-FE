@@ -62,11 +62,13 @@ export default function AdminNavbarLinks() {
           history.replace("/");
         }
         else{
+          history.replace("/");
           alert("Not Logout Something Went Wrong !!!")
         }
       }
       catch(err)
       {
+        history.replace("/");
         alert(err , "Not Logout Something Went Wrong")
       }
     

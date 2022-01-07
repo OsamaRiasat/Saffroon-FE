@@ -126,6 +126,7 @@ import changeControl from "./views/QA/ChangeControl"
 import CloseBatch from "./views/QA/CloseBatch"
 import ViewProduct from "./views/QA/ViewProduct"
 import ViewRM from "./views/QA/ViewRawMaterial"
+import ViewPM from "./views/QA/ViewPackingMaterial"
 import batchReview from "./views/QA/batchReview"
 import AddPackSize from "./views/QA/AddPackSize"
 import addSupplier from "./views/QA/AddSupplier"
@@ -714,6 +715,15 @@ const dashboardRoutes = [
 		name: "View RM",
 		icon: LibraryBooks,
 		component: ViewRM,
+		layout: "/saffron",
+		role: "Quality Assurance",
+		showNav: true,
+	},
+	{
+		path: "/QA/PM/view",
+		name: "View PM",
+		icon: LibraryBooks,
+		component: ViewPM,
 		layout: "/saffron",
 		role: "Quality Assurance",
 		showNav: true,

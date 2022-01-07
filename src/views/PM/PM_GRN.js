@@ -12,6 +12,13 @@ import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import { PMHighestGRNo, IGPNoList, PMRecievingDetail, UpdateRMRecieving } from "../../Services/Inventory/PM/PM_GRN";
+import Select from "react-select";
+import { toast } from "react-toastify";
+import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../variables/genericVariables";
+
 class demo2 extends React.Component {
 
     async componentDidMount(){
@@ -55,6 +62,9 @@ class demo2 extends React.Component {
         }
     }
     postGRNData= async ()=>{
+        const fieldErrors = this.validate(this.state);
+        this.setState({ fieldErrors: fieldErrors });
+        if (Object.keys(fieldErrors).length) return;
         try{
             const payload= {
                 "batchNo":this.state.batchnumber,
@@ -66,13 +76,31 @@ class demo2 extends React.Component {
                 "remarks": this.state.remarks
             }
             const resp=(await UpdateRMRecieving(this.state.igpnumber,payload));
-            alert("GRN Update Request Sent")
+            //alert("GRN Update Request Sent")
+            toast.success("GRN Added Successfully !!", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+              });
             this.clearForm();
             this.incGrn();
         }
         catch(error)
         {
-            alert(error)
+            //alert(error)
+            toast.error("Request Not sent "+error, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+              });
         }
     }
 
@@ -101,7 +129,25 @@ class demo2 extends React.Component {
         })
 
     }
-
+    onChangeClearError = (name) => {
+        let data = {
+          ...this.state.fieldErrors,
+          [name]: "",
+        };
+        console.log(Object.entries(data));
+        this.setState({
+          fieldErrors: data,
+        });
+      };
+      validate = (fields) => {
+        const errors = {};
+        if (!fields.igpnumber) errors.igpnumber = "IGPNumber Required";
+        if (!fields.mfg_date) errors.mfg_date = "ManufactureDate Required";
+        if (!fields.exp_date) errors.exp_date = "ExpiryDate Required";
+        if (!fields.remarks) errors.remarks = "Remarks Required";
+       // if (!fields.QuantityReceived) errors.QuantityReceived = "quantityReceived Required";
+        return errors;
+    };
     render() {
         var today = new Date()
         return (
@@ -124,7 +170,34 @@ class demo2 extends React.Component {
                                     />
                                 </GridItem>
                                 <GridItem xs={12} sm={12} md={4}  >
-                                    <TextField
+                                <Select
+                                                        name="igpnumber"
+                                                        placeholder="IGP Number"
+                                                        className="customSelect"
+                                                        classNamePrefix="select"
+                                                        components={{
+                                                            ValueContainer:CustomValueContainer,
+                                                        }}
+                                                        styles={CustomSelectStyle}
+                                                        isSearchable={true}
+                                                        options={this.state.igpnumber_list}
+                                                        value={
+                                                            this.state.igpnumber ? { IGPNo: this.state.igpnumber } : null
+                                                        }
+                                                        getOptionValue={(option) => option.IGPNo}
+                                                        getOptionLabel={(option) => option.IGPNo}
+                                                        onChange={(value, select) => {
+                                                            this.setState({ igpnumber : value.IGPNo })
+                                                            this.handleAutoFill(value.IGPNo);
+                                                            this.onChangeClearError(select.name);
+                                                        }}
+                                                    /> 
+                                                     {this.state.fieldErrors && this.state.fieldErrors.igpnumber && (
+                                                        <span className="MuiFormHelperText-root Mui-error">
+                                                        {this.state.fieldErrors.igpnumber}
+                                                        </span>
+                                                    )}
+                                    {/* <TextField
                                         id="igpNumber"
                                         select
                                         label="IGP Number"
@@ -141,7 +214,7 @@ class demo2 extends React.Component {
                                                 {num["IGPNo"]}
                                             </MenuItem>
                                         ))}
-                                    </TextField>
+                                    </TextField> */}
                                 </GridItem>
                             </GridContainer>
 
@@ -231,16 +304,38 @@ class demo2 extends React.Component {
                                             </GridContainer>
                                             <GridContainer>
                                                 <GridItem xs={12} sm={12} md={6}  >
-                                                    <TextField id="manufacturedate" type="date"  fullWidth="true" required="true" variant="outlined" label="Manufacture Date "  InputLabelProps={{ shrink: true }}  value={this.state.mfg_date}
+                                                    <TextField name="mfg_date" id="manufacturedate" type="date"  fullWidth="true" required="true" variant="outlined" label="Manufacture Date "  InputLabelProps={{ shrink: true }}  value={this.state.mfg_date}
+                                                          error={
+                                                            this.state.fieldErrors &&
+                                                              this.state.fieldErrors.mfg_date
+                                                              ? true
+                                                              : false
+                                                          }
+                                                          helperText={
+                                                            this.state.fieldErrors &&
+                                                            this.state.fieldErrors.mfg_date
+                                                          }
                                                         onChange={(event) => {
-                                                            this.setState({ mfg_date: event.target.value })
+                                                            this.setState({ mfg_date: event.target.value });
+                                                            this.onChangeClearError(event.target.name);
                                                         }}
                                                     />
                                                 </GridItem>
                                                 <GridItem xs={12} sm={12} md={6}>
-                                                    <TextField id="expirydate" fullWidth="true" required="true" variant="outlined" label="Expiry Date "   InputLabelProps={{ shrink: true }}  type="date" value={this.state.exp_date}
+                                                    <TextField name="exp_date" id="expirydate" fullWidth="true" required="true" variant="outlined" label="Expiry Date "   InputLabelProps={{ shrink: true }}  type="date" value={this.state.exp_date}
+                                                         error={
+                                                            this.state.fieldErrors &&
+                                                              this.state.fieldErrors.exp_date
+                                                              ? true
+                                                              : false
+                                                          }
+                                                          helperText={
+                                                            this.state.fieldErrors &&
+                                                            this.state.fieldErrors.exp_date
+                                                          }
                                                         onChange={(event) => {
-                                                            this.setState({ exp_date: event.target.value })
+                                                            this.setState({ exp_date: event.target.value });
+                                                            this.onChangeClearError(event.target.name);
                                                         }}
                                                     />
                                                 </GridItem>
@@ -248,13 +343,25 @@ class demo2 extends React.Component {
                                             <GridContainer>
                                                 <GridItem xs={12} sm={12} md={12}>
                                                     <TextField
+                                                      name="remarks"
                                                         id="remarks"
                                                         label="Remarks"
                                                         variant="outlined"
                                                         fullWidth="true"
                                                         value={this.state.remarks}
+                                                        error={
+                                                            this.state.fieldErrors &&
+                                                              this.state.fieldErrors.remarks
+                                                              ? true
+                                                              : false
+                                                          }
+                                                          helperText={
+                                                            this.state.fieldErrors &&
+                                                            this.state.fieldErrors.remarks
+                                                          }
                                                         onChange={(event) => {
-                                                            this.setState({ remarks: event.target.value })
+                                                            this.setState({ remarks: event.target.value });
+                                                            this.onChangeClearError(event.target.name);
                                                         }}
                                                     >
                                                     </TextField>

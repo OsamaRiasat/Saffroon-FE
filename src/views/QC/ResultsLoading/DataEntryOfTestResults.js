@@ -50,11 +50,14 @@ export default class DataEntryOfTestResults extends Component {
       fdata: "",
       sdata: "",
       checkbox: false,
+
       RM_Result: [],
       test_parameter: "",
       result_specification: "",
       fieldErrors: {},
       selectedRowData: [],
+
+     
     };
   }
 
@@ -144,7 +147,7 @@ export default class DataEntryOfTestResults extends Component {
           progress: undefined,
         });
         // alert("Request Sent !!");
-        this.clearForm();
+        // this.clearForm();
       } else {
         toast.error("Request Not sent", {
           position: "top-right",
@@ -162,7 +165,7 @@ export default class DataEntryOfTestResults extends Component {
     }
     catch (error) {
       console.log(error);
-      toast.error("Something Went Wrong !!!", {
+      toast.error("Something Went Wrong !!!   "+error, {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -301,7 +304,7 @@ export default class DataEntryOfTestResults extends Component {
           <Card>
             <CardHeader color="primary">
               <h4 style={{ textAlign: "center" }}>
-                Data Entry of Test Results
+                RM Data Entry of Test Results
               </h4>
             </CardHeader>
             <CardBody>
@@ -316,7 +319,7 @@ export default class DataEntryOfTestResults extends Component {
                         <GridItem xs={12} sm={12} md={3}>
                           <Select
                             name="qc_no"
-                            placeholder="Material Code"
+                            placeholder="Select QC No. "
                             className="customSelect"
                             classNamePrefix="select"
                             isSearchable={true}
@@ -338,24 +341,7 @@ export default class DataEntryOfTestResults extends Component {
                               {this.state.fieldErrors.qc_no}
                             </span>
                           )}
-                          {/* <TextField
-                            id=""
-                            select
-                            variant="outlined"
-                            label="QC No."
-                            fullWidth="true"
-                            value={this.state.qc_no}
-                            onChange={(event) => {
-                              this.setState({ qc_no: event.target.value });
-                              this.fillSpecs(event.target.value);
-                            }}
-                          >
-                            {this.state.qc_list.map((qc) => (
-                              <MenuItem key={qc["QCNo"]} value={qc["QCNo"]}>
-                                {qc["QCNo"]}
-                              </MenuItem>
-                            ))}
-                          </TextField> */}
+                        
                         </GridItem>
                         <GridItem xs={12} sm={12} md={3}>
                           <TextField

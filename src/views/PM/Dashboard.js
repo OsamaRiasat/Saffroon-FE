@@ -93,6 +93,38 @@ export default class Dashboard extends Component {
                   <GridItem xs={12} sm={12} md={4}>
                     <Card>
                       <CardHeader color="info">
+                        <h4 style={{ textAlign: "center" }}>Purchase Order</h4>
+                      </CardHeader>
+                      <CardBody>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          fullWidth="true"
+                          component={Link}
+                          to="/saffron/purchase-order"
+                        >
+                          Raw Material
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          fullWidth="true"
+                          component={Link}
+                          to="/saffron/PM/IGP"
+                        >
+                          Packing Material
+                        </Button>
+                      </CardBody>
+                    </Card>
+                  </GridItem>
+
+                </GridContainer>
+
+                <GridContainer>
+                  {/* <GridItem xs={12} sm={12} md={2}></GridItem> */}
+                  <GridItem xs={12} sm={12} md={4}>
+                    <Card>
+                      <CardHeader color="info">
                         <h4 style={{ textAlign: "center" }}>IGP Note</h4>
                       </CardHeader>
                       <CardBody>
@@ -117,11 +149,6 @@ export default class Dashboard extends Component {
                       </CardBody>
                     </Card>
                   </GridItem>
-
-                </GridContainer>
-
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={2}></GridItem>
 
                   <GridItem xs={12} sm={12} md={4}>
                     <Card>
