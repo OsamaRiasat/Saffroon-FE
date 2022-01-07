@@ -9,7 +9,7 @@ import CardHeader from "../../components/Card/CardHeader.js";
 import CardFooter from "../../components/Card/CardFooter";
 import CardBody from "../../components/Card/CardBody.js";
 import TextField from "@material-ui/core/TextField";
-import { DataGrid } from "@material-ui/data-grid";
+import { DataGrid, GridToolbarContainer,GridToolbarDensitySelector } from "@material-ui/data-grid";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -17,7 +17,9 @@ import Checkbox from "@material-ui/core/Checkbox";
 import BackupIcon from "@material-ui/icons/Backup";
 import PrintIcon from "@material-ui/icons/Print";
 import Select from "react-select";
-
+import {
+  CustomToolbar
+} from "../../variables/genericVariables";
 import ProductDetail from "../../Services/QA/View_Product";
 
 export default class ViewProduct extends Component {
@@ -415,9 +417,12 @@ export default class ViewProduct extends Component {
                   <GridContainer>
                     <div style={{ height: 450, width: "100%" }}>
                       <DataGrid
+                        components={{
+                          Toolbar: CustomToolbar,
+                        }}
                         rows={products_array}
                         columns={columns}
-                        checkboxSelection
+                        // checkboxSelection
                         disableSelectionOnClick
                       />
                     </div>

@@ -36,6 +36,7 @@ import { RemoveFromQueue } from "@material-ui/icons";
 import RM_IGP from "./views/RM/RM_IGP.js";
 import RM_GRN from "./views/RM/RM_GRN.js";
 import RM_Post_GRN from "./views/RM/RM_Post_GRN.js";
+import RM_Dispensing from "./views/RM/RM_Dispensing.js"
 
 import planning from "./views/Planning/planning";
 
@@ -207,6 +208,14 @@ const dashboardRoutes = [
 		name: "RM Post GRN",
 		icon: FilterFramesIcon,
 		component: RM_Post_GRN,
+		layout: "/saffron",
+		role: "Store",
+	},
+	{
+		path: "/RM/Dispensing",
+		name: "RM Dispensing",
+		icon: FilterFramesIcon,
+		component: RM_Dispensing,
 		layout: "/saffron",
 		role: "Store",
 	},

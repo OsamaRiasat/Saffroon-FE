@@ -1,8 +1,17 @@
 import React from "react";
 import { components } from "react-select";
-
+import { GridToolbarContainer,GridToolbarDensitySelector } from "@material-ui/data-grid";
 const { ValueContainer, Placeholder } = components;
 
+
+
+const  CustomToolbar = () => {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarDensitySelector />
+    </GridToolbarContainer>
+  );
+}
 const CustomValueContainer = ({ children, ...props }) => {
   return (
     <ValueContainer {...props}>
@@ -47,4 +56,4 @@ const CustomSelectStyle = {
   }),
 };
 
-export { CustomValueContainer, CustomSelectStyle };
+export { CustomValueContainer, CustomSelectStyle , CustomToolbar};
