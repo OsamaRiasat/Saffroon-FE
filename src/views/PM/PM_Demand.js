@@ -16,6 +16,12 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { DataGrid } from "@material-ui/data-grid";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import Select from "react-select";
+import { toast } from "react-toastify";
+import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../variables/genericVariables";
 
 //import API Calls from Services
 
@@ -187,7 +193,16 @@ class PackingMaterialDemand extends React.Component {
   };
   handlePostData = async () => {
     if (this.state.cart.length === 0) {
-      alert("Demanded Items are Empty !!!");
+     // alert("Demanded Items are Empty !!!");
+     toast.error("Demanded Items are Empty " , {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
     } else {
       try{
     var dataSend = this.state.cart.map((item) => {
@@ -205,7 +220,16 @@ class PackingMaterialDemand extends React.Component {
     console.log("cart", this.state.cart);
     const resp = (await PMDemands(payload)).status;
     if (resp === 201) {
-      alert("Demand Raised");
+      //alert("PM Demand Raised");
+      toast.success("PM Demand Raised !!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       this.setState({
         cart: [],
       });
@@ -219,17 +243,63 @@ class PackingMaterialDemand extends React.Component {
         },
       }));
     } else {
-      alert("Bad Exception Thrown !!!");
+      toast.error("Exception Thrown ", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+     // alert("Exception Thrown !!!!");
+     
     }
   }
   catch(error){
-    console.log(error);
-    alert("Some thing Went Wrong !!!")
+   //console.log("Some thing Went Wrong ");
+   toast.error("Some thing Went Wrong "+error, {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+  });
   }
 }
   
   };
-
+  onChangeClearError = (name) => {
+    let data = {
+      ...this.state.fieldErrors,
+      [name]: "",
+    };
+    console.log(Object.entries(data));
+    this.setState({
+      fieldErrors: data,
+    });
+  };
+  validate = (fields) => {
+    const errors = {};
+       /*plannumber
+        demandquantity
+        category
+        priority
+        pmcode
+        name
+        stockinhand
+        unit*/
+  //  if (!fields.PriorityStatus) errors.PriorityStatus = "Priority Required";
+  if (!fields.priority) errors.priority = "priority Required";
+  // if (!fields.plannumber) errors.plannumber = "Plan Number Required";
+  if (!fields.demandquantity) errors.demandquantity = "Demand Quantity Required";
+  if (!fields.pmcode) errors.pmcode = "RMCode Required";
+  if (!fields.name) errors.name = "Material Name Required";
+  // if (!fields.stockinhand) errors.stockinhand = "Stock In Hand required";
+    return errors;
+};
   render() {
     const products_array = [];
     for (let i = 0; i < this.state.cart.length; ++i) {
@@ -321,7 +391,54 @@ class PackingMaterialDemand extends React.Component {
                     />
                   </GridItem>
                   <GridItem xs={12} sm={12} md={7} style={{ marginLeft: 5 }}>
-                    <TextField
+                  <Select
+                           name="priority"
+                           placeholder="Select Priority"
+                           className="customSelect"
+                           classNamePrefix="select"
+                           components={{
+                             ValueContainer:CustomValueContainer,
+                           }}
+                           styles={CustomSelectStyle}
+                           isSearchable={true}
+                           options={this.state.priority.map((t) => ({
+                             value: t,
+                             label: t,
+                           }))}
+                           value={
+                             this.state.prioritystatus
+                               ? { label: this.state.prioritystatus }
+                               : null
+                           }
+                           getOptionValue={(option) => option.value}
+                           getOptionLabel={(option) => option.label}
+                           onChange={(value, select) => {
+                             this.setState({
+                               prioritystatus: value.value,
+                             });
+                             if (value.value === "Normal") {
+                               this.setState({
+                                 prioritystatusSend: "Normal",
+                               });
+                             }
+                              if (value.value === "Urgent") {
+                               this.setState({
+                                 prioritystatusSend: "Urgent",
+                               });
+                             } else {
+                               this.setState({
+                                 prioritystatusSend: "Most Urgent",
+                               });
+                             }
+                             this.onChangeClearError(select.name);
+                           }}
+                         />
+                          {this.state.fieldErrors && this.state.fieldErrors.priority && (
+                               <span className="MuiFormHelperText-root Mui-error">
+                               {this.state.fieldErrors.priority}
+                               </span>
+                          )}
+                    {/* <TextField
                       id="priority"
                       select
                       label="Priority"
@@ -345,7 +462,7 @@ class PackingMaterialDemand extends React.Component {
                           {pri}
                         </MenuItem>
                       ))}
-                    </TextField>
+                    </TextField> */}
                   </GridItem>
                 </GridContainer>
 
@@ -377,9 +494,20 @@ class PackingMaterialDemand extends React.Component {
                         <GridContainer>
                           <GridItem xs={12} sm={12} md={12}>
                             <TextField
+                            name="plannumber"
                               id="plan-number"
                               label="Plan number"
                               variant="outlined"
+                              error={
+                                this.state.fieldErrors &&
+                                  this.state.fieldErrors.plannumber
+                                  ? true
+                                  : false
+                              }
+                              helperText={
+                                this.state.fieldErrors &&
+                                this.state.fieldErrors.plannumber
+                              }
                               value={this.state.selected.plannumber}
                               onChange={(event) => {
                                 this.setState((prevState) => ({
@@ -389,6 +517,7 @@ class PackingMaterialDemand extends React.Component {
                                     plannumber: event.target.value, // update the value of specific key
                                   },
                                 }));
+                                this.onChangeClearError(event.target.name);
                               }}
                             />
                           </GridItem>
@@ -396,6 +525,7 @@ class PackingMaterialDemand extends React.Component {
                         <GridContainer>
                           <GridItem xs={12} sm={12} md={12}>
                             <TextField
+                             name="demandquantity"
                               id="quantity"
                               fullWidth="true"
                               value={this.state.selected.demandquantity}
@@ -403,6 +533,16 @@ class PackingMaterialDemand extends React.Component {
                               variant="outlined"
                               label={
                                 "Quantity (" + this.state.selected.unit + ")"
+                              }
+                              error={
+                                this.state.fieldErrors &&
+                                  this.state.fieldErrors.demandquantity
+                                  ? true
+                                  : false
+                              }
+                              helperText={
+                                this.state.fieldErrors &&
+                                this.state.fieldErrors.demandquantity
                               }
                               onChange={(event) => {
                                 this.setState((prevState) => ({
@@ -412,6 +552,7 @@ class PackingMaterialDemand extends React.Component {
                                     demandquantity: event.target.value, // update the value of specific key
                                   },
                                 }));
+                                this.onChangeClearError(event.target.name);
                               }}
                             />
                           </GridItem>
@@ -424,7 +565,47 @@ class PackingMaterialDemand extends React.Component {
                       <GridItem xs={12} sm={12} md={12}>
                         <GridContainer>
                           <GridItem xs={12} sm={12} md={8}>
-                            <TextField
+                          <Select
+                              //name="grnnumber"
+                              name="name"
+                               id="material"
+                               select 
+                               placeholder="Material Name"
+                               className="customSelect"
+                               classNamePrefix="select"
+                               label="Material" 
+                                components={{
+                                ValueContainer:CustomValueContainer,
+                                }}
+                                styles={CustomSelectStyle}
+                                isSearchable={true}
+                                options={this.state.productsName}
+                                value={
+                                this.state.selected.name ? { Material: this.state.selected.name } : null
+                                }
+                                getOptionValue={(option) => option.Material}
+                                getOptionLabel={(option) => option.Material}
+                                onChange={(value, select) => {
+                                  //this.setState({ name : value.Material });
+                                  this.setState((prevState) => ({
+                                    selected: {
+                                      // object that we want to update
+                                      ...prevState.selected, // keep all other key-value pairs
+                                      name: value.Material,
+                                      // update the value of specific key
+                                    },
+                                  }));
+                                  this.handleSetCatRmcode(value.Material);
+                                  this.onChangeClearError("name");
+                                  this.onChangeClearError("pmcode");
+                                }}
+                            />  
+                             {this.state.fieldErrors && this.state.fieldErrors.name && (
+                                <span className="MuiFormHelperText-root Mui-error">
+                               {this.state.fieldErrors.name}
+                              </span>
+                              )}
+                            {/* <TextField
                               id="material"
                               select
                               label="Material"
@@ -454,7 +635,7 @@ class PackingMaterialDemand extends React.Component {
                                   {option["Material"]}
                                 </MenuItem>
                               ))}
-                            </TextField>
+                            </TextField> */}
                           </GridItem>
                           <GridItem xs={12} sm={12} md={4}>
                             <TextField
@@ -468,7 +649,47 @@ class PackingMaterialDemand extends React.Component {
 
                         <GridContainer>
                           <GridItem xs={12} sm={12} md={12}>
-                            <TextField
+                          <Select
+                         // name="code"
+                         name="pmcode"
+                          id="pmcode"
+                          placeholder="Packing Material Code"
+                          className="customSelect"
+                          classNamePrefix="select"
+                          components={{
+                            ValueContainer:CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
+                          isSearchable={true}
+                          options={this.state.productsPMCode}
+                          value={
+                            this.state.selected.pmcode ? { PMCode: this.state.selected.pmcode } : null
+                          }
+                          getOptionValue={(option) => option.PMCode}
+                          getOptionLabel={(option) => option.PMCode}
+                          onChange={(value, select) => {
+                           // this.setState({ pmcode: value.RMCode })
+                           this.setState(
+                            (prevState) => ({
+                            selected: {
+                              // object that we want to update
+                              ...prevState.selected, // keep all other key-value pairs
+                              pmcode: value.PMCode, //event.target.value, // update the value of specific key
+                            },
+                          }));
+                            this.handleSetCatMatName(value.PMCode);
+                            console.log(value, select.name);
+                            this.onChangeClearError(select.name);
+                            
+                            this.onChangeClearError("name");
+                          }}
+                        />
+                         {this.state.fieldErrors && this.state.fieldErrors.pmcode && (
+                                <span className="MuiFormHelperText-root Mui-error">
+                               {this.state.fieldErrors.pmcode}
+                              </span>
+                              )}
+                            {/* <TextField
                               id="pmcode"
                               select
                               label="PM Code"
@@ -495,15 +716,26 @@ class PackingMaterialDemand extends React.Component {
                                   {option.PMCode}
                                 </MenuItem>
                               ))}
-                            </TextField>
+                            </TextField> */}
                           </GridItem>
                         </GridContainer>
                         <GridContainer>
                           <GridItem xs={12} sm={12} md={4}>
                             <TextField
+                              name="stockinhand"
                               variant="outlined"
                               label="Stock In Hand"
                               type="number"
+                              error={
+                                this.state.fieldErrors &&
+                                  this.state.fieldErrors.stockinhand
+                                  ? true
+                                  : false
+                              }
+                              helperText={
+                                this.state.fieldErrors &&
+                                this.state.fieldErrors.stockinhand
+                              }
                               defaultValue={"0"}
                               value={this.state.selected.stockinhand}
                               onChange={(event) => {
@@ -514,6 +746,7 @@ class PackingMaterialDemand extends React.Component {
                                     stockinhand: event.target.value, // update the value of specific key
                                   },
                                 }));
+                                this.onChangeClearError(event.target.name);
                               }}
                             />
                           </GridItem>
@@ -550,9 +783,16 @@ class PackingMaterialDemand extends React.Component {
                         this.state.selected.name === "" ||
                         this.state.selected.pmcode === ""
                       ) {
-                        alert(
-                          "Please fill the form first to add product into cart."
-                        );
+                        // alert(
+                        //   "Please fill the form first to add product into cart."
+                        // );
+                        let { priorityStatus, plannumber, demandquantity , pmcode, name,stockinhand } = this.state.selected;
+
+                        const fieldErrors = this.validate({ priorityStatus, plannumber, demandquantity, pmcode, name,stockinhand });
+                   
+                         this.setState({ fieldErrors: fieldErrors });
+                   
+                         if (Object.keys(fieldErrors).length) return;
                       } else if (present === true) {
                         alert("These items has already been  added  ");
                       } else {

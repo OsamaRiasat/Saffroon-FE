@@ -18,6 +18,12 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 import { GRNoList, RMRecievingDetailByGRNo, RMBinCard } from '../../Services/Inventory/Post_GRN';
+import Select from "react-select";
+import { toast } from "react-toastify";
+import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../variables/genericVariables";
 
 class demo3 extends React.Component {
 
@@ -37,7 +43,7 @@ class demo3 extends React.Component {
             approvedate: '',
             material: '',
             supplier: '',
-            batchnumber: '',
+            batchnumber: '', 
             recieved_quantity: '',
             approved_quantity: '',
             mfg_date: '',
@@ -67,7 +73,10 @@ class demo3 extends React.Component {
 
     addpostGRNData= async ()=>{
         //   const resp= await IGP.methods.RMIGP()
-        
+        const fieldErrors = this.validate(this.state);
+        this.setState({ fieldErrors: fieldErrors });
+        if (Object.keys(fieldErrors).length) return;
+
         try{
         const payload= {
 
@@ -75,13 +84,31 @@ class demo3 extends React.Component {
  
         }
         const resp=(await RMBinCard(payload));
-        alert("Post GRN Added")
+        //alert("Post GRN Added")
+        toast.success("RM Post GRN Generated Successfully !!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
         this.clearForm();
       
     }
     catch(error)
     {
-        alert(error)
+       // alert(error)
+       toast.error("Request Not sent "+error, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      }); 
     }
     }
 
@@ -106,7 +133,25 @@ class demo3 extends React.Component {
 
     }
     
-
+    onChangeClearError = (name) => {
+        let data = {
+          ...this.state.fieldErrors,
+          [name]: "",
+        };
+        console.log(Object.entries(data));
+        this.setState({
+          fieldErrors: data,
+        });
+      };
+      validate = (fields) => {
+        const errors = {};
+        if (!fields.grnnumber) errors.grnnumber = "IGPNumber Required";
+        // if (!fields.ManufactureDate) errors.ManufactureDate = "ManufactureDate Required";
+        // if (!fields.ExpiryDate) errors.ExpiryDate = "ExpiryDate Required";
+        // if (!fields.Remarks) errors.Remarks = "Remarks Required";
+       // if (!fields.QuantityReceived) errors.QuantityReceived = "quantityReceived Required";
+        return errors;
+    };
     render() {
         //{ console.log(this.state) }
         return (
@@ -122,7 +167,34 @@ class demo3 extends React.Component {
 
                             <GridContainer>
                                 <GridItem xs={12} sm={12} md={4}>
-                                    <TextField
+                                <Select
+                                                        name="grnnumber"
+                                                        placeholder="GRN Number"
+                                                        className="customSelect"
+                                                        classNamePrefix="select"
+                                                        components={{
+                                                            ValueContainer:CustomValueContainer,
+                                                        }}
+                                                        styles={CustomSelectStyle}
+                                                        isSearchable={true}
+                                                        options={this.state.grnnumber_list}
+                                                        value={
+                                                            this.state.grnnumber ? { GRNo: this.state.grnnumber } : null
+                                                        }
+                                                        getOptionValue={(option) => option.GRNo}
+                                                        getOptionLabel={(option) => option.GRNo}
+                                                        onChange={(value, select) => {
+                                                            this.setState({ grnnumber : value.GRNo })
+                                                            this.handleAutoFill(value.GRNo);
+                                                            this.onChangeClearError(select.name);
+                                                        }}
+                                                    /> 
+                                                     {this.state.fieldErrors && this.state.fieldErrors.grnnumber && (
+                                                        <span className="MuiFormHelperText-root Mui-error">
+                                                        {this.state.fieldErrors.grnnumber}
+                                                        </span>
+                                                    )}
+                                    {/* <TextField
                                         id="grnNumber"
                                         select
                                         label="GRN Number"
@@ -139,11 +211,13 @@ class demo3 extends React.Component {
                                                 {num["GRNo"]}
                                             </MenuItem>
                                         ))}
-                                    </TextField>
+                                    </TextField> */}
                                 </GridItem>
                                 <GridItem xs={12} sm={12} md={4}  >
                                     <TextField id="approvedate" style={{backgroundColor:"#f5f7f7"}} variant="outlined" label="Approve Date " value={this.state.approvedate}
-                                        onChange={(event) => {
+                                       // InputLabelProps={{ shrink: true }}
+                                          //type="date" 
+                                       onChange={(event) => {
                                             this.setState({ approvedate: event.target.value })
                                         }}
                                     />

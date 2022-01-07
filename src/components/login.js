@@ -77,7 +77,16 @@ export default function SignIn() {
 
     if (resp !== true) {
       if (resp.includes("Error")) {
-        alert(resp);
+        // alert(resp);
+        toast.error(resp, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         setLoading(false);
       }
     } else {
@@ -90,7 +99,7 @@ export default function SignIn() {
       else if (sessionStorage.getItem("Role") === "QC_Analyst")
         history.replace("saffron/qc/rmpendingreports");
       else if (sessionStorage.getItem("Role") === "Quality Assurance")
-        history.replace("saffron/QA/batch/issue");
+        history.replace("saffron/QA/dashboard");
       else if (sessionStorage.getItem("Role") === "Production")
         history.replace("saffron/production/batch/request");
     }

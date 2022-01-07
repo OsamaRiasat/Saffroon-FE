@@ -13,6 +13,8 @@ import { DataGrid } from "@material-ui/data-grid";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import RM_Data_Entry from "../../../Services/QC/Product/Product_Data_Entry";
+import { toast } from "react-toastify";
+import Select from "react-select";
 
 export default class DataEntryOfTestResults extends Component {
   constructor(props) {
@@ -47,6 +49,12 @@ export default class DataEntryOfTestResults extends Component {
       sdata: "",
       checkbox:false,
       
+      RM_Result: [],
+      test_parameter: "",
+      result_specification: "",
+      fieldErrors: {},
+      selectedRowData: [],
+      
     };
   }
 
@@ -57,6 +65,24 @@ export default class DataEntryOfTestResults extends Component {
 
   async fillSpecs(qc) {
     const temp = (await RM_Data_Entry.methods.RMQCNoSample(qc)).data;
+    if(temp.message){
+      toast.error(temp.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      this.setState(
+        {
+          qc_no: null
+        }
+      )
+      return;
+    }
+    else{
     console.log(temp);
     this.setState({ sampling_date: temp.samplingDateTime });
     this.setState({ exp_date: temp.EXP_Date });
@@ -87,8 +113,13 @@ export default class DataEntryOfTestResults extends Component {
     this.setState({ cart: temp2 });
   }
 
+}
+
   async postData() {
-   
+    let { qc_no, raw_data_ref, approved_qty, rejected_qty, working_std_no, analysis_date, retest_date, remarks } = this.state;
+    const fieldErrors = this.validate({ qc_no, raw_data_ref, approved_qty, rejected_qty, working_std_no, analysis_date, retest_date, remarks });
+    this.setState({ fieldErrors: fieldErrors });
+    if (Object.keys(fieldErrors).length) return;
     try{
     const temp = this.state.cart.map((item) => {
       return {
@@ -116,13 +147,75 @@ export default class DataEntryOfTestResults extends Component {
 
     const resp = await RM_Data_Entry.methods.PostRMAnalysis(payload);
     console.log(resp);
-    alert("Data Entry Posted !!!");
+    if (resp.status === 201) {
+      toast.success("Request Sent !!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      // alert("Request Sent !!");
+      // this.clearForm();
+    } else {
+      toast.error("Request Not sent", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      // alert("Request Not sent");
+    }
+    // alert("Data Entry Posted !!!");
     this.handleClearForm()
   }
-  catch{
-    alert("SOmething went Wrong !!!")
+  catch (error) {
+    console.log(error);
+    toast.error("Something Went Wrong !!!   "+error, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+    // alert("Something Went Wrong !!!");
   }
-  }
+  // {
+  //   alert("SOmething went Wrong !!!")
+  // }
+}
+
+validate = (fields) => {
+  const errors = {};
+  if (!fields.qc_no) errors.qc_no = "QC No Required";
+  if (!fields.raw_data_ref) errors.raw_data_ref = "Raw Data Ref Required";
+  if (!fields.approved_qty) errors.approved_qty = "Approved Qt. Required";
+  if (!fields.rejected_qty) errors.rejected_qty = "Rejected Qt. Required";
+  if (!fields.working_std_no) errors.working_std_no = "Working Std. No Required";
+  if (!fields.analysis_date) errors.analysis_date = "Analysis Date Required";
+  if (!fields.retest_date) errors.retest_date = "Retest Date Required";
+  if (!fields.remarks) errors.remarks = "Remarks Required";
+  // if (!fields.result) errors.result = "Result Required";
+  return errors;
+};
+
+onChangeClearError = (name) => {
+  let data = {
+    ...this.state.fieldErrors,
+    [name]: "",
+  };
+  console.log(Object.entries(data));
+  this.setState({
+    fieldErrors: data,
+  });
+};
   handleValidation = () => {
     if (
       this.state.raw_data_ref === "" ||
@@ -151,6 +244,7 @@ export default class DataEntryOfTestResults extends Component {
     this.setState({ assigned_date: "" });
     this.setState({ batch_lot:"" });
     this.setState({ qty: "" });
+    this.setState({ show_parameter: "", show_specification: "" });
     this.setState({
       fdata: "",
       sdata: "",
@@ -224,7 +318,7 @@ export default class DataEntryOfTestResults extends Component {
             </CardHeader>
             <CardBody>
               <GridContainer>
-               
+              <CardM style={{ marginLeft: 15, minWidth: 960 }}>
                   <CardContent>
                     <CardHeader color="info">
                       <h4>Sampling Information</h4>
@@ -232,24 +326,30 @@ export default class DataEntryOfTestResults extends Component {
                     <CardContent>
                       <GridContainer>
                         <GridItem xs={12} sm={12} md={3}>
-                          <TextField
-                            id=""
-                            select
-                            variant="outlined"
-                            label="QC No."
-                            fullWidth="true"
-                            value={this.state.qc_no}
-                            onChange={(event) => {
-                              this.setState({ qc_no: event.target.value });
-                              this.fillSpecs(event.target.value);
+                        <Select
+                            name="qc_no"
+                            placeholder="Select QC No. "
+                            className="customSelect"
+                            classNamePrefix="select"
+                            isSearchable={true}
+                            options={this.state.qc_list}
+                            value={
+                              this.state.qc_no ? { QCNo: this.state.qc_no } : null
+                            }
+                            getOptionValue={(option) => option.QCNo}
+                            getOptionLabel={(option) => option.QCNo}
+                            onChange={(value, select) => {
+                              this.setState({ qc_no: value.QCNo })
+                              this.fillSpecs(value.QCNo);
+                              console.log(value, select.name);
+                              this.onChangeClearError(select.name);
                             }}
-                          >
-                            {this.state.qc_list.map((qc) => (
-                              <MenuItem key={qc["QCNo"]} value={qc["QCNo"]}>
-                                {qc["QCNo"]}
-                              </MenuItem>
-                            ))}
-                          </TextField>
+                          />
+                          {this.state.fieldErrors && this.state.fieldErrors.qc_no && (
+                            <span className="MuiFormHelperText-root Mui-error">
+                              {this.state.fieldErrors.qc_no}
+                            </span>
+                          )}
                         </GridItem>
                         <GridItem xs={12} sm={12} md={3}>
                           <TextField
@@ -291,7 +391,7 @@ export default class DataEntryOfTestResults extends Component {
                             fullWidth="true"
                             InputProps={{ readOnly: true }}
                             variant="outlined"
-                            label="Material Code:"
+                            label="Product Code:"
                           />
                         </GridItem>
                         <GridItem xs={12} sm={12} md={3}>
@@ -300,7 +400,7 @@ export default class DataEntryOfTestResults extends Component {
                             fullWidth="true"
                             InputProps={{ readOnly: true }}
                             variant="outlined"
-                            label="Material Name:"
+                            label="Product Name:"
                             value={this.state.name}
                           />
                         </GridItem>
@@ -368,11 +468,23 @@ export default class DataEntryOfTestResults extends Component {
                             fullWidth="true"
                             variant="outlined"
                             label={"Raw Data Ref: "}
+                            name="raw_data_ref"
                             value={this.state.raw_data_ref}
+                            error={
+                              this.state.fieldErrors &&
+                                this.state.fieldErrors.raw_data_ref
+                                ? true
+                                : false
+                            }
+                            helperText={
+                              this.state.fieldErrors &&
+                              this.state.fieldErrors.raw_data_ref
+                            }
                             onChange={(event) => {
                               this.setState({
                                 raw_data_ref: event.target.value,
                               });
+                              this.onChangeClearError(event.target.name);
                             }}
                           />
                         </GridItem>
@@ -384,11 +496,23 @@ export default class DataEntryOfTestResults extends Component {
                             type="number"
                             variant="outlined"
                             label={"Approved Qty (" + this.state.units + ")"}
+                            name="approved_qty"
                             value={this.state.approved_qty}
+                            error={
+                              this.state.fieldErrors &&
+                                this.state.fieldErrors.approved_qty
+                                ? true
+                                : false
+                            }
+                            helperText={
+                              this.state.fieldErrors &&
+                              this.state.fieldErrors.approved_qty
+                            }
                             onChange={(event) => {
                               this.setState({
                                 approved_qty: event.target.value,
                               });
+                              this.onChangeClearError(event.target.name);
                             }}
                           />
                         </GridItem>
@@ -400,16 +524,28 @@ export default class DataEntryOfTestResults extends Component {
                             type="number"
                             variant="outlined"
                             label={"Rejected Qty (" + this.state.units + ")"}
+                            name="rejected_qty"
                             value={this.state.rejected_qty}
+                            error={
+                              this.state.fieldErrors &&
+                                this.state.fieldErrors.rejected_qty
+                                ? true
+                                : false
+                            }
+                            helperText={
+                              this.state.fieldErrors &&
+                              this.state.fieldErrors.rejected_qty
+                            }
                             onChange={(event) => {
                               this.setState({
                                 rejected_qty: event.target.value,
                               });
+                              this.onChangeClearError(event.target.name);
                             }}
                           />
                         </GridItem>
                       </GridContainer>
-
+                      
                       <GridContainer>
                         <GridItem xs={12} sm={12} md={4}>
                           <TextField
@@ -417,11 +553,23 @@ export default class DataEntryOfTestResults extends Component {
                             fullWidth="true"
                             variant="outlined"
                             label={"Working Std No. "}
+                            name="working_std_no"
                             value={this.state.working_std_no}
+                            error={
+                              this.state.fieldErrors &&
+                                this.state.fieldErrors.working_std_no
+                                ? true
+                                : false
+                            }
+                            helperText={
+                              this.state.fieldErrors &&
+                              this.state.fieldErrors.working_std_no
+                            }
                             onChange={(event) => {
                               this.setState({
                                 working_std_no: event.target.value,
                               });
+                              this.onChangeClearError(event.target.name);
                             }}
                           />
                         </GridItem>
@@ -434,11 +582,23 @@ export default class DataEntryOfTestResults extends Component {
                             InputLabelProps={{ shrink: true }}
                             variant="outlined"
                             label={"Analysis Date:"}
+                            name="analysis_date"
                             value={this.state.analysis_date}
+                            error={
+                              this.state.fieldErrors &&
+                                this.state.fieldErrors.analysis_date
+                                ? true
+                                : false
+                            }
+                            helperText={
+                              this.state.fieldErrors &&
+                              this.state.fieldErrors.analysis_date
+                            }
                             onChange={(event) => {
                               this.setState({
                                 analysis_date: event.target.value,
                               });
+                              this.onChangeClearError(event.target.name);
                             }}
                           />
                         </GridItem>
@@ -451,15 +611,28 @@ export default class DataEntryOfTestResults extends Component {
                             variant="outlined"
                             InputLabelProps={{ shrink: true }}
                             label={"Retest Date: "}
+                            name="retest_date"
                             value={this.state.retest_date}
+                            error={
+                              this.state.fieldErrors &&
+                                this.state.fieldErrors.retest_date
+                                ? true
+                                : false
+                            }
+                            helperText={
+                              this.state.fieldErrors &&
+                              this.state.fieldErrors.retest_date
+                            }
                             onChange={(event) => {
                               this.setState({
                                 retest_date: event.target.value,
                               });
+                              this.onChangeClearError(event.target.name);
                             }}
                           />
                         </GridItem>
                       </GridContainer>
+
                     </CardContent>
 
                     <CardHeader
@@ -474,6 +647,8 @@ export default class DataEntryOfTestResults extends Component {
                     </CardHeader>
                     <CardContent>
                       <GridContainer>
+                        
+
                         <GridItem xs={12} sm={12} md={3}>
                           <TextField
                             id=""
@@ -481,6 +656,7 @@ export default class DataEntryOfTestResults extends Component {
                             InputProps={{ readOnly: true }}
                             variant="outlined"
                             label={"Test Parameter:"}
+                            value={this.state.show_parameter}
                           />
                         </GridItem>
 
@@ -491,6 +667,7 @@ export default class DataEntryOfTestResults extends Component {
                             InputProps={{ readOnly: true }}
                             variant="outlined"
                             label={"Specification: "}
+                            value={this.state.show_specification}
                           />
                         </GridItem>
 
@@ -501,11 +678,23 @@ export default class DataEntryOfTestResults extends Component {
                             variant="outlined"
                             label={"Result: "}
                             value={this.state.result}
+                            // error={
+                            //   this.state.fieldErrors &&
+                            //     this.state.fieldErrors.result
+                            //     ? true
+                            //     : false
+                            // }
+                            // helperText={
+                            //   this.state.fieldErrors &&
+                            //   this.state.fieldErrors.result
+                            // }
                             onChange={(event) => {
                               this.setState({ result: event.target.value });
+                              // this.onChangeClearError(event.target.name);
                             }}
                           />
                         </GridItem>
+
 
                         <GridItem xs={12} sm={12} md={1}>
                           <Button
@@ -561,22 +750,57 @@ export default class DataEntryOfTestResults extends Component {
 
                       <GridItem xs={12} sm={12} md={12}>
                         <GridContainer>
-                          <div style={{ height: 450, width: "100%" }}>
+                        <div style={{ height: 450, width: "100%" }}>
                             <DataGrid
                               rows={products_array}
                               columns={columns}
                               checkboxSelection
-                              
-                              onSelectionModelChange={(event,selection) => {
-                                console.log(selection)
-                                this.setState({ selectedRows: event });
+                              onSelectionModelChange={(event) => {
+                                console.log("selection", event)
+                                let selectedId = event.length > 0 ? event[0] : null;
+                                if ( selectedId ) {
+                                  const selectedRowData = products_array.filter((row) => {
+                                    return row.id === selectedId
+                                  });
 
+                                  this.setState({
+                                    show_specification: selectedRowData && selectedRowData[0].parameter,
+                                    show_parameter: selectedRowData && selectedRowData[0].specification,
+                                  })
+                                } else {
+                                  this.setState({
+                                    show_specification: "",
+                                    show_parameter: "",
+                                  });
+                                }
+
+                                this.setState({ selectedRows: event });
                                 if (event.length === 1) {
                                   this.setState({ canResult: false });
                                 } else {
                                   this.setState({ canResult: true });
                                 }
+                                console.log("selectedRowData", this.state.result_specification);
+                                // console.log("selectedRowData", selectedRowData);
+                                // console.log("selectedRowData 1", selectedRowData1);
                               }}
+                              // onSelectionModelChange={(event) => {
+                              //   console.log("selection", event)
+                              //   this.setState({ selectedRows: event });
+                              //   if (event.length === 1) {
+                              //     this.setState({ canResult: false });
+                              //   } else {
+                              //     this.setState({ canResult: true });
+                              //   }
+                                // this.setState(
+                                //   {
+                                //     selectedRows: event[0],
+                                //   },
+                                //   () => {
+                                //     this.getOrderNo();
+                                //   }
+                                // );
+                              // }}
                             />
                           </div>
                         </GridContainer>
@@ -584,17 +808,30 @@ export default class DataEntryOfTestResults extends Component {
 
                       <GridContainer>
                         <GridItem xs={12} sm={12} md={10}>
-                          <TextField
+                        <TextField
                             id=""
                             style={{ width: "100%" }}
                             label="Remarks"
                             multiline
                             variant="outlined"
+                            name="remarks"
                             value={this.state.value}
+                            error={
+                              this.state.fieldErrors &&
+                                this.state.fieldErrors.remarks
+                                ? true
+                                : false
+                            }
+                            helperText={
+                              this.state.fieldErrors &&
+                              this.state.fieldErrors.remarks
+                            }
                             onChange={(event) => {
                               this.setState({ remarks: event.target.value });
+                              this.onChangeClearError(event.target.name);
                             }}
                           />
+                          
                         </GridItem>
                         <GridItem xs={12} sm={12} md={2}>
                           <Button
@@ -602,9 +839,7 @@ export default class DataEntryOfTestResults extends Component {
                             color="primary"
                             startIcon={<CloudUploadIcon />}
                             onClick={() => {
-                              if (this.handleValidation()) {
-                                this.postData();
-                              }
+                              this.postData();
                             }}
                           >
                             Post
@@ -613,7 +848,7 @@ export default class DataEntryOfTestResults extends Component {
                       </GridContainer>
                     </CardContent>
                   </CardContent>
-               
+                  </CardM>
               </GridContainer>
             </CardBody>
           </Card>

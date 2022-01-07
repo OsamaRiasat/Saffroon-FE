@@ -11,18 +11,15 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import MenuItem from "@material-ui/core/MenuItem";
 import { toast } from "react-toastify";
-import Select from "react-select";
+
 import PackSizeAdd from "../../Services/QA/Add_PackSize";
-import {
-  CustomValueContainer,
-  CustomSelectStyle,
-} from "../../variables/genericVariables";
 
 import {
-	ProductCodeListForPackSize,
-	ProductData,
-	AddPackSizeAPI,
+  ProductCodeListForPackSize,
+  ProductData,
+  AddPackSizeAPI,
 } from "../../Services/QA/Add_PackSize";
+import { PackSize } from "../../Services/Production/New_PMFormulation.js";
 
 export default class AddPackSize extends Component {
   async componentDidMount() {
@@ -32,7 +29,7 @@ export default class AddPackSize extends Component {
   getProductCodeList = async () => {
     const productCodeList = (await ProductCodeListForPackSize()).data;
     console.log(productCodeList);
-    this.setState({productCodeList: productCodeList});
+    this.setState({ productCodeList: productCodeList });
   };
 
   getData = async (pcode) => {
@@ -50,7 +47,7 @@ export default class AddPackSize extends Component {
   state = {
     show: false,
   };
-  
+
   toggle = (p) => {
     if (p == "Vial") {
       this.setState((currentState) => ({ show: true }));
@@ -58,8 +55,6 @@ export default class AddPackSize extends Component {
       this.setState((currentState) => ({ show: false }));
     }
   };
-
- 
 
   constructor(props) {
     super(props);
@@ -76,6 +71,10 @@ export default class AddPackSize extends Component {
       packType: "",
       fillingWeight: "0",
       MRP: "",
+
+      eproductcode: "",
+
+      fieldErrors: {},
     };
   }
 
@@ -89,7 +88,6 @@ export default class AddPackSize extends Component {
       packType: "",
       fillingWeight: "0",
       MRP: "",
-      fieldErrors: {}
     });
   };
 
@@ -104,13 +102,52 @@ export default class AddPackSize extends Component {
     });
   };
 
+  validatePackSize = (PackSize) => {
+    if(this.state.dosageForm==="Tablet" || this.state.dosageForm==="Capsule"){
+      try{
+        const data = PackSize.split("x").map((e) => parseInt(e));
+        if(Number.isInteger(data[0]) && Number.isInteger(data[1]) && data[1]>0){
+            return true;
+        }else return false;
+      }
+      catch(error){
+        console.log(error)
+        return false;
+    }
+  }else if(this.state.dosageForm==="Vial")
+  {
+    const digits_only = string => [...string].every(c => '0123456789'.includes(c));
+    if (digits_only(PackSize) && parseInt(PackSize)>0) {
+      return true;
+    }else return false;
+  }
+  };
+  validate = (fields) => {
+    const errors = {};
+    if (!fields.eproductcode) errors.eproductcode = "Required!";
+    if (!fields.packSize) errors.packSize = "Required!";
+    if (!fields.packType) errors.packType = "Required!";
+    else if(!this.validatePackSize(fields.packSize)) errors.packSize = "Pack Size format is not correct!";
+    if (!fields.MRP) errors.MRP = "Required!";
+    
+   console.log(this.validatePackSize(fields.packSize))
+    return errors;
+  };
+
   postButton = async () => {
     try {
-
-      let { packSize, packType, MRP } = this.state;
-      const fieldErrors = this.validate({ packSize, packType, MRP });
+      let { eproductcode, packSize, packType, MRP , dosageForm} = this.state;
+      
+      const fieldErrors = this.validate({
+        eproductcode,
+        packSize,
+        packType,
+        MRP,
+        dosageForm
+      });
       this.setState({ fieldErrors: fieldErrors });
-      if (Object.keys(fieldErrors).length) return;
+      if (Object.keys(fieldErrors).length) return; 
+     
       const payload = {
         PackSize: this.state.packSize,
         PackType: this.state.packType,
@@ -119,15 +156,12 @@ export default class AddPackSize extends Component {
         ProductCode: this.state.productCode,
       };
 
-     
-
       console.log(payload);
-      const data = await AddPackSizeAPI(payload);
-      console.log(data);
+      const resp = await AddPackSizeAPI(payload);
 
-      if (data.status === 201) {
-        // alert("Data Posted!!!");
-        toast.success("Data Posted!!!", {
+      console.log(resp);
+      if (resp.status === 201) {
+        toast.success("Pack Size Added !!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -137,10 +171,8 @@ export default class AddPackSize extends Component {
           progress: undefined,
         });
         this.clearForm();
-        this.getProductCodeList();
       } else {
-          // alert("Unexpected Error");
-          toast.error("Unexpected Error", {
+        toast.error("Request Not Sent" , {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -150,9 +182,9 @@ export default class AddPackSize extends Component {
           progress: undefined,
         });
       }
-    } catch {
-      // alert("Something Went Wrong!!!");
-      toast.error("Something Went Wrong!!!", {
+    } catch (error) {
+      console.log(error);
+      toast.error("Pack Size Added Already Exists ", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -163,13 +195,7 @@ export default class AddPackSize extends Component {
       });
     }
   };
-  validate = (fields) => {
-    const errors = {};
-    if (!fields.packSize) errors.packSize = "Pack Size Required";
-    if (!fields.packType) errors.packType = "Pack Type Required";
-    if (!fields.MRP) errors.MRP= "MRF Required";
-    return errors;
-  };
+
   render() {
     return (
       <div style={{ marginTop: 50 }}>
@@ -186,17 +212,35 @@ export default class AddPackSize extends Component {
                       <GridItem xs={12} sm={12} md={3}>
                         <Autocomplete
                           id="product-code"
+                          tabIndex={"1"}
+                          autoFocus={true}
                           options={this.state.productCodeList}
                           getOptionLabel={(option) => option.ProductCode}
                           onChange={(event, value) => {
                             this.setState({
+                              eproductcode: "s",
+                            });
+                            this.setState({
                               productCode: value.ProductCode,
                             });
                             this.getData(value.ProductCode);
+                            console.log("value:" + this.state.eproductcode);
+                            this.onChangeClearError("eproductcode");
                           }}
-                          renderInput={(params) => <TextField {...params} label="Product Code:" variant="outlined" />}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Product Code:"
+                              variant="outlined"
+                            />
+                          )}
                         />
-                        
+                        {this.state.fieldErrors &&
+                          this.state.fieldErrors.eproductcode && (
+                            <span className="MuiFormHelperText-root Mui-error">
+                              {this.state.fieldErrors.eproductcode}
+                            </span>
+                          )}
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={6}>
@@ -237,16 +281,7 @@ export default class AddPackSize extends Component {
                         <TextField
                           id=""
                           variant="outlined"
-                          error={
-                            this.state.fieldErrors &&
-                            this.state.fieldErrors.packSize
-                              ? true
-                              : false
-                          }
-                          helperText={
-                            this.state.fieldErrors &&
-                            this.state.fieldErrors.packSize
-                          }
+                          inputProps={{ tabIndex: "2"  }}
                           label="Pack Size:"
                           fullWidth="true"
                           value={this.state.packSize}
@@ -254,20 +289,8 @@ export default class AddPackSize extends Component {
                             this.setState({
                               packSize: event.target.value,
                             });
-                            this.onChangeClearError(event.target.name);
+                            this.onChangeClearError("packSize");
                           }}
-                        />
-                          {/* {this.state.fieldErrors && this.state.fieldErrors.packSize && (
-                      <span className="MuiFormHelperText-root Mui-error">
-                        {this.state.fieldErrors.packSize}
-                      </span>
-                    )} */}
-                      </GridItem>
-
-                      <GridItem xs={12} sm={12} md={2}>
-                        <TextField
-                          id=""
-                          variant="outlined"
                           error={
                             this.state.fieldErrors &&
                             this.state.fieldErrors.packSize
@@ -278,22 +301,23 @@ export default class AddPackSize extends Component {
                             this.state.fieldErrors &&
                             this.state.fieldErrors.packSize
                           }
+                        />
+                      </GridItem>
+
+                      <GridItem xs={12} sm={12} md={2}>
+                        <TextField
+                          id=""
+                          variant="outlined"
                           label="Pack Type:"
+                          inputProps={{ tabIndex: "3"  }}
                           fullWidth="true"
                           value={this.state.packType}
                           onChange={(event) => {
                             this.setState({
                               packType: event.target.value,
                             });
-                            this.onChangeClearError(event.target.name);
+                            this.onChangeClearError("packType");
                           }}
-                        />
-                      </GridItem>
-
-                      <GridItem xs={12} sm={12} md={2}>
-                        <TextField
-                          id=""
-                          variant="outlined"
                           error={
                             this.state.fieldErrors &&
                             this.state.fieldErrors.packType
@@ -304,15 +328,32 @@ export default class AddPackSize extends Component {
                             this.state.fieldErrors &&
                             this.state.fieldErrors.packType
                           }
+                        />
+                      </GridItem>
+
+                      <GridItem xs={12} sm={12} md={2}>
+                        <TextField
+                          id=""
+                          variant="outlined"
+                          inputProps={{ tabIndex: "4"  }}
                           label="MRP:"
+                          type="number"
                           fullWidth="true"
                           value={this.state.MRP}
                           onChange={(event) => {
                             this.setState({
                               MRP: event.target.value,
                             });
-                            this.onChangeClearError(event.target.name);
+                            this.onChangeClearError("MRP");
                           }}
+                          error={
+                            this.state.fieldErrors && this.state.fieldErrors.MRP
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors && this.state.fieldErrors.MRP
+                          }
                         />
                       </GridItem>
 
@@ -339,6 +380,7 @@ export default class AddPackSize extends Component {
                       <GridItem md={3}>
                         <Button
                           variant="contained"
+                          tabIndex={"5"}
                           color="primary"
                           fullWidth="true"
                           startIcon={<AddCircleOutlineIcon />}

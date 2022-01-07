@@ -24,6 +24,13 @@ import {
 	RMPurchaseOrderDetails,
 	RMIGP,
 } from "../../Services/Inventory/RM_IGP";
+import { toast } from "react-toastify";
+import Select from "react-select";
+import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../variables/genericVariables";
+
 
 class demo extends React.Component {
     async componentDidMount(){
@@ -63,7 +70,10 @@ class demo extends React.Component {
             materialcode_list: [],
             material_list:[],
             supplier_list: ['S1', 'S2', 'S3'],
-            supplierId:''
+            supplierId:'',
+            fieldErrors: {},
+
+
         }
     }
 
@@ -94,8 +104,38 @@ class demo extends React.Component {
       
 
     }
+    validate = (fields) => {
+        const errors = {};
+        
+        if (!fields.ponumber) errors.ponumber = "PO No Required";
+        if (!fields.materialcode) errors.materialcode = "RMCode Required";
+        if (!fields.batchnumber) errors.batchnumber = "Batch No Required";
+        if (!fields.recieved_quantity) errors.recieved_quantity = "Recieved Quantity Required";
+        if (!fields.number_containers) errors.number_containers = "No Of Containers Required";
+        return errors;
+      };
+    
+      onChangeClearError = (name) => {
+        let data = {
+          ...this.state.fieldErrors,
+          [name]: "",
+        };
+        console.log(Object.entries(data));
+        this.setState({
+          fieldErrors: data,
+        });
+      };
 
     postIGPData= async ()=>{
+
+        let { batchnumber, recieved_quantity, number_containers , ponumber, materialcode} = this.state;
+
+        const fieldErrors = this.validate({ batchnumber, recieved_quantity, number_containers, ponumber, materialcode });
+  
+        this.setState({ fieldErrors: fieldErrors });
+  
+        if (Object.keys(fieldErrors).length) return;
+  
         try{
         const payload= {
             
@@ -106,8 +146,6 @@ class demo extends React.Component {
             "PONo": this.state.ponumber,
             "S_ID": this.state.supplierId
         }
-        const resp=(await RMIGP(payload));
-        alert("IGP Added")
         this.setState({
 
             ponumber:'',
@@ -118,10 +156,22 @@ class demo extends React.Component {
             recieved_quantity:'',
             balance:'',
             material:'',
-            demanded:''
+            demanded:'',
+            fieldErrors: {},
 
 
         })
+        const resp=(await RMIGP(payload));
+        toast.success("IGP Added Successfully !!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        
         const Hinum= (await RMHighestIGPNO()).data['IGPNo__max'];
         
       this.setState({
@@ -132,7 +182,15 @@ class demo extends React.Component {
     }
     catch(error)
     {
-        alert(error)
+        toast.error("Request Not sent "+error, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
     }
       }
     // async updateCart() {
@@ -190,45 +248,70 @@ class demo extends React.Component {
                                             <GridContainer>
                                                 <GridItem xs={12} sm={12} md={4}  >
 
-                                                    <TextField
-                                                        id="po number"
-                                                        select
-                                                        label="P.O Number"
-                                                        fullWidth="true"
-                                                        
-                                                        value={this.state.ponumber}
-                                                        onChange={(event) => {
-                                                            this.setState({ ponumber: event.target.value })
-                                                            this.handleMaterialCodes(event.target.value);
+                                                <Select
+                                                        name="ponumber"
+                                                        placeholder="P.O Number"
+                                                        autoFocus={true}
+                                                        // inputProps={{ tabIndex: "1" }}
+                                                        tabIndex= "1"
+                                                        className="customSelect"
+                                                        classNamePrefix="select"
+                                                        components={{
+                                                            ValueContainer:CustomValueContainer,
                                                         }}
-                                                    >
-                                                        {this.state.ponumber_list.map((num) => (
-                                                            <MenuItem key={num['PONo']} value={num['PONo']}>
-                                                                {num['PONo']}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </TextField>
+                                                        styles={CustomSelectStyle}
+                                                        isSearchable={true}
+                                                        options={this.state.ponumber_list}
+                                                        value={
+                                                            this.state.ponumber ? { PONo: this.state.ponumber } : null
+                                                        }
+                                                        getOptionValue={(option) => option.PONo}
+                                                        getOptionLabel={(option) => option.PONo}
+                                                        onChange={(value, select) => {
+                                                            this.setState({ ponumber : value.PONo })
+                                                            this.handleMaterialCodes(value.PONo);
+                                                            console.log("Here from auto ", select.name)
+                                                            this.onChangeClearError(select.name);
+                                                        }}
+                                                    />
+                                                    {this.state.fieldErrors && this.state.fieldErrors.ponumber && (
+                                                        <span className="MuiFormHelperText-root Mui-error">
+                                                        {this.state.fieldErrors.ponumber}
+                                                        </span>
+                                                    )}
                                                 </GridItem>
                                                 <GridItem xs={12} sm={12} md={8}>
 
-                                                    <TextField
-                                                        id="materialcode"
-                                                        select
-                                                        label="Material Code"
-                                                        
-                                                        fullWidth="true"
-                                                        value={this.state.materialcode}
-                                                        onChange={(event) => {
-                                                            this.setState({ materialcode: event.target.value })
-                                                            this.handleautoFilldata(this.state.ponumber,event.target.value)
+                                                <Select
+                                                        name="materialcode"
+                                                       // name1="rmCode"
+                                                        placeholder="Raw Material Code"
+                                                        className="customSelect"
+                                                        tabIndex= "2"
+                                                        // inputProps={{ tabIndex: "2" }}
+                                                        classNamePrefix="select"
+                                                        components={{
+                                                            ValueContainer:CustomValueContainer,
                                                         }}
-                                                    >
-                                                        {this.state.materialcode_list.map((num) => (
-                                                            <MenuItem key={num['RMCode']} value={num['RMCode']}>
-                                                                {num['RMCode']}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </TextField>
+                                                        styles={CustomSelectStyle}
+                                                        isSearchable={true}
+                                                        options={this.state.materialcode_list}
+                                                        value={
+                                                            this.state.materialcode ? { RMCode: this.state.materialcode } : null
+                                                        }
+                                                        getOptionValue={(option) => option.RMCode}
+                                                        getOptionLabel={(option) => option.RMCode}
+                                                        onChange={(value, select) => {
+                                                            this.setState({ materialcode : value.RMCode })
+                                                            this.handleautoFilldata(this.state.ponumber,value.RMCode)
+                                                            this.onChangeClearError(select.name);
+                                                        }}
+                                                    />
+                                                     {this.state.fieldErrors && this.state.fieldErrors.materialcode && (
+                                                        <span className="MuiFormHelperText-root Mui-error">
+                                                        {this.state.fieldErrors.materialcode}
+                                                        </span>
+                                                    )}
                                                 </GridItem>
                                             </GridContainer>
 
@@ -236,7 +319,8 @@ class demo extends React.Component {
                                                 <GridItem xs={12} sm={12} md={6}>
                                                     <TextField
                                                         id="materialname"
-                                                        InputProps={{ readOnly: true, }}
+                                           
+                                                        InputProps={{ readOnly: true,tabIndex:"-1" }}
                                                         label="Material Name"
                                                         style={{ backgroundColor: "#f5f7f7" }}
                                                         variant="outlined"
@@ -313,23 +397,60 @@ class demo extends React.Component {
                                             </GridContainer> */}
                                             <GridContainer>
                                                 <GridItem xs={12} sm={12} md={4}>
-                                                    <TextField id="batchnumber" fullWidth="true"  variant="outlined" label={"Batch Number"} required="true" value={this.state.batchnumber}
+                                                    <TextField name="batchnumber" id="batchnumber" fullWidth="true"  variant="outlined" label={"Batch Number"} required="true" value={this.state.batchnumber}
+                                                         inputProps={{ tabIndex: "3" }}
+                                                         error={
+                                                            this.state.fieldErrors &&
+                                                            this.state.fieldErrors.batchnumber
+                                                              ? true
+                                                              : false
+                                                          }
+                                                          helperText={
+                                                            this.state.fieldErrors &&
+                                                            this.state.fieldErrors.batchnumber
+                                                          }
                                                         onChange={(event) => {
-                                                            this.setState({ batchnumber: event.target.value })
+                                                            this.setState({ batchnumber: event.target.value });
+                                                            this.onChangeClearError(event.target.name);
                                                         }}
                                                     />
                                                 </GridItem>
                                                 <GridItem xs={12} sm={12} md={4}>
-                                                    <TextField id="noOfContainers" variant="outlined"  fullWidth="true" type="number" label="Number Of Containers " required="true" value={this.state.number_containers}
+                                                    <TextField id="noOfContainers" name="number_containers" variant="outlined"  fullWidth="true" type="number" label="Number Of Containers " required="true" value={this.state.number_containers}
+                                                         inputProps={{ tabIndex: "4" }}
+                                                         error={
+                                                            this.state.fieldErrors &&
+                                                            this.state.fieldErrors.number_containers
+                                                              ? true
+                                                              : false
+                                                          }
+                                                          helperText={
+                                                            this.state.fieldErrors &&
+                                                            this.state.fieldErrors.number_containers
+                                                          }
+                                                        
                                                         onChange={(event) => {
-                                                            this.setState({ number_containers: event.target.value })
+                                                            this.setState({ number_containers: event.target.value });
+                                                            this.onChangeClearError(event.target.name);
                                                         }}
                                                     />
                                                 </GridItem>
                                                 <GridItem xs={12} sm={12} md={4}>
-                                                    <TextField id="quantityReceived" fullWidth="true" type="number" variant="outlined" required="true" label={"Quantity Received(" + this.state.unit + ")"} value={this.state.recieved_quantity}
+                                                    <TextField id="quantityReceived" name="recieved_quantity" fullWidth="true" type="number" variant="outlined" required="true" label={"Quantity Received(" + this.state.unit + ")"} value={this.state.recieved_quantity}
+                                                        inputProps={{ tabIndex: "5"  }}
+                                                        error={
+                                                            this.state.fieldErrors &&
+                                                            this.state.fieldErrors.recieved_quantity
+                                                              ? true
+                                                              : false
+                                                          }
+                                                          helperText={
+                                                            this.state.fieldErrors &&
+                                                            this.state.fieldErrors.recieved_quantity
+                                                          }
                                                         onChange={(event) => {
-                                                            this.setState({ recieved_quantity: event.target.value })
+                                                            this.setState({ recieved_quantity: event.target.value });
+                                                            this.onChangeClearError(event.target.name);
                                                         }}
                                                     />
                                                 </GridItem>
@@ -342,7 +463,9 @@ class demo extends React.Component {
                         </CardBody>
 
                         <CardFooter className="center">
-                            <Button className="StyledButton" onClick={() => {
+                            <Button className="StyledButton" 
+                            tabIndex="6"
+                            onClick={() => {
                                 this.postIGPData()
                             }} color="primary">Add</Button>
                         </CardFooter>

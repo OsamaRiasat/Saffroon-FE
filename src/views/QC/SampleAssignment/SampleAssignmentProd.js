@@ -13,10 +13,16 @@ import { DataGrid } from "@material-ui/data-grid";
 import RMSamples from "../../../Services/QC/Product/Product_Sample_Assignment.js";
 import PrintIcon from "@material-ui/icons/Print";
 import MenuItem from "@material-ui/core/MenuItem";
+import { toast } from "react-toastify";
 import {
   GridToolbarContainer,
   GridToolbarExport,
 } from "@material-ui/data-grid";
+import Select from "react-select";
+import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../../variables/genericVariables";
 
 function CustomToolbar() {
   return (
@@ -45,9 +51,11 @@ export default class SampleAssignmentRaw extends Component {
       analysts: [],
       assignedSamples: [],
       analystSamplesid: "",
+      analyst: "",
       selectedRowQC: "",
       canAssign: false,
       analystAssignedid: "",
+      analystAssigned: "",
       selectedqc: "",
     };
   }
@@ -80,10 +88,15 @@ export default class SampleAssignmentRaw extends Component {
       const ananame = this.state.analysts.find(
         (e) => e.id === this.state.analystAssignedid
       );
-      // console.log(ananame);
-      alert(
-        "Assigned QC " + this.state.selectedRowQC[0] + " to " + ananame.username
-      );
+      toast.success("Assigned QC No=" + this.state.selectedRowQC[0] + " to " + ananame.username, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -220,28 +233,36 @@ export default class SampleAssignmentRaw extends Component {
                   <GridItem xs={12} sm={12} md={12}>
                     <GridContainer style={{ marginLeft: 15 }}>
                       <GridItem xs={12} sm={12} md={12}>
-                        <TextField
-                          select
-                          label="Analyst"
-                          fullWidth="true"
-                          value={this.state.analystSamplesid}
-                          //onChange={}
-                          // helperText="_____________________________"
-                          // variant="outlined"
-                          onChange={(event) => {
-                            this.setState({
-                              analystSamplesid: event.target.value,
-                            });
-                            console.log(event.target.value);
-                            this.handleShowassignedSamples(event.target.value);
-                          }}
-                        >
-                          {this.state.analysts.map((analyst) => (
-                            <MenuItem key={analyst.id} value={analyst.id}>
-                              {analyst.username}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+                      <Select
+                    placeholder="Select Analyst to view assigned tasks"
+                    className="customSelect"
+                    classNamePrefix="select"
+                    name="analysts"
+                    components={{
+                      ValueContainer: CustomValueContainer,
+                    }}
+                    styles={CustomSelectStyle}
+                    isSearchable={true}
+                    options={this.state.analysts.map((t) => ({
+                      value: t.id,
+                      label: t.username,
+                    }))}
+                    value={
+                      this.state.analyst ? { label: this.state.analyst } : null
+                    }
+                    getOptionValue={(option) => option.value}
+                    getOptionLabel={(option) => option.label}
+                    onChange={(value) => {
+                      this.setState({
+                        analystSamplesid: value.value,
+                        analyst: value.label,
+                      });
+                      
+                      this.handleShowassignedSamples(value.value);
+                    }}
+                 
+                  />
+
                       </GridItem>
                     </GridContainer>
                     {/* <GridContainer>
@@ -284,7 +305,7 @@ export default class SampleAssignmentRaw extends Component {
                         />
                       </GridItem>
                       <GridItem xs={12} sm={12} md={4}>
-                        <TextField
+                        {/* <TextField
                           select
                           label="Analyst"
                           fullWidth="true"
@@ -304,7 +325,36 @@ export default class SampleAssignmentRaw extends Component {
                               {analyst.username}
                             </MenuItem>
                           ))}
-                        </TextField>
+                        </TextField> */}
+                        <Select
+                    placeholder="Analysts"
+                    className="customSelect"
+                    classNamePrefix="select"
+                    name="analysts"
+                    components={{
+                      ValueContainer: CustomValueContainer,
+                    }}
+                    styles={CustomSelectStyle}
+                    isSearchable={true}
+                    options={this.state.analysts.map((t) => ({
+                      value: t.id,
+                      label: t.username,
+                    }))}
+                    value={
+                      this.state.analystAssigned ? { label: this.state.analystAssigned } : null
+                    }
+                    getOptionValue={(option) => option.value}
+                    getOptionLabel={(option) => option.label}
+                    onChange={(value) => {
+                      this.setState({
+                        analystAssignedid: value.value,
+                        analystAssigned: value.label,
+                      });
+                      
+                      
+                    }}
+                 
+                  />
                       </GridItem>
                       <GridItem xs={12} sm={12} md={4}>
                         <Button
