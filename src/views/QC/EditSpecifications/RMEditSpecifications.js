@@ -126,7 +126,7 @@ export default class RMEditSpecifications extends Component {
   }
   async fillSpecs(cod) {
     console.log("codee", cod)
-    debugger
+    
     const temp = (await (RM_Edit_Specs.methods.RMEditSpecificationView(cod))).data
     console.log("codee", temp)
     console.log(temp)

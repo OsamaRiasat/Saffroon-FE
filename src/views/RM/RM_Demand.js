@@ -115,6 +115,7 @@ class PackingMaterialDemand extends React.Component {
       productsName: [],
       productsRMCode: [],
       planNo:[],
+      PlanNosList:[],
       //to be called by API
 
       // demandnumber:(await getRMDemandHighestDNo()).data['DNo__max'],
@@ -210,16 +211,6 @@ class PackingMaterialDemand extends React.Component {
       cart: []
     })
 
-    // id: this.state.cart[i].id,
-    //     PlanN: this.state.cart[i].plannumber,
-    //     Category: this.state.cart[i].category,
-    //     RMCode: this.state.cart[i].pmcode,
-    //     Material: this.state.cart[i].name,
-    //     Qty: this.state.cart[i].demandquantity,
-    //     Unit: this.state.cart[i].unit,
-    //     Inhand: this.state.cart[i].stockinhand,
-    //     Priority: this.state.cart[i].priority,
-
     const products_array= []
     for (let i = 0; i < data.length; ++i) {
       
@@ -241,15 +232,7 @@ class PackingMaterialDemand extends React.Component {
     this.setState({
       cart: products_array
     })
-    // this.setState((prevState) => ({
-    //   selected: {
-    //     // object that we want to update
-    //     ...prevState.selected, // keep all other key-value pairs
-    //     category: data["Type"],
-    //     name: data["Material"],
-    //     unit: data["Units"],
-    //   },
-    // }));
+
   };
 
   handlePostData = async () => {
@@ -466,14 +449,7 @@ class PackingMaterialDemand extends React.Component {
                   </GridItem>
                   <GridItem xs={12} sm={12} md={7} style={{ marginLeft: 5 }}>
                   <Select
-                   /*plannumber
-        demandquantity
-        category
-        priority
-        pmcode
-        name
-        stockinhand
-        unit*/
+                   
 
                            name="priority"
                            placeholder="Select Priority"
