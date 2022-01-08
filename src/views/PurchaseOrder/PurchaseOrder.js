@@ -165,7 +165,7 @@ class PurchaseOrder extends React.Component {
 						<CardHeader color="primary">
 							<h2 style={{ textAlign: "center" }}> Puchase Order </h2>
 						</CardHeader>
-						<CardBody style={{ marginLeft: 15, minWidth: 960 }}>
+						<CardBody style={{ marginLeft: 15, minWidth: 560 }}>
 							<GridContainer>
 								<Card>
 									<CardContent>

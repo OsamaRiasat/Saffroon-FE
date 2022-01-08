@@ -25,6 +25,7 @@ import { toast } from "react-toastify";
 import {
   CustomValueContainer,
   CustomSelectStyle,
+  CustomToolbar
 } from "../../variables/genericVariables";
 
 
@@ -37,17 +38,11 @@ import {
   RawMaterialSearchByRMCode,
   RawMaterialSearchByName,
   RMDemands,
+  PlanNosList,
+  Demanded_Materials_Through_PlanNo
 } from "../../Services/Inventory/inventory.js";
 
 import "../../styles/products.css";
-
-function CustomToolbar() {
-  return (
-    <GridToolbarContainer>
-      <GridToolbarExport />
-    </GridToolbarContainer>
-  );
-}
 
 const styles = {
   cardCategoryWhite: {
@@ -94,7 +89,11 @@ class PackingMaterialDemand extends React.Component {
       },
     }));
     const pName = (await RawMaterialNames()).data; //[{Material:'matname'}]
-
+    const pList = (await PlanNosList()).data;
+    console.log("From Demand Form : "+ pList);
+    this.setState({
+      PlanNosList: pList
+    })
     console.log(pName);
     this.setState({
       productsName: pName,
@@ -115,7 +114,8 @@ class PackingMaterialDemand extends React.Component {
       // replace "name" and "pmcode"
       productsName: [],
       productsRMCode: [],
-
+      planNo:[],
+      PlanNosList:[],
       //to be called by API
 
       // demandnumber:(await getRMDemandHighestDNo()).data['DNo__max'],
@@ -179,7 +179,6 @@ class PackingMaterialDemand extends React.Component {
         // object that we want to update
         ...prevState.selected, // keep all other key-value pairs
 
-        plannumber: "",
         demandquantity: "",
         category: "",
         priority: "Normal",
@@ -202,6 +201,38 @@ class PackingMaterialDemand extends React.Component {
         unit: data["Units"],
       },
     }));
+  };
+
+  handleSetCartByPlanNo = async (planNo) => {
+    const data = (await Demanded_Materials_Through_PlanNo(planNo)).data;
+    console.log("Demanded_Materials_Through_PlanNo from Form ", data[0]);  //13
+
+    this.setState({
+      cart: []
+    })
+
+    const products_array= []
+    for (let i = 0; i < data.length; ++i) {
+      
+      let temp = {
+        id: i,
+        plannumber: this.state.selected.plannumber,
+        category: data[i].Category,
+        pmcode: data[i].RMCode,
+        name: data[i].Material,
+        demandquantity: data[i].demandedQuantity,
+        unit: data[i].Unit,
+        stockinhand: this.state.selected.stockinhand,
+        priority: this.state.selected.priority,
+      };
+      products_array.push(temp);
+      
+    }
+    console.log("After Loop ", products_array);
+    this.setState({
+      cart: products_array
+    })
+
   };
 
   handlePostData = async () => {
@@ -418,14 +449,7 @@ class PackingMaterialDemand extends React.Component {
                   </GridItem>
                   <GridItem xs={12} sm={12} md={7} style={{ marginLeft: 5 }}>
                   <Select
-                   /*plannumber
-        demandquantity
-        category
-        priority
-        pmcode
-        name
-        stockinhand
-        unit*/
+                   
 
                            name="priority"
                            placeholder="Select Priority"
@@ -529,29 +553,11 @@ class PackingMaterialDemand extends React.Component {
                         </GridContainer>
                         <GridContainer>
                           <GridItem xs={12} sm={12} md={12}>
-                            <TextField
-                             /*plannumber
-        demandquantity
-        category
-        priority
-        pmcode
-        name
-        stockinhand
-        unit*/
+                            {/* <TextField
                               name="plannumber"
                               id="plan-number"
                               label="Plan number"
                               variant="outlined"
-                              error={
-                                this.state.fieldErrors &&
-                                  this.state.fieldErrors.plannumber
-                                  ? true
-                                  : false
-                              }
-                              helperText={
-                                this.state.fieldErrors &&
-                                this.state.fieldErrors.plannumber
-                              }
                               value={this.state.selected.plannumber}
                               onChange={(event) => {
                                 this.setState((prevState) => ({
@@ -563,20 +569,45 @@ class PackingMaterialDemand extends React.Component {
                                 }));
                                 this.onChangeClearError(event.target.name);
                               }}
+                            /> */}
+                            <Select
+                              name="plannumber"
+                               id="plannumber"
+                               select 
+                               placeholder="Plan Number"
+                               className="customSelect"
+                               classNamePrefix="select"
+                               label="Plan Number" 
+                                components={{
+                                ValueContainer:CustomValueContainer,
+                                }}
+                                styles={CustomSelectStyle}
+                                isSearchable={true}
+                                options={this.state.PlanNosList}
+                                value={
+                                this.state.selected.plannumber ? { planNo: this.state.selected.plannumber } : null
+                                }
+                                getOptionValue={(option) => option.planNo}
+                                getOptionLabel={(option) => option.planNo}
+                              
+                                onChange={(value, select) => {
+                                  //this.setState({ name : value.Material });
+                                  this.setState((prevState) => ({
+                                    selected: {
+                                      // object that we want to update
+                                      ...prevState.selected, // keep all other key-value pairs
+                                      plannumber: value.planNo,
+                                      // update the value of specific key
+                                    },
+                                  }));
+                                 this.handleSetCartByPlanNo(value.planNo);
+                                }}
                             />
                           </GridItem>
                         </GridContainer>
                         <GridContainer>
                           <GridItem xs={12} sm={12} md={12}>
                             <TextField
-                             /*plannumber
-        demandquantity
-        category
-        priority
-        pmcode
-        name
-        stockinhand
-        unit*/
                               name="demandquantity"
                               id="quantity"
                               fullWidth="true"
@@ -618,15 +649,6 @@ class PackingMaterialDemand extends React.Component {
                         <GridContainer>
                           <GridItem xs={12} sm={12} md={8}>
                           <Select
-                              //name="grnnumber"
-                               /*plannumber
-        demandquantity
-        category
-        priority
-        pmcode
-        name
-        stockinhand
-        unit*/
                               name="name"
                                id="material"
                                select 

@@ -24,6 +24,11 @@ export function supplierApprovedMaterial(data) {
   return resp;
 }
 
+export function DemandedMaterialsByDemandNo(DNo) {
+  const resp = http.get(Endpoint + "RMDemandedItems/" + DNo);
+  return resp;
+}
+
 export function materialCodes(data) {
   const resp = http.get(Endpoint + "RMPurchaseOrderListOfMaterialCodesForForm/" + data.SID + "/" + data.DNo);
   return resp;

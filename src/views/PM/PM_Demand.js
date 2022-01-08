@@ -32,6 +32,8 @@ import {
   PackingMaterialSearchByName,
   PackingMaterialSearchByPMCode,
   PMDemands,
+  PlanNosList,
+  Demanded_Materials_Through_PlanNo
 } from "../../Services/Inventory/PM/PM_Demand.js";
 
 import "../../styles/products.css";
@@ -86,7 +88,11 @@ class PackingMaterialDemand extends React.Component {
     this.setState({
       productsName: pName,
     });
-
+    const pList = (await PlanNosList()).data;
+    console.log("From Demand Form : "+ pList);
+    this.setState({
+      PlanNosList: pList
+    })
     const PMcode = (await PackingMaterialCodes()).data; //[{"PMCode":'matname'}]
 
     console.log(PMcode);
@@ -102,6 +108,7 @@ class PackingMaterialDemand extends React.Component {
       // replace "name" and "pmcode"
       productsName: [],
       productsPMCode: [],
+      PlanNosList:[],
 
       //to be called by API
 
@@ -167,7 +174,7 @@ class PackingMaterialDemand extends React.Component {
         // object that we want to update
         ...prevState.selected, // keep all other key-value pairs
 
-        plannumber: "",
+        
         demandquantity: "",
         category: "",
         priority: "Normal",
@@ -191,6 +198,46 @@ class PackingMaterialDemand extends React.Component {
       },
     }));
   };
+  handleSetCartByPlanNo = async (planNo) => {
+    const data = (await Demanded_Materials_Through_PlanNo(planNo)).data;
+    console.log("Demanded_Materials_Through_PlanNo from Form ", data[0]);  //13
+
+    this.setState({
+      cart: []
+    })
+
+    const products_array= []
+    for (let i = 0; i < data.length; ++i) {
+      
+      let temp = {
+        id: i,
+        plannumber: this.state.selected.plannumber,
+        category: data[i].Category,
+        pmcode: data[i].RMCode,
+        name: data[i].Material,
+        demandquantity: data[i].demandedQuantity,
+        unit: data[i].Unit,
+        stockinhand: this.state.selected.stockinhand,
+        priority: this.state.selected.priority,
+      };
+      products_array.push(temp);
+      
+    }
+    console.log("After Loop ", products_array);
+    this.setState({
+      cart: products_array
+    })
+    // this.setState((prevState) => ({
+    //   selected: {
+    //     // object that we want to update
+    //     ...prevState.selected, // keep all other key-value pairs
+    //     category: data["Type"],
+    //     name: data["Material"],
+    //     unit: data["Units"],
+    //   },
+    // }));
+  };
+
   handlePostData = async () => {
     if (this.state.cart.length === 0) {
      // alert("Demanded Items are Empty !!!");
@@ -493,32 +540,38 @@ class PackingMaterialDemand extends React.Component {
                         </GridContainer>
                         <GridContainer>
                           <GridItem xs={12} sm={12} md={12}>
-                            <TextField
-                            name="plannumber"
-                              id="plan-number"
-                              label="Plan number"
-                              variant="outlined"
-                              error={
-                                this.state.fieldErrors &&
-                                  this.state.fieldErrors.plannumber
-                                  ? true
-                                  : false
-                              }
-                              helperText={
-                                this.state.fieldErrors &&
-                                this.state.fieldErrors.plannumber
-                              }
-                              value={this.state.selected.plannumber}
-                              onChange={(event) => {
-                                this.setState((prevState) => ({
-                                  selected: {
-                                    // object that we want to update
-                                    ...prevState.selected, // keep all other key-value pairs
-                                    plannumber: event.target.value, // update the value of specific key
-                                  },
-                                }));
-                                this.onChangeClearError(event.target.name);
-                              }}
+                          <Select
+                              name="plannumber"
+                               id="plannumber"
+                               select 
+                               placeholder="Plan Number"
+                               className="customSelect"
+                               classNamePrefix="select"
+                               label="Plan Number" 
+                                components={{
+                                ValueContainer:CustomValueContainer,
+                                }}
+                                styles={CustomSelectStyle}
+                                isSearchable={true}
+                                options={this.state.PlanNosList}
+                                value={
+                                this.state.selected.plannumber ? { planNo: this.state.selected.plannumber } : null
+                                }
+                                getOptionValue={(option) => option.planNo}
+                                getOptionLabel={(option) => option.planNo}
+                              
+                                onChange={(value, select) => {
+                                  //this.setState({ name : value.Material });
+                                  this.setState((prevState) => ({
+                                    selected: {
+                                      // object that we want to update
+                                      ...prevState.selected, // keep all other key-value pairs
+                                      plannumber: value.planNo,
+                                      // update the value of specific key
+                                    },
+                                  }));
+                                 this.handleSetCartByPlanNo(value.planNo);
+                                }}
                             />
                           </GridItem>
                         </GridContainer>

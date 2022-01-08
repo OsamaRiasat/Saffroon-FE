@@ -54,12 +54,25 @@ export default class Dashboard extends Component {
                           component={Link}
                           to="/saffron/planning"
                         >
-                          Planning
+                          Raw Material 
+                        </Button>
+                        <Button
+                          classes={{
+                            root: classes.root, // class name, e.g. `classes-nesting-root-x`
+                          }}
+                          variant="contained"
+                          color="success"
+                          fullWidth="true"
+                          component={Link}
+                          to="/saffron/planning"
+                        >
+                          Pcking Material 
                         </Button>
                         
                       </CardBody>
                     </Card>
                   </GridItem>
+                  
 
                   <GridItem xs={12} sm={12} md={4}>
                     <Card>
@@ -210,10 +223,31 @@ export default class Dashboard extends Component {
 
                   <GridItem xs={12} sm={12} md={2}></GridItem>
                 </GridContainer>
+                
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <Card>
+                      <CardHeader color="info">
+                      <h4 style={{ textAlign: "center" }}>Dispensing</h4>
+                      </CardHeader>
+                      <CardBody>
+                        <Button
+                        color="success"
+                        fullWidth="true"
+                        component={Link}
+                        to="/saffron/RM/Dispensing"
+                        >Raw Material</Button>
+                      </CardBody>
+                    </Card>
+
+                  </GridItem>
+                </GridContainer>
               </CardBody>
             </Card>
           </GridItem>
         </GridContainer>
+
+
       </div>
     );
   }

@@ -52,6 +52,25 @@ export function RawMaterialSearchByName(rmName)
      return resp;
     
 }
+
+export function PlanNosList()
+{
+     console.log("Gettting PlanNosList")
+     const resp=http.get(Endpoint+"PlanNosList");
+     console.log(resp);
+     return resp;
+    
+}
+
+export function Demanded_Materials_Through_PlanNo(planNo)
+{    
+    console.log("Gettting Demanded_Materials_Through_PlanNo")
+     const resp=http.get(Endpoint+"Demanded_Materials_Through_PlanNo"+planNo);
+     console.log(resp);
+     return resp;
+    
+}
+
 export function RMDemands(rmdemand)
 {
     
