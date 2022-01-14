@@ -51,17 +51,56 @@ constructor(props){
     mcode: "",
     fdata: "",
     sdata: "",
+
+    show: false,
+    canprint: false,
   };
 
 }
   
 
+printData = () => {
+  var divToPrint = document.getElementById("hide");
+  if (divToPrint === "" || divToPrint === null) {
+    return;
+  } else {
+    console.log("hi", divToPrint);
+    var newWin = window.open("");
+
+    newWin.document.write(divToPrint.outerHTML);
+    // console.log("FI",divToPrint.outerHTML)
+    // newWin.focus();
+    newWin.print();
+
+    if (newWin.stop) {
+      newWin.location.reload(); //triggering unload (e.g. reloading the page) makes the print dialog appear
+      newWin.stop(); //immediately stop reloading
+    }
+    newWin.close();
+
+    this.setState({
+      show: !this.state.show,
+      specs:[],
+      rmcode: "",
+      mcode: "",
+      fdata: "",
+      sdata: "",
+      canprint: false,
+    });
+  }
+};
+
+  toggle = () =>
+  this.setState({ show: !this.state.show }, () => {
+    this.printData();
+  });
   handlegetSpecs = async (code) => {
     const details = (await RMSpecs.methods.ViewSpecifications(code)).data;
     this.setState({
       fdata: details["FirstData"],
       sdata: details["SecondData"],
-      specs:details["list"]
+      specs:details["list"],
+      canprint: true
     });
 
   };
@@ -85,23 +124,46 @@ constructor(props){
     })
 
   };
-  // // handlesetmcode=(newValue)=>{
-  // //   console.log(newValue)
-  // //   this.setState({ mcode: newValue })
-    
+  GenerateSpecs = () => {
+    try {
+      const tabledata = this.state.specs.map((staged, index) => {
+        var { paramater, specification } =
+          staged;
+        
+        return (
+          <tr style={{ border: "1px solid black" }} key={index}>
+            <td style={{ border: "1px solid black", width: "100px" }}>
+              {index + 1}{" "}
+            </td>
+            <td style={{ border: "1px solid black", width: "250" }}>
+              {paramater}
+            </td>
+            <td style={{ border: "1px solid black", width: "400px" }}>
+              {specification}
+            </td>
+           
+          </tr>
+        );
+      });
 
-  // }
+      return tabledata;
+    } catch (error) {
+      console.log(error);
+      alert("Something Went Wrong");
+    }
+  };
+
+
+
 
   render(){
-    // const materialProps = {
-    //   options: this.state.mcodes,
-    //   getOptionLabel: (option) => option.Material,
-    // };
-
-    // const rmcodeProps = {
-    //   options: this.state.rmcodes,
-    //   getOptionLabel: (option) => option.RMCode,
-    // };
+    var today = new Date();
+    let date =
+      today.getDate() +
+      "-" +
+      (today.getMonth() + 1) +
+      "-" +
+      today.getFullYear();
 
     const products_array = [];
     var count=0;
@@ -291,6 +353,11 @@ constructor(props){
                           className=""
                           color="primary"
                           startIcon={<PrintIcon />}
+                          onClick={() => {
+                            this.toggle();
+                          }}
+                          disabled={!this.state.canprint}
+                          startIcon={<PrintIcon />}
                         >
                           Print Sheet
                         </Button>
@@ -324,6 +391,91 @@ constructor(props){
             </CardBody>
           </Card>
         </GridContainer>
+        {this.state.show && (
+          <div id="hide">
+          <div style={{ textAlign: "center" }}>
+            <span>Dated: {date}</span>
+            <h2>Packing Material Specification</h2>
+          </div>
+
+          <div style={{marginLeft:50}}>
+            <h3>Code: {this.state.rmcode}</h3>
+          </div>
+      
+          <div style={{textAlign: "center", marginTop:-30}}>
+          ______________________________________________________________________________________________________________________________________
+          </div>
+
+
+          <div style={{marginLeft:50}}>
+            <h3>Material:     {this.state.mcode}</h3>
+          </div>
+      
+          <div style={{textAlign: "center", marginTop:-30}}>
+          ______________________________________________________________________________________________________________________________________
+          </div>
+
+          <div style={{marginLeft:50}}>
+            <h3>Specification No:     {this.state.fdata}</h3>
+          </div>
+      
+          <div style={{textAlign: "center", marginTop:-30}}>
+          ______________________________________________________________________________________________________________________________________
+          </div>
+
+          <div style={{marginLeft:50, marginTop:30}}>
+            <h3>Reference of Specifications : {this.state.sdata}</h3>
+          </div>
+
+          <table
+          style={{
+            marginLeft: "auto",
+            marginRight: "auto",
+            borderCollapse: "collapse",
+            fontSize:"17px"
+          }}>
+            <thead style={{ border: "1px solid black", color: "#234564" }}>
+              <th style={{ border: "1px solid black", width: "100px"}}>Sr. </th>
+              <th style={{ border: "1px solid black", width: "250px" }}>Parameters</th>
+              <th style={{ border: "1px solid black", width: "400px" }}>Specifications</th>
+            </thead>
+            <tbody>
+            {this.GenerateSpecs()}
+            </tbody>
+          </table>
+
+          <div style={{ display: "flex" , marginTop:"40px"}}>
+              <div style={{ textAlign: "left" , width:"33%"}}>
+                <p>
+                  <span>
+                    <strong>Prepared by:</strong>
+                    
+                  </span>
+                  ________________________
+                </p>
+                
+              </div>
+              <div style={{ textAlign: "center" , width:"33%"}}>
+                <p>
+                  <span>
+                    <strong>Reviewed By:</strong>
+                    __________________________
+                  </span>
+                </p>
+                
+              </div>
+              <div style={{ textAlign: "right", width:"33%" }}>
+                <p>
+                  <span>
+                    <strong>Approved By:</strong>
+                  </span>
+                  ___________________________
+                </p>
+                
+              </div>
+            </div>
+            </div>
+        )}
       </div>
     );
   }

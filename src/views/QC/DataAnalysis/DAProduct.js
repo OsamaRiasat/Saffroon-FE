@@ -151,6 +151,88 @@ export default class DARM extends Component {
     );
   };
 
+
+  
+  toggle = () =>
+this.setState({ show: !this.state.show }, () => {
+  this.printData();
+});
+
+
+printData = () => {
+  var divToPrint = document.getElementById("hide");
+  if (divToPrint === "" || divToPrint === null) {
+    return;
+  } else {
+    console.log("hi", divToPrint);
+    var newWin = window.open("");
+
+    newWin.document.write(divToPrint.outerHTML);
+    // console.log("FI",divToPrint.outerHTML)
+    // newWin.focus();
+    newWin.print();
+
+    if (newWin.stop) {
+      newWin.location.reload(); //triggering unload (e.g. reloading the page) makes the print dialog appear
+      newWin.stop(); //immediately stop reloading
+    }
+    newWin.close();
+
+    this.setState({
+      show: !this.state.show,
+    });
+  }
+};
+
+
+GenerateSpecs = () => {
+  try {
+    const tabledata = this.state.cart.map((staged, index) => {
+      var { product, batchNo , QCNo,parameter, specification,result, stage ,analysisDateTime} =
+        staged;
+
+      return (
+        <tr style={{ border: "1px solid black" }} key={index}>
+          <td style={{ border: "1px solid black", width: "100px" }}>
+            {index + 1}{" "}
+          </td>
+          <td style={{ border: "1px solid black", width: "200px" }}>
+            {product}
+          </td>
+          <td style={{ border: "1px solid black", width: "200px" }}>
+            {batchNo}
+          </td>
+          <td style={{ border: "1px solid black", width: "200px" }}>
+            {QCNo}
+          </td>
+          <td style={{ border: "1px solid black", width: "200px" }}>
+            {parameter}
+          </td>
+          <td style={{ border: "1px solid black", width: "200px" }}>
+            {specification}
+          </td>
+          <td style={{ border: "1px solid black", width: "200px" }}>
+            {stage}
+          </td>
+          <td style={{ border: "1px solid black", width: "200px" }}>
+            {result}
+          </td>
+          <td style={{ border: "1px solid black", width: "200px" }}>
+            {analysisDateTime}
+          </td>
+         
+        </tr>
+      );
+    });
+
+    return tabledata;
+  } catch (error) {
+    console.log(error);
+    alert("Something Went Wrong");
+  }
+};
+
+
   constructor(props) {
     super(props);
     this.state = {
@@ -169,6 +251,8 @@ export default class DARM extends Component {
       parameter: "",
 
       cart: [],
+
+      show: false,
     };
   }
   render() {
@@ -183,6 +267,8 @@ export default class DARM extends Component {
         qc: this.state.cart[i].QCNo,
         parameter: this.state.cart[i].parameter,
         stage: this.state.cart[i].stage,
+        specification: this.state.cart[i].specification,
+        result: this.state.cart[i].result,
         analysisdate: this.state.cart[i].analysisDateTime,
       };
       products_array.push(temp);
@@ -191,7 +277,7 @@ export default class DARM extends Component {
     const columns = [
       {
         field: "materialName",
-        headerName: "Material Name",
+        headerName: "Product Name",
         width: 230,
         editable: true,
       },
@@ -213,11 +299,10 @@ export default class DARM extends Component {
         width: 160,
         editable: true,
       },
-
       {
-        field: "analysisdate",
-        headerName: "Analysis Date",
-        width: 200,
+        field: "specification",
+        headerName: "Specification",
+        width: 160,
         editable: true,
       },
       {
@@ -226,6 +311,19 @@ export default class DARM extends Component {
         width: 160,
         editable: true,
       },
+      {
+        field: "result",
+        headerName: "Result",
+        width: 160,
+        editable: true,
+      },
+      {
+        field: "analysisdate",
+        headerName: "Analysis Date",
+        width: 200,
+        editable: true,
+      },
+      
     ];
 
     return (
@@ -242,7 +340,7 @@ export default class DARM extends Component {
                 <CardM style={{ marginLeft: 15, minWidth: 960 }}>
                   <CardContent>
                     <CardHeader color="info">
-                      <h4>PM Reports Parameter</h4>
+                      <h4>Product Data Analysis</h4>
                     </CardHeader>
                     <CardContent>
                       <GridContainer>
@@ -543,7 +641,11 @@ export default class DARM extends Component {
                         </GridItem>
 
                         <GridItem xs={12} sm={12} md={2}>
-                          <Button color="primary" startIcon={<PrintIcon />}>
+                          <Button color="primary" startIcon={<PrintIcon />}
+                             onClick={() => {
+                              this.toggle();
+                            }}
+                          >
                             Print
                           </Button>
                         </GridItem>
@@ -567,7 +669,42 @@ export default class DARM extends Component {
             </CardBody>
           </Card>
         </GridContainer>
-      </div>
+        {this.state.show && (
+          <div id="hide">
+          <div style={{ textAlign: "center" }}>
+            
+            <h2>Data Analysis Log</h2>
+          </div>
+
+          <table
+          style={{
+            marginLeft: "auto",
+            marginRight: "auto",
+            borderCollapse: "collapse",
+            fontSize:"10px"
+          }}>
+            <thead style={{ border: "1px solid black", color: "#234564" }}>
+              <th style={{ border: "1px solid black", width: "70px"}}>Sr. No </th>
+              <th style={{ border: "1px solid black", width: "200px"}}>Material </th>
+              <th style={{ border: "1px solid black", width: "200px" }}>Batch</th>
+              <th style={{ border: "1px solid black", width: "200px" }}>QC No</th>
+              <th style={{ border: "1px solid black", width: "200px" }}>Parameter</th>
+              <th style={{ border: "1px solid black", width: "200px" }}>Specifications</th>
+              <th style={{ border: "1px solid black", width: "200px" }}>Stage</th>
+              <th style={{ border: "1px solid black", width: "200px" }}>Result</th>
+              <th style={{ border: "1px solid black", width: "200px" }}>analysisdate</th>
+
+            </thead>
+            <tbody>
+            {this.GenerateSpecs()}
+            </tbody>
+          </table>
+
+         
+          </div>
+        )}
+    </div>
     );
   }
 }
+

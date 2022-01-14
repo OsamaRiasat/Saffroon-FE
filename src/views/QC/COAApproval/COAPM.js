@@ -89,6 +89,8 @@ export default class COARM extends Component {
     this.setState({ sampling_date: temp.samplingDateTime });
     this.setState({ retest_date: temp.retestDate });
     this.setState({ raw_data_ref: temp.rawDataReference });
+    this.setState({ fdata: temp.FirstData });
+    this.setState({ sdata: temp.SecondData });
     const temp2 = [];
     let arr = temp.items;
     for (let i = 0; i < arr.length; ++i) {
@@ -509,14 +511,14 @@ handleClearForm=()=>{
                         <GridContainer>
                           <GridItem xs={12} sm={12} md={7}>
                             <span>
-                              <strong>Reference Specs:</strong>
+                              <strong>Reference Specs:  </strong>
                               {this.state.fdata}
                             </span>
                           </GridItem>
 
                           <GridItem xs={12} sm={12} md={5}>
                             <span>
-                              <strong>Specification No:</strong>
+                              <strong>Specification No:  </strong>
                               {this.state.sdata}
                             </span>
                           </GridItem>
