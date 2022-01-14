@@ -80,10 +80,26 @@ import DataEntryOfTestResults from "./views/QC/ResultsLoading/DataEntryOfTestRes
 import PMDataEntry from "./views/QC/ResultsLoading/PMDataEntry";
 import ProductDataEntry from "./views/QC/ResultsLoading/ProductDataEntry";
 
+
+// Labels Printing
+
+import RM_Label from "./views/QC/Label_Printing/RM_Label.js";
+import PM_Label from "./views/QC/Label_Printing/PM_Label.js";
+
+
 // COA
 import COARM from "./views/QC/COAApproval/COARM";
 import COAPM from "./views/QC/COAApproval/COAPM";
 import COAProduct from "./views/QC/COAApproval/COAProduct";
+
+// Print Test
+import P_COARM from "./views/QC/PendingReports/PrintCOARM";
+import P_COAPM from "./views/QC/PendingReports/PrintCOAPM";
+import P_COAProduct from "./views/QC/PendingReports/PrintCOAProduct";
+
+// Analyst dashboard
+import Analyst_dashboard from "./views/QC/Analyst/Analyst_Dashboard.js"
+
 
 // DA
 import DARM from "./views/QC/DataAnalysis/DARM";
@@ -389,10 +405,38 @@ const dashboardRoutes = [
 		role: "Quality Control",
 	},
 
-	//ResultsLoading
+	//QC Labels
+
+	{
+		path: "/QC/Labels/RM",
+		name: "RM Label",
+		icon: LibraryBooks,
+		component: RM_Label,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	{
+		path: "/QC/Labels/PM",
+		name: "PM Label",
+		icon: LibraryBooks,
+		component: PM_Label,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+
+	// Analyst Dashboard
+	{
+		path: "/QC/Analyst/Dashboard",
+		name: "Dashboard",
+		icon: LibraryBooks,
+		component: Analyst_dashboard,
+		layout: "/saffron",
+		role: "QC_Analyst",
+	},
+	//Pending Samples
 	{
 		path: "/QC/RM/pending-reports",
-		name: "RM Pending Reports",
+		name: "RM Pending Samples",
 		icon: LibraryBooks,
 		component: RMPendingReports,
 		layout: "/saffron",
@@ -400,7 +444,7 @@ const dashboardRoutes = [
 	},
 	{
 		path: "/QC/PM/pending-reports",
-		name: "PM Pending Reports",
+		name: "PM Pending Samples",
 		icon: LibraryBooks,
 		component: PMPendingReports,
 		layout: "/saffron",
@@ -408,12 +452,14 @@ const dashboardRoutes = [
 	},
 	{
 		path: "/QC/Product/pending-reports",
-		name: "Product Pending Reports",
+		name: "Product Pending Samples",
 		icon: LibraryBooks,
 		component: ProductPendingReports,
 		layout: "/saffron",
 		role: "QC_Analyst",
 	},
+
+	// Data Entry
 	{
 		path: "/QC/RM/data-entry",
 		name: "Data Entry of RM",
@@ -439,6 +485,33 @@ const dashboardRoutes = [
 		role: "QC_Analyst",
 	},
 
+
+	// Analyst Pending prints 
+	{
+		path: "/QC/Analyst/RM/RM_COA",
+		name: "Print COA RM",
+		icon: LibraryBooks,
+		component: P_COARM,
+		layout: "/saffron",
+		role: "QC_Analyst",
+	},
+	{
+		path: "/QC/Analyst/PM/PM_COA",
+		name: "Print COA PM",
+		icon: LibraryBooks,
+		component: P_COAPM,
+		layout: "/saffron",
+		role: "QC_Analyst",
+	},
+	{
+		path: "/QC/Analyst/product/P_COA",
+		name: "Print COA Product",
+		icon: LibraryBooks,
+		component: P_COAProduct,
+		layout: "/saffron",
+		role: "QC_Analyst",
+	},
+	
 	//COA
 	{
 		path: "/QC/RM/COA",
@@ -464,6 +537,33 @@ const dashboardRoutes = [
 		layout: "/saffron",
 		role: "Quality Control",
 	},
+	//Print COA
+	{
+		path: "/QC/RM/P_COA",
+		name: "Print COA RM",
+		icon: LibraryBooks,
+		component: P_COARM,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	{
+		path: "/QC/PM/P_COA",
+		name: "Print COA PM",
+		icon: LibraryBooks,
+		component: P_COAPM,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+	{
+		path: "/QC/product/P_COA",
+		name: "Print COA Product",
+		icon: LibraryBooks,
+		component: P_COAProduct,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+
+
 	//DA
 	{
 		path: "/QC/RM/data-analysis",
@@ -584,7 +684,7 @@ const dashboardRoutes = [
 		role: "Quality Assurance",
 		showNav: true,
 	},
-	{
+		{
 		path: "/QA/RM/sample",
 		name: "RM Sample",
 		icon: LibraryBooks,

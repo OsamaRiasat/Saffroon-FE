@@ -13,9 +13,10 @@ import { DataGrid } from "@material-ui/data-grid";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import Checkbox from "@material-ui/core/Checkbox";
-import RM_COA_Approval from "../../../Services/QC/RM/RM_COA_Approval.js";
+import RM_COA_Approval from "../../../Services/QC/Product/Product_COA_Approval.js";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { toast } from "react-toastify";
+import PrintIcon from "@material-ui/icons/Print";
 import Select from "react-select";
 import {
   CustomValueContainer,
@@ -23,6 +24,116 @@ import {
 } from "../../../variables/genericVariables";
 
 export default class COARM extends Component {
+
+    
+  toggle = () =>
+this.setState({ show1: !this.state.show1 }, () => {
+  this.printData();
+});
+
+
+printData =  async () => {
+  var divToPrint = document.getElementById("hide");
+  if (divToPrint === "" || divToPrint === null) {
+    return;
+  } else {
+    console.log("hi", divToPrint);
+    var newWin = window.open("");
+
+    newWin.document.write(divToPrint.outerHTML);
+    // console.log("FI",divToPrint.outerHTML)
+    // newWin.focus();
+    newWin.print();
+
+    if (newWin.stop) {
+      newWin.location.reload(); //triggering unload (e.g. reloading the page) makes the print dialog appear
+      newWin.stop(); //immediately stop reloading
+    }
+    newWin.close();
+
+
+    const qc = (await RM_COA_Approval.methods.RMAnalysisLogPrint(this.state.qc_no)).data;
+    console.log(qc);
+    this.setState({
+      show1: !this.state.show1,
+      sampling_date: "",
+      analyst: "",
+      qc_list: [],
+      qc_no: "",
+      igp_sample_req_no: "",
+      code: "",
+      name: "",
+      mfg_date: "",
+      exp_date: "",
+      batch_lot: "",
+      qty: "",
+      approved_qty: "",
+      rejected_qty: "",
+      raw_data_ref: "",
+      working_std_no: "",
+      assigned_date: "",
+      analysis_date: "",
+      analysis_time: "",
+      retest_date: "",
+      cart: [],
+      result: "",
+      units: "",
+      selectedRows: [],
+      remarks: "",
+      show: false,
+      reason: "",
+      fdata: "",
+      sdata: "",
+      fieldErrors: {},
+      options1 : [
+        { value1: 'Released'  },
+        { value1: 'Rejected' }
+      ],
+
+      show1: false,
+      isPrint: true,
+      canprint: false
+
+    });
+
+    this.componentDidMount();
+    
+  }
+};
+
+
+GenerateSpecs = () => {
+  try {
+    const tabledata = this.state.cart.map((staged, index) => {
+      var { parameter, specification, result } =
+        staged;
+      
+      return (
+        <tr style={{ border: "1px solid black" }} key={index}>
+          <td style={{ border: "1px solid black", width: "100px" }}>
+            {index + 1}{" "}
+          </td>
+          <td style={{ border: "1px solid black", width: "200px" }}>
+            {parameter}
+          </td>
+          <td style={{ border: "1px solid black", width: "300px" }}>
+            {specification}
+          </td>
+          <td style={{ border: "1px solid black", width: "170px" }}>
+            {result}
+          </td>
+         
+        </tr>
+      );
+    });
+
+    return tabledata;
+  } catch (error) {
+    console.log(error);
+    alert("Something Went Wrong");
+  }
+};
+
   constructor(props) {
     super(props);
     this.state = {
@@ -58,7 +169,12 @@ export default class COARM extends Component {
       options1 : [
         { value1: 'Released'  },
         { value1: 'Rejected' }
-      ]
+      ],
+
+      show1: false,
+      isPrint: true,
+      canprint: false
+
     };
   }
 
@@ -69,12 +185,12 @@ export default class COARM extends Component {
 
   async fillSpecs(qc) {
     const temp = (await RM_COA_Approval.methods.RMAnalysis(qc)).data;
-    console.log(temp);
+    console.log("temp",temp);
     this.setState({ exp_date: temp.EXP_Date });
     this.setState({ igp_sample_req_no: temp.IGPNo });
     this.setState({ mfg_date: temp.MFG_Date });
-    this.setState({ name: temp.Material });
-    this.setState({ code: temp.RMCode });
+    this.setState({ name: temp.Product });
+    this.setState({ code: temp.ProductCode });
     this.setState({ units: temp.Units });
     this.setState({ analysis_date: temp.analysisDateTime });
     this.setState({ assigned_date: temp.assignedDateTime });
@@ -102,61 +218,9 @@ export default class COARM extends Component {
       temp2.push(a);
     }
     this.setState({ cart: temp2 });
+    this.setState({ canprint: true });
   }
 
-  async postData() {
-    try{
-
-      let { qc_no , result} = this.state;
-
-      const fieldErrors = this.validate({ qc_no, result });
-
-      this.setState({ fieldErrors: fieldErrors });
-      
-      if (Object.keys(fieldErrors).length) return;
-    const payload = {
-      remarks: this.state.remarks,
-      isRetest: this.state.show,
-      retestReason: this.state.reason,
-      result: this.state.result,
-    };
-    const qc = this.state.qc_no;
-    const resp = await RM_COA_Approval.methods.PostRMCOAApproval(qc, payload);
-    console.log(resp);
-    // alert("Certified !!");
-    if (this.state.result === "Rejected"){
-      toast.success("Material Rejected");
-    }
-    else{
-      toast.success("Material Released");
-    }
-    this.handleClearForm();
-    
-  }
-  catch(error){
-    console.log(error);
-    // alert("Something Went Wrong !!")
-    toast.error("Data cannot be posted");
-  }
-  }
-handleValidate=()=>{
-    if(this.state.result==="")
-    {
-        return false
-    }
-    else if (this.state.show && this.state.reason ==="")
-    {
-        return false
-    }
-    return true
-}
-validate = (fields) => {
-  const errors = {};
-  if (!fields.qc_no) errors.qc_no = "QC No Required*";
-  if (!fields.result) errors.result = "Result Required*";
- 
-  return errors;
-};
 onChangeClearError = (name) => {
   let data = {
     ...this.state.fieldErrors,
@@ -167,7 +231,6 @@ onChangeClearError = (name) => {
     fieldErrors: data,
   });
 };
-
 
 handleClearForm=()=>{
   this.setState({
@@ -203,9 +266,7 @@ handleClearForm=()=>{
    
 
   // this.handleClearResultsparas();
-}
-  toggle = () =>
-    this.setState((currentState) => ({ show: !currentState.show }));
+} 
 
   render() {
       console.log(this.state);
@@ -247,7 +308,7 @@ handleClearForm=()=>{
           <Card>
             <CardHeader color="primary">
               <h3 >
-                Certificate of Approval
+                Certificate of Approval - Product
               </h3>
             </CardHeader>
             <CardBody>
@@ -256,30 +317,12 @@ handleClearForm=()=>{
                   <CardContent>
                     
                       <CardHeader color="info">
-                        <h4>RM Sampling Information</h4>
+                        <h4>COA APPROVAL</h4>
                       </CardHeader>
                       <CardContent>
                         <GridContainer>
                         <GridItem xs={12} sm={12} md={3}>
-                            {/* <TextField
-                              id=""
-                              select
-                              variant="outlined"
-                              label="QC No."
-                              fullWidth="true"
-                              value={this.state.qc_no}
-                              onChange={(event) => {
-                                this.setState({ qc_no: event.target.value });
-                                this.fillSpecs(event.target.value);
-                              }}
-                            >
-                              {this.state.qc_list.map((qc) => (
-                                <MenuItem key={qc["QCNo"]} value={qc["QCNo"]}>
-                                  {qc["QCNo"]}
-                                </MenuItem>
-                              ))}
-                            </TextField> */}
-                    <Select
+                        <Select
                       name="QC No"
                       placeholder="Select QC No"
                       components={{
@@ -514,14 +557,14 @@ handleClearForm=()=>{
                         <GridContainer>
                           <GridItem xs={12} sm={12} md={7}>
                             <span>
-                              <strong>Reference Specs:</strong>
+                              <strong>Reference Specs:  </strong>
                               {this.state.fdata}
                             </span>
                           </GridItem>
 
                           <GridItem xs={12} sm={12} md={5}>
                             <span>
-                              <strong>Specification No:</strong>
+                              <strong>Specification No:  </strong>
                               {this.state.sdata}
                             </span>
                           </GridItem>
@@ -541,67 +584,16 @@ handleClearForm=()=>{
                         </GridItem>
 
                         <GridContainer>
-                          {/* <GridItem xs={50} sm={50} md={4}> */}
-                            {/* <TextField
-                              id=""
-                              select
-                              style={{ width: "100%" }}
-                              label="Results"
+                        <GridItem xs={50} sm={50} md={4}>
+                        <TextField
+                              id="date"
+                              fullWidth="true"
+                              InputProps={{ readOnly: true }}
                               variant="outlined"
+                              label={"Result: "}
                               value={this.state.result}
-                              onChange={(event) => {
-                                  console.log("Chnage");
-                                this.setState({
-                                  result: event.target.value,
-                                });
-                              }}
-                            >
-                              <MenuItem key="1" value="Released">
-                                Released
-                              </MenuItem>
-                              <MenuItem key="2" value="Reject">
-                                Rejected
-                              </MenuItem>
-                            </TextField>*/}
-
-                  <GridItem xs={50} sm={50} md={4}>
-                    <Select
-                      name="Results"
-                      placeholder="Select Result"
-                      components={{
-                        ValueContainer: CustomValueContainer,
-                      }}
-                      styles={CustomSelectStyle}
-                      className="customSelect"
-                      classNamePrefix="select"
-                      isSearchable={true}
-                      options={this.state.options1}
-                      value={
-                        this.state.result
-                          ? { value1: this.state.result }
-                          : null
-                      }
-                      getOptionValue={(option) => option.value1}
-                      getOptionLabel={(option) => option.value1}
-                      onChange={(value) => {
-                        console.log("Chnage");
-                      this.setState({
-                        result: value.value1,
-                      });
-                    }}
-                    />
-                      {this.state.fieldErrors &&
-                          this.state.fieldErrors.result && (
-                            <span className="MuiFormHelperText-root Mui-error">
-                              {this.state.fieldErrors.result}
-                            </span>
-                          )}
+                            />
                           </GridItem> 
-
-                   
-                   
-                   
-
 
                           <GridItem xs={12} sm={12} md={3}>
                             <FormControlLabel
@@ -640,6 +632,7 @@ handleClearForm=()=>{
                               style={{ width: "100%" }}
                               label="Remarks"
                               multiline
+                              InputProps={{ readOnly: true }}
                               variant="outlined"
                               value={this.state.remarks}
                               onChange={(event) => {
@@ -648,24 +641,14 @@ handleClearForm=()=>{
                             />
                           </GridItem>
                           <GridItem xs={12} sm={12} md={2}>
-                            <Button
-                              variant="contained"
-                              
-                              startIcon={<CloudUploadIcon />}
-                              onClick={() => {
-                              //   if (this.state.qc_no === "") {
-                              //     alert("Please select a QC number first!");
-                              //   } else if(this.handleValidate()) {
-                              //     this.postData();
-                              //   }else{
-                              //       alert("Soe Data is missing ")
-                              //   }
-
-                              this.postData();
-                               }}
-                            >
-                              Post
-                            </Button>
+                          <Button color="primary" startIcon={<PrintIcon />}
+                          disabled={!this.state.canprint}
+                           onClick={() => {
+                            this.toggle();
+                          }}
+                          >
+                            Print
+                          </Button>
                           </GridItem>
                         </GridContainer>
                       </CardContent>
@@ -676,7 +659,138 @@ handleClearForm=()=>{
             </CardBody>
           </Card>
         </GridContainer>
-      </div>
+        {this.state.show1 && (
+          <div id="hide" >
+          <div style={{ textAlign: "center" }}>
+            
+            <h2>TEST REPORTS</h2>
+            <h3>Finsih Goods</h3>
+          </div>
+
+          <table
+          style={{
+            marginLeft: "auto",
+            marginRight: "auto",
+            borderCollapse: "collapse",
+            fontSize:"18px"
+          }}>
+            
+            <tr style={{ border: "1px solid black", color: "black", backgroundColor: "rgba(100, 100, 100, 0.5)" }}>
+              <td style={{  width: "200px"}}><b>Name of Material:  </b></td>
+              <td style={{textAlign: "left", width: "200px" }}>{this.state.name}</td>
+              <td style={{ width: "100px" }}><b>Material Code: </b></td>
+              <td style={{textAlign: "left", width: "300px" }}>{this.state.code}</td>
+
+            </tr>
+            <tr style={{  color: "black", textDecoration:"bold" }}>
+              <td style={{  width: "200px"}}>Supplier:  </td>
+              <td style={{textAlign: "left", width: "200px" }}>Text Mising</td>
+              <td style={{ width: "200px" }}></td>
+              <td style={{textAlign: "left", width: "200px" }}></td>
+
+            </tr>
+            <tr>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}><b>Batch No: </b></td>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}>{this.state.batch_lot}</td>
+            <td style={{textAlign: "left", width: "200px" ,border: "1px solid black"}}><b>QCNo: </b></td>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}>{this.state.qc_no}</td>
+            </tr>
+            <tr>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}><b>MFG. Date: </b></td>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}>{this.state.mfg_date}</td>
+            <td style={{textAlign: "left", width: "200px" ,border: "1px solid black"}}><b>Sampling Date: </b></td>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}>{this.state.sampling_date}</td>
+            </tr>
+            <tr>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}><b>Expiry Date: </b></td>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}>{this.state.exp_date}</td>
+            <td style={{textAlign: "left", width: "200px" ,border: "1px solid black"}}><b>Analysis Date: </b></td>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}>{this.state.analysis_date}</td>
+            </tr>
+            <tr>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}><b>IGP No: </b></td>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}>{this.state.igp_sample_req_no}</td>
+            <td style={{textAlign: "left", width: "200px" ,border: "1px solid black"}}><b>Approved Qty: </b></td>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}>{this.state.approved_qty}</td>
+            </tr>
+            <tr>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}><b>Raw Data#: </b></td>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}>{this.state.raw_data_ref}</td>
+            <td style={{textAlign: "left", width: "200px" ,border: "1px solid black"}}><b>Specification Ref: </b></td>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}>{this.state.sdata}</td>
+            </tr>
+            <tr>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}><b>WS/Sec. STD Used: </b></td>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}>{this.state.working_std_no}</td>
+            <td style={{textAlign: "left", width: "200px" ,border: "1px solid black"}}><b>Retest Date: </b></td>
+            <td style={{textAlign: "left", width: "200px",border: "1px solid black" }}>{this.state.retest_date}</td>
+            </tr>
+            <tbody>
+            {/* {this.GenerateSpecs()} */}
+            </tbody>
+          </table>
+
+          <br /> <br />
+
+          <table
+          style={{
+            marginLeft: "auto",
+            marginRight: "auto",
+            borderCollapse: "collapse",
+            fontSize:"17px"
+          }}>
+            <thead style={{ border: "1px solid black", backgroundColor: "rgba(100, 100, 100, 0.5)" }}>
+              <th style={{ border: "1px solid black", width: "80px"}}>Sr. </th>
+              <th style={{ border: "1px solid black", width: "300px" }}>Parameters</th>
+              <th style={{ border: "1px solid black", width: "400px" }}>Specifications</th>
+              <th style={{ border: "1px solid black", width: "170px" }}>Result</th>
+            </thead>
+            <tbody>
+            {this.GenerateSpecs()}
+            </tbody>
+          </table>
+          <div style={{marginLeft:"30px"}}>
+              
+              <p align="right">
+
+              <button style={{marginRight: "30px", backgroundColor: "rgba(100, 100, 100, 0.5)"  }}> <p>{this.state.result}</p></button>
+
+              </p>
+
+
+              <div style={{marginTop:"-40px"}}>
+              <p>Name of analyst:  {this.state.analyst}</p>
+              <p>Remarks : {this.state.remarks}</p>
+              </div>
+            </div>
+          <div style={{ display: "flex" , marginTop:"40px"}}>
+              <div style={{ textAlign: "left" , width:"50%"}}>
+                <p>
+                  <span>
+                    <strong>Analyst:</strong>
+                    
+                  </span>
+                  ________________________
+                </p>
+                
+              </div>
+             
+              <div style={{ textAlign: "right", width:"50%" }}>
+                <p>
+                  <span>
+                    <strong>QC Manager:</strong>
+                  </span>
+                  ___________________________
+                </p>
+                
+              </div>
+            </div>
+
+         
+          </div>
+        )}
+    </div>
     );
   }
 }
+

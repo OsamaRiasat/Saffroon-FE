@@ -97,7 +97,7 @@ export default function SignIn() {
       else if (sessionStorage.getItem("Role") === "Quality Control")
         history.replace("saffron/qc/dashboard");
       else if (sessionStorage.getItem("Role") === "QC_Analyst")
-        history.replace("saffron/qc/rmpendingreports");
+        history.replace("saffron/QC/Analyst/Dashboard");
       else if (sessionStorage.getItem("Role") === "Quality Assurance")
         history.replace("saffron/QA/dashboard");
       else if (sessionStorage.getItem("Role") === "Production")
