@@ -39,6 +39,15 @@ import RM_Post_GRN from "./views/RM/RM_Post_GRN.js";
 import RM_Dispensing from "./views/RM/RM_Dispensing.js"
 
 import planning from "./views/Planning/planning";
+import PM_planning from "./views/Planning/Packing Material Planing/PM_planning.js";
+
+
+
+import RawMaterialReturnNote from "./views/RM/RawMaterialReturnNote.js";
+import PackingMaterialReturnNote from "./views/PM/PackingMaterialReturnNote.js";
+
+import RawMaterialDestructionNote from "./views/RM/RawMaterialDestructionNote";
+import PackingMaterialDestructionNote from "./views/PM/PackingMaterialDestructionNote";
 
 //packing mterial Routes
 import PMDemand from "./views/PM/PM_Demand.js";
@@ -46,7 +55,8 @@ import PM_IGP from "./views/PM/PM_IGP.js";
 import PM_GRN from "./views/PM/PM_GRN.js";
 import PM_Post_GRN from "./views/PM/PM_Post_GRN.js";
 import StoreDashboard from "./views/PM/Dashboard";
-import PurchaseOrder from "./views/PurchaseOrder/PurchaseOrder";
+import RM_PurchaseOrder from "./views/RM/RM_Purchase_Order.js";
+import PM_PurchaseOrder from "./views/PM/PM_Purchase_Order.js";
 
 //QC
 import BlockAnalyst from './views/QC/AnalystBlocking/BlockAnalyst.js'
@@ -85,6 +95,7 @@ import ProductDataEntry from "./views/QC/ResultsLoading/ProductDataEntry";
 
 import RM_Label from "./views/QC/Label_Printing/RM_Label.js";
 import PM_Label from "./views/QC/Label_Printing/PM_Label.js";
+import Product_Label from "./views/QC/Label_Printing/Product_Label.js";
 
 
 // COA
@@ -178,18 +189,36 @@ const dashboardRoutes = [
 
 	{
 		path: "/planning",
-		name: "Planning",
+		name: "RM Planning",
 		icon: FilterFramesIcon,
 		component: planning,
 		layout: "/saffron",
 		role: "Store",
 	},
 
+	// PM_Planning
+	{
+		path: "/pm/planning",
+		name: "PM Planning",
+		icon: FilterFramesIcon,
+		component: PM_planning,
+		layout: "/saffron",
+		role: "Store",
+	},
+
 	{
 		path: "/purchase-order",
-		name: "Purchase Order",
+		name: "RM Purchase Order",
 		icon: FilterFramesIcon,
-		component: PurchaseOrder,
+		component: RM_PurchaseOrder,
+		layout: "/saffron",
+		role: "Store",
+	},
+	{
+		path: "/PM/purchase-order",
+		name: "PM Purchase Order",
+		icon: FilterFramesIcon,
+		component: PM_PurchaseOrder,
 		layout: "/saffron",
 		role: "Store",
 	},
@@ -235,6 +264,27 @@ const dashboardRoutes = [
 		layout: "/saffron",
 		role: "Store",
 	},
+	
+	//RMaterialReturnNote
+	{
+		path: "/RM/RawMaterialReturnNote/",
+		name: "Raw Material Return Note",
+		icon: LibraryBooks,
+		component: RawMaterialReturnNote,
+		layout: "/saffron",
+		role: "Store",
+	},
+	//RMaterialDestructionNote
+	{
+		path: "/RM/RawMaterialDestructionNote/",
+		name: "Raw Material Destruction Note",
+		icon: LibraryBooks,
+		component: RawMaterialDestructionNote,
+		layout: "/saffron",
+		role: "Store",
+	},
+
+
 
 	// Packing material
 
@@ -272,7 +322,25 @@ const dashboardRoutes = [
 		layout: "/saffron",
 		role: "Store",
 	},
-
+	//PackingMaterialReturnNote
+	{
+		path: "/PM/PackingMaterialReturnNote/",
+		name: "Packing Material Return Note",
+		icon: LibraryBooks,
+		component: PackingMaterialReturnNote,
+		layout: "/saffron",
+		role: "Store",
+	},
+	//PackingMaterialDestructionNote
+	{
+		path: "/PM/PackingMaterialDestructionNote/",
+		name: "Packing Material Destruction Note",
+		icon: LibraryBooks,
+		component: PackingMaterialDestructionNote,
+		layout: "/saffron",
+		role: "Store",
+	},
+	
 	//APi test
 	{
 		path: "/apitest",
@@ -420,6 +488,15 @@ const dashboardRoutes = [
 		name: "PM Label",
 		icon: LibraryBooks,
 		component: PM_Label,
+		layout: "/saffron",
+		role: "Quality Control",
+	},
+
+	{
+		path: "/QC/Labels/Product",
+		name: "Product Label",
+		icon: LibraryBooks,
+		component: Product_Label,
 		layout: "/saffron",
 		role: "Quality Control",
 	},
