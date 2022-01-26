@@ -13,7 +13,7 @@ import { DataGrid } from "@material-ui/data-grid";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import Checkbox from "@material-ui/core/Checkbox";
-import RM_COA_Approval from "../../../Services/QC/Product/Product_COA_Approval.js";
+import RM_COA_Approval from "../../../Services/QC/Product/Product_Pending_Prints.js";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { toast } from "react-toastify";
 import PrintIcon from "@material-ui/icons/Print";

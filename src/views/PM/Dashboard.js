@@ -241,7 +241,63 @@ export default class Dashboard extends Component {
                     </Card>
 
                   </GridItem>
+
+                  <GridItem xs={12} sm={12} md={4}>
+                    <Card>
+                      <CardHeader color="info">
+                        <h4 style={{ textAlign: "center" }}>Material Return Note</h4>
+                      </CardHeader>
+                      <CardBody>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          fullWidth="true"
+                          component={Link} to="/saffron/RM/RawMaterialReturnNote" 
+
+                        >
+                          Raw Material 
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          fullWidth="true"
+                          component={Link} to="/saffron/PM/PackingMaterialReturnNote" 
+
+                        >
+                          Pack Material
+                        </Button>
+                      </CardBody>
+                    </Card>
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <Card>
+                      <CardHeader color="danger">
+                        <h4 style={{ textAlign: "center" }}>Material Destruction Note</h4>
+                      </CardHeader>
+                      <CardBody>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          fullWidth="true"
+                          component={Link} to="/saffron/RM/RawMaterialDestructionNote" 
+
+                        >
+                          Raw Material 
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          fullWidth="true"
+                          component={Link} to="/saffron/PM/PackingMaterialDestructionNote" 
+
+                        >
+                          Pack Material
+                        </Button>
+                      </CardBody>
+                    </Card>
+                  </GridItem>
                 </GridContainer>
+                  
               </CardBody>
             </Card>
           </GridItem>

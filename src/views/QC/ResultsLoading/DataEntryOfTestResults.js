@@ -741,6 +741,7 @@ export default class DataEntryOfTestResults extends Component {
                             <DataGrid
                               rows={products_array}
                               columns={columns}
+                            
                               checkboxSelection
                               onSelectionModelChange={(event) => {
                                 console.log("selection", event)

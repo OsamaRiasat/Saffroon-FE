@@ -66,7 +66,7 @@ export default class BatchTaP extends Component {
         packed: "",
         P_yield: "",
       },
-      listOfStages: [],
+      listOfStages: ["Dispensed"],
       cart1: [],
       cart2: [],
       batch_selected: false,
@@ -121,7 +121,7 @@ export default class BatchTaP extends Component {
     }));
     this.setState(
       {
-        listOfStages: res["ListOfStages"],
+        // listOfStages: res["ListOfStages"],
         T_yield: res.batchSize,
         A_yield: res.batchSize,
       },
