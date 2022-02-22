@@ -179,7 +179,9 @@ class ProductsSelection extends React.Component {
     ) {
       let packSizeArr = data.data.PackSizesList[0].split("x");
       let packSize = parseInt(packSizeArr[0]) * parseInt(packSizeArr[1]);
+      console.log("These are packs " + packSize);
       packSize = (data.data.units / packSize).toFixed(0);
+      console.log("These are packS " + packSize);
       this.setState((prevState) => ({
         selected: {
           ...prevState.selected,
@@ -215,7 +217,6 @@ class ProductsSelection extends React.Component {
         batches: data.data["batches"],
         oldBatch: data.data["batches"],
         packsize: data.data.PackSizesList[0],
-        
       },
     }));
     if (
@@ -273,7 +274,7 @@ class ProductsSelection extends React.Component {
         // object that we want to update
         ...prevState.selected, // keep all other key-value pairs
         inhand: data.data.Inhand_Packs,
-        batches: data.data.batchesToBePlanned,
+        // batches: data.data.batchesToBePlanned,
         planned: data.data.packsToBePlanned,
       },
     }));
@@ -306,7 +307,7 @@ class ProductsSelection extends React.Component {
         // object that we want to update
         ...prevState.selected, // keep all other key-value pairs
         inhand: data.data.Inhand_Packs,
-        batches: data.data.batchesToBePlanned,
+        // batches: data.data.batchesToBePlanned,
         planned: data.data.packsToBePlanned,
       },
     }));
@@ -598,28 +599,32 @@ class ProductsSelection extends React.Component {
                             disableClearable
                             id="packsize"
                             sx={{ width: 300 }}
-                            inputValue={this.state.selected.packsize}
+                            value={this.state.selected.packsize}
                             options={this.state.packsize_arr}
                             getOptionLabel={(option) => option}
-                            onInputChange={(event, value) => {
+                            onChange={(event, value) => {
                               this.setState((prevState) => ({
                                 selected: {
                                   ...prevState.selected,
-                                  packsize: event.target.value,
+                                  packsize: value,
                                 },
                               }));
                               let packs_temp;
                               if (this.state.dosageType != "Vial") {
-                                packs_temp = parseInt(
-                                  event.target.value.substring(
-                                    event.target.value.indexOf("x") + 1
-                                  )
-                                );
+                                let packSizeArr = value.split("x");
+                                packs_temp =
+                                  parseInt(packSizeArr[0]) *
+                                  parseInt(packSizeArr[1]);
+
+                                // packs_temp = parseInt(
+                                //   value.substring(value.indexOf("x") + 1)
+                                // );
+                                console.log("Temp Packs" + packs_temp);
                                 packs_temp = (
                                   this.state.units / packs_temp
                                 ).toFixed(0);
                               } else {
-                                packs_temp = event.target.value;
+                                packs_temp = value;
                               }
                               this.setState(
                                 (prevState) => ({

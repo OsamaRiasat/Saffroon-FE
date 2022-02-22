@@ -35,12 +35,15 @@ import RawMaterialDemand from "./views/RM/RM_Demand.js";
 import { RemoveFromQueue } from "@material-ui/icons";
 import RM_IGP from "./views/RM/RM_IGP.js";
 import RM_GRN from "./views/RM/RM_GRN.js";
+import RM_GRN_Print from "./views/RM/RM_GRN_Print.js";
+import PM_GRN_Print from "./views/PM/PM_GRN_Print.js";
+
+
 import RM_Post_GRN from "./views/RM/RM_Post_GRN.js";
 import RM_Dispensing from "./views/RM/RM_Dispensing.js"
 
 import planning from "./views/Planning/planning";
 import PM_planning from "./views/Planning/Packing Material Planing/PM_planning.js";
-
 
 
 import RawMaterialReturnNote from "./views/RM/RawMaterialReturnNote.js";
@@ -249,6 +252,22 @@ const dashboardRoutes = [
 		role: "Store",
 	},
 	{
+		path: "/RM/GRN-Print",
+		name: "RM GRN-Print",
+		icon: FilterFramesIcon,
+		component: RM_GRN_Print,
+		layout: "/saffron",
+		role: "Store",
+	},
+	{
+		path: "/PM/GRN-Print",
+		name: "PM GRN-Print",
+		icon: FilterFramesIcon,
+		component: PM_GRN_Print,
+		layout: "/saffron",
+		role: "Store",
+	},
+	{
 		path: "/RM/PostGRN",
 		name: "RM Post GRN",
 		icon: FilterFramesIcon,
@@ -301,7 +320,6 @@ const dashboardRoutes = [
 		path: "/PM/IGP",
 		name: "PM IGP Note",
 		icon: FilterFramesIcon,
-		// RM IGP Form
 		component: PM_IGP,
 		layout: "/saffron",
 		role: "Store",
