@@ -297,6 +297,33 @@ export default class Dashboard extends Component {
                     </Card>
                   </GridItem>
                 </GridContainer>
+
+
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={4}>
+                    <Card>
+                      <CardHeader color="info">
+                      <h4 style={{ textAlign: "center" }}>PRINT GRN</h4>
+                      </CardHeader>
+                      <CardBody>
+                        <Button
+                        color="success"
+                        fullWidth="true"
+                        component={Link}
+                        to="/saffron/RM/GRN-Print"
+                        >Raw Material</Button>
+                          <Button
+                        color="success"
+                        fullWidth="true"
+                        component={Link}
+                        to="/saffron/PM/GRN-Print"
+                        >Packing Material</Button>
+                      </CardBody>
+                    </Card>
+
+                  </GridItem>
+
+                </GridContainer>
                   
               </CardBody>
             </Card>
