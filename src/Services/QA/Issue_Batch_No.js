@@ -13,6 +13,14 @@ export function PCodeBIR(planNo) {
   const resp = http.get(Endpoint + "PCodeBIR/" + planNo + "/");
   return resp;
 }
+export function NameByCode(code) {
+
+  console.log("Gettting NameByCode/")
+  const resp = http.get("QualityAssurance/" + "ProductNameByProductCode/"+code+"/");
+  console.log(resp);
+  return resp;
+
+}
 
 export function IssueBatchNo(obj) {
   const resp = http.post(Endpoint + "IssueBatchNo/", obj);

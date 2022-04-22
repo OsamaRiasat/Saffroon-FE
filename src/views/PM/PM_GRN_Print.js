@@ -280,7 +280,7 @@ class RM_GRN_Print extends React.Component {
                                                     />
                                                 </GridItem>
                                                 <GridItem xs={12} sm={12} md={4}>
-                                                    <TextField id="quantityReceived" style={{ backgroundColor: "#f5f7f7" }} fullWidth="true" required="true" fullWidth="true" type="number" variant="outlined" label={"Received Quantity(" + this.state.unit+")"} value={this.state.recieved_quantity}
+                                                    <TextField id="quantityReceived" style={{ backgroundColor: "#f5f7f7" }} fullWidth="true" required="true"     type="number" variant="outlined" label={"Received Quantity(" + this.state.unit+")"} value={this.state.recieved_quantity}
                                                         onChange={(event) => {
                                                             this.setState({ recieved_quantity: event.target.value })
                                                         }}

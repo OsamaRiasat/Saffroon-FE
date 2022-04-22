@@ -23,6 +23,7 @@ import {
 	BatchNo,
 	BatchDetail,
 	BatchDeviation,
+    NameByCode
 } from "../../Services/QA/Batch_Deviation";
 
 export default class BatchDeviationForm extends Component {
@@ -33,6 +34,7 @@ export default class BatchDeviationForm extends Component {
             devNo: "",
             productList: [],
             product: "",
+            productName:"",
             batchNoList: [],
             batchNo: "",
             mfgDate: "",
@@ -58,6 +60,10 @@ export default class BatchDeviationForm extends Component {
     async handleProd(pro) {
         const bn = (await BatchNo(pro)).data;
         this.setState({batchNoList: bn})
+    }
+    async handleProductCode(pro) {
+        const bn = (await NameByCode(pro)).data;
+        this.setState({productName: bn})
     }
     async handleBN(bn) {
         const det = (await BatchDetail(bn)).data;
@@ -95,6 +101,7 @@ export default class BatchDeviationForm extends Component {
                     mfgDate: "",
                     expDate: "",
                     batchSize: "",
+                    productName:"",
                     
                     stageList: [],
                     stage: "",
@@ -139,7 +146,7 @@ export default class BatchDeviationForm extends Component {
                                     />
                                 </GridItem>
 
-                                <GridItem xs={12} sm={12} md={3}>
+                                <GridItem xs={12} sm={12} md={2 }>
                                     <TextField id="" fullWidth="true" InputProps={{ readOnly: true, }} variant="outlined" label={"Deviation No:"}
                                     value={this.state.devNo}
                                     />
@@ -151,6 +158,7 @@ export default class BatchDeviationForm extends Component {
                                     onChange={(event)=>{
                                         this.setState({product: event.target.value})
                                         this.handleProd(event.target.value);
+                                        this.handleProductCode(event.target.value);
                                     }}                                    
                                     >
                                         {this.state.productList.map((pri) => (
@@ -161,7 +169,13 @@ export default class BatchDeviationForm extends Component {
                                     </TextField>
                                 </GridItem>
 
-                                <GridItem xs={12} sm={12} md={3}>
+                                <GridItem xs={12} sm={12} md={2}>
+                                    <TextField id="" fullWidth="true" InputProps={{ readOnly: true, }} variant="outlined" label={"Product Name:"}
+                                    value={this.state.productName}
+                                    />
+                                </GridItem>
+
+                                <GridItem xs={12} sm={12} md={2}>
                                     <TextField id="" fullWidth="true" variant="outlined" label={"Batch No:"} select
                                     value={this.state.batchNo}
                                     onChange={(event)=>{

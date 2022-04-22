@@ -688,7 +688,6 @@ export default class RMNewFormulation extends Component {
                           className=""
                           startIcon={<EditIcon />}
                           disabled={this.state.canChange}
-                          onClick={() => {}}
                           color="primary"
                           onClick={() => {
                             var array = [...this.state.cart];

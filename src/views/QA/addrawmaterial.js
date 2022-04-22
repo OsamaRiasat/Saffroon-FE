@@ -22,7 +22,7 @@ import { toast } from "react-toastify";
 
 import AlertModal from "../../components/Modal/AlertModal";
 
-import { AddRawMaterial } from "../../Services/QA/RawMaterial_Add";
+import { AddRawMaterial , Raw_Material_Auto_Code_Generator} from "../../Services/QA/RawMaterial_Add";
 
 export default class addrawmaterial extends Component {
   constructor(props) {
@@ -81,6 +81,11 @@ export default class addrawmaterial extends Component {
     }));
   };
 
+  onChangeCategory  = async (e) =>{
+
+    const rc = (await Raw_Material_Auto_Code_Generator(e)).data;
+    this.setState({ rawMaterialCode: rc });
+  };
   postButton = async () => {
     try {
       let { rawMaterialCode, material, ecategory, eunit } = this.state;
@@ -171,32 +176,46 @@ export default class addrawmaterial extends Component {
             </CardHeader>
             <CardBody style={{ marginLeft: 15, minWidth: 960 }}>
               <GridContainer>
+                
                 <GridItem xs={12} sm={12} md={3}>
                   <TextField
-                    name="phoneNumber"
                     id=""
                     fullWidth="true"
+                    
                     variant="outlined"
-                    label={"Raw Material Code:"}
-                    value={this.state.rawMaterialCode}
+                    label={"Category:"}
+                    select
+                    value={this.state.selected.category}
                     onChange={(event) => {
+                      this.setState((prevState) => ({
+                        selected: {
+                          // object that we want to update
+                          ...prevState.selected, // keep all other key-value pairs
+                          category: event.target.value, // update the value of specific key
+                        },
+                      }));
                       this.setState({
-                        rawMaterialCode: event.target.value,
+                        ecategory: event.target.value,
                       });
-                      this.onChangeClearError("rawMaterialCode");
+                      console.log("value:" + this.state.ecategory);
+                      this.onChangeCategory(event.target.value);
+                      this.onChangeClearError("ecategory");
                     }}
-                    error={
-                      this.state.fieldErrors &&
-                      this.state.fieldErrors.rawMaterialCode
-                        ? true
-                        : false
-                    }
-                    helperText={
-                      this.state.fieldErrors &&
-                      this.state.fieldErrors.rawMaterialCode
-                    }
-                  />
+                  >
+                    {this.state.category.map((pri) => (
+                      <MenuItem key={pri} value={pri}>
+                        {pri}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  {this.state.fieldErrors &&
+                    this.state.fieldErrors.ecategory && (
+                      <span className="MuiFormHelperText-root Mui-error">
+                        {this.state.fieldErrors.ecategory}
+                      </span>
+                    )}
                 </GridItem>
+              
                 <GridItem xs={12} sm={12} md={3}>
                   <TextField
                     id=""
@@ -248,42 +267,34 @@ export default class addrawmaterial extends Component {
                     </span>
                   )}
                 </GridItem>
+               
                 <GridItem xs={12} sm={12} md={3}>
                   <TextField
+                    name="phoneNumber"
                     id=""
                     fullWidth="true"
                     variant="outlined"
-                    label={"Category:"}
-                    select
-                    value={this.state.selected.category}
+                    InputProps={{readOnly: true}}
+                    label={"Raw Material Code:"}
+                    style={{ backgroundColor: "#ebebeb" }}
+                    value={this.state.rawMaterialCode}
                     onChange={(event) => {
-                      this.setState((prevState) => ({
-                        selected: {
-                          // object that we want to update
-                          ...prevState.selected, // keep all other key-value pairs
-                          category: event.target.value, // update the value of specific key
-                        },
-                      }));
                       this.setState({
-                        ecategory: event.target.value,
+                        rawMaterialCode: event.target.value,
                       });
-                      console.log("value:" + this.state.ecategory);
-
-                      this.onChangeClearError("ecategory");
+                      this.onChangeClearError("rawMaterialCode");
                     }}
-                  >
-                    {this.state.category.map((pri) => (
-                      <MenuItem key={pri} value={pri}>
-                        {pri}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                  {this.state.fieldErrors &&
-                    this.state.fieldErrors.ecategory && (
-                      <span className="MuiFormHelperText-root Mui-error">
-                        {this.state.fieldErrors.ecategory}
-                      </span>
-                    )}
+                    error={
+                      this.state.fieldErrors &&
+                      this.state.fieldErrors.rawMaterialCode
+                        ? true
+                        : false
+                    }
+                    helperText={
+                      this.state.fieldErrors &&
+                      this.state.fieldErrors.rawMaterialCode
+                    }
+                  />
                 </GridItem>
               </GridContainer>
               <GridContainer>
