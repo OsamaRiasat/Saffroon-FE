@@ -17,6 +17,14 @@ export function ProductCode() {
   console.log(resp);
   return resp;
 }
+export function NameByCode(code) {
+
+  console.log("Gettting NameByCode/")
+  const resp = http.get(Endpoint + "ProductNameByProductCode/"+code+"/");
+  console.log(resp);
+  return resp;
+
+}
 
 export function BatchNo(PCode) {
   console.log("GetttingBatchNo");

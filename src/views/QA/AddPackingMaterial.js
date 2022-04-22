@@ -19,14 +19,14 @@ import PrintIcon from "@material-ui/icons/Print";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 
 
-import { addPackingMaterial } from '../../Services/QA/RawMaterial_Add';
+import { addPackingMaterial, Packing_Material_Auto_Code_Generator } from '../../Services/QA/RawMaterial_Add';
 
 export default class AddPackingMaterial extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			unit: ["g", "mg", "kg", "numbers"],
-			category: ["Primary", "Secondary", "Tertiary", "Assessory"],
+			unit: ["g", "mg", "kg", "no"],
+			category: ["Primary", "Secondary", "Tertiary", "Accessory"],
 
 			packingMaterialCode: "",
 			material: "",
@@ -37,7 +37,11 @@ export default class AddPackingMaterial extends Component {
 			},
 		};
 	}
+	onChangeCategory  = async (e) =>{
 
+		const rc = (await Packing_Material_Auto_Code_Generator(e)).data;
+		this.setState({ packingMaterialCode: rc });
+	  };
 	clearForm = () => {
 		this.setState({
 			packingMaterialCode: "",
@@ -99,20 +103,33 @@ export default class AddPackingMaterial extends Component {
 						</CardHeader>
 						<CardBody style={{ marginLeft: 15, minWidth: 960 }}>
 							<GridContainer>
-								<GridItem xs={12} sm={12} md={3}>
+							<GridItem xs={12} sm={12} md={3}>
 									<TextField
 										id=""
 										fullWidth="true"
 										variant="outlined"
-										label={"Packing Material Code:"}
-										value={this.state.packingMaterialCode}
+										label={"Category:"}
+										select
+										value={this.state.selected.category}
 										onChange={event => {
-											this.setState({
-												packingMaterialCode: event.target.value,
-											});
+											this.onChangeCategory(event.target.value);
+											this.setState(prevState => ({
+												selected: {
+													// object that we want to update
+													...prevState.selected, // keep all other key-value pairs
+													category: event.target.value, // update the value of specific key
+												},
+											}));
 										}}
-									/>
+									>
+										{this.state.category.map(pri => (
+											<MenuItem key={pri} value={pri}>
+												{pri}
+											</MenuItem>
+										))}
+									</TextField>
 								</GridItem>
+								
 								<GridItem xs={12} sm={12} md={3}>
 									<TextField
 										id=""
@@ -152,31 +169,24 @@ export default class AddPackingMaterial extends Component {
 										))}
 									</TextField>
 								</GridItem>
+							
 								<GridItem xs={12} sm={12} md={3}>
 									<TextField
 										id=""
 										fullWidth="true"
+										inputProps={{readOnly: true}}
+										style={{ backgroundColor: "#ebebeb" }}
 										variant="outlined"
-										label={"Category:"}
-										select
-										value={this.state.selected.category}
+										label={"Packing Material Code:"}
+										value={this.state.packingMaterialCode}
 										onChange={event => {
-											this.setState(prevState => ({
-												selected: {
-													// object that we want to update
-													...prevState.selected, // keep all other key-value pairs
-													category: event.target.value, // update the value of specific key
-												},
-											}));
+											this.setState({
+												packingMaterialCode: event.target.value,
+											});
 										}}
-									>
-										{this.state.category.map(pri => (
-											<MenuItem key={pri} value={pri}>
-												{pri}
-											</MenuItem>
-										))}
-									</TextField>
+									/>
 								</GridItem>
+								
 							</GridContainer>
 							<GridContainer>
 								<GridItem xs={12} sm={12} md={3}>

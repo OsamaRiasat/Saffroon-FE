@@ -206,7 +206,7 @@ export default class issueBtachNo extends Component {
               </CardHeader>
               <CardBody>
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={3}>
+                  <GridItem xs={12} sm={12} md={2}>
                     <TextField
                       id="date"
                       style={{ backgroundColor: "#ebebeb" }}
@@ -216,7 +216,7 @@ export default class issueBtachNo extends Component {
                       defaultValue={"Date: " + date}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={3}>
+                  <GridItem xs={12} sm={12} md={2}>
                     <TextField
                       id=""
                       select
@@ -272,8 +272,17 @@ export default class issueBtachNo extends Component {
                       ))}
                     </TextField>
                   </GridItem>
-
                   <GridItem xs={12} sm={12} md={3}>
+                    <TextField
+                      id=""
+                      variant="outlined"
+                      label="Product:"
+                      fullWidth="true"
+                      value={this.state.Product}
+                      InputProps={{ readOnly: true }}
+                    />
+                  </GridItem>
+                  <GridItem xs={12} sm={12} md={2}>
                     <TextField
                       id=""
                       variant="outlined"

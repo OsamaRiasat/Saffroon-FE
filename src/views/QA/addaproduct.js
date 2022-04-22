@@ -10,6 +10,11 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import MenuItem from "@material-ui/core/MenuItem";
 import { toast } from "react-toastify";
+import Select from "react-select";
+import {
+  CustomValueContainer,
+  CustomSelectStyle,
+} from "../../variables/genericVariables";
 
 import AlertModal from "../../components/Modal/AlertModal.js";
 
@@ -83,6 +88,7 @@ export default class addaproduct extends Component {
       renewalDate: "",
       dosageFormList: [],
       dosageForm: "",
+      edosage: "",
       productCode: "",
       registrationCode: "",
       product: "",
@@ -152,7 +158,7 @@ export default class addaproduct extends Component {
         ShelfLife: this.state.shelfLife,
         dosageForm: this.state.dosageForm,
       };
-
+      this.componentDidMount();
       console.log(payload);
       const resp = await AddProduct(payload);
       console.log(resp);
@@ -169,6 +175,7 @@ export default class addaproduct extends Component {
           progress: undefined,
         });
         this.clearForm();
+        this.componentDidMount();
       } else {
         toast.error("Request Not Sent", {
           position: "top-right",
@@ -301,7 +308,28 @@ export default class addaproduct extends Component {
                 </GridItem>
 
                 <GridItem xs={12} sm={12} md={3}>
-                  <Autocomplete
+                <Select
+                    placeholder="dosage-form:"
+                    className="customSelect"
+                    classNamePrefix="select"
+                    isSearchable={true}
+                    options={this.state.dosageFormList}
+                    value={
+                      this.state.dosageForm ? { dosageForm: this.state.dosageForm } : null
+                    }
+                    getOptionValue={(option) => option.dosageForm}
+                    getOptionLabel={(option) => option.dosageForm}
+                    onChange={(value) => {
+                      this.setState({ dosageForm: value.dosageForm }, () => {
+                        
+                      });
+                      this.setState({
+                        edosage: "s",
+                      });
+                      this.onChangeClearError("edosage");
+                    }}
+                  />
+                               {/* <Autocomplete
                     id="dosage-form"
                     options={this.state.dosageFormList}
                     getOptionLabel={(option) => option.dosageForm}
@@ -323,12 +351,12 @@ export default class addaproduct extends Component {
                         variant="outlined"
                       />
                     )}
-                  />
-                  {this.state.fieldErrors && this.state.fieldErrors.edosage && (
+                  /> */}
+                  {/* {this.state.fieldErrors && this.state.fieldErrors.edosage && (
                     <span className="MuiFormHelperText-root Mui-error">
                       {this.state.fieldErrors.edosage}
                     </span>
-                  )}
+                  )} */}
                 </GridItem>
               </GridContainer>
 
