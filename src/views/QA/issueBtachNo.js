@@ -225,13 +225,26 @@ export default class issueBtachNo extends Component {
                       variant="outlined"
                       value={this.state.plan}
                       onChange={(event) => {
+                        this.setState({
+       
+                          
+                          pcode: "",
+                          Dosage: "",
+                          EXP_Date: "",
+                          MFG_Date: "",
+                          Product: "",
+                          batchNo: "",
+                          batchSize: "",
+                          formulations:[]
+                      })
                         this.setState(
                           {
                             plan: event.target.value,
                           },
                           () => {
                             this.getPcodes(event.target.value);
-                          }
+                          },
+                          
                         );
                       }}
                     >

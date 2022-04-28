@@ -38,7 +38,7 @@ export default class BatchTaP extends Component {
       batch_size: "",
       start_date: "",
       completion_date: "",
-      uom_list: ["kg", "mg", "ml"],
+      uom_list: ["kg", "mg", "ml","no","tablet", "capsule","vial"],
       T_yield: "",
       A_yield: "",
       P_yield: "",
@@ -431,7 +431,7 @@ export default class BatchTaP extends Component {
                       <GridItem xs={12} sm={12} md={4}>
                         <Select
                           name="production_code"
-                          placeholder="Select Production Code"
+                          placeholder="Select Product Code"
                           components={{
                             ValueContainer: CustomValueContainer,
                           }}
@@ -448,6 +448,7 @@ export default class BatchTaP extends Component {
                           getOptionValue={(option) => option.ProductCode}
                           getOptionLabel={(option) => option.ProductCode}
                           onChange={(value, select) => {
+                            this.handleClearForm();
                             this.setState({
                               production_code: value.ProductCode,
                             });
@@ -621,7 +622,7 @@ export default class BatchTaP extends Component {
                       paddingLeft: "20px",
                     }}
                   >
-                    <h4>Reallocation of Current Stage</h4>
+                    <h4>Yeild Calculation</h4>
                   </CardHeader>
                   <CardContent>
                     <GridContainer>
@@ -827,7 +828,7 @@ export default class BatchTaP extends Component {
                       <GridItem xs={12} sm={12} md={5}>
                         <Select
                           name="result"
-                          placeholder="Select Result"
+                          placeholder="Partial/Complete"
                           components={{
                             ValueContainer: CustomValueContainer,
                           }}

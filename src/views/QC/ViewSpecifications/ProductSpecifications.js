@@ -171,7 +171,7 @@ export default class RawMaterialSpecifications extends Component {
         <GridContainer md={12}>
           <Card>
             <CardHeader color="primary">
-              <h2> Raw Material Specification </h2>
+              <h2> Product Specifications </h2>
             </CardHeader>
             <CardBody>
               <GridContainer>

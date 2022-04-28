@@ -25,6 +25,13 @@ export function SBS(PCode) {
   return resp;
 }
 
+export function Required_batches_by_product_and_planNo(PlanNo,PCode) {
+  console.log("Gettting Required_batches_by_product_and_planNo");
+  const resp = http.get(Endpoint + "Required_batches_by_product_and_planNo"+"/"+PlanNo+"/"+PCode);
+  console.log(resp);
+  return resp;
+}
+
 export function BatchIssuenceRequest(obj) {
   console.log("Posting BatchIssuenceRequest")
   const resp = http.post(Endpoint + "BatchIssuenceRequest/", obj);
