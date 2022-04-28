@@ -172,6 +172,7 @@ export default class ProductSample extends Component {
 
       const resp = await Sample(payload2);
       console.log(resp);
+      this.componentDidMount();
 
       if (resp.status === 201) {
         toast.success("Request Sent !!", {
@@ -211,6 +212,7 @@ export default class ProductSample extends Component {
 
   clearForm = () => {
     this.setState({
+      
       productCode: "",
       psBatchNo: "",
       Batch_No_List: [],

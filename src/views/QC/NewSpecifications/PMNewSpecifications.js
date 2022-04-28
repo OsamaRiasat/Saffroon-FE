@@ -168,10 +168,9 @@ export default class RMNewSpecifications extends Component {
     console.log(resp);
    // alert("Specs Added");
    if (resp.status === 201) {
-    toast.success("Request Sent !!", {
+    toast.success("Specification Added !!", {
       position: "top-right",
       autoClose: 5000,
-      hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
@@ -179,6 +178,7 @@ export default class RMNewSpecifications extends Component {
     });
     // alert("Request Sent !!");
     this.clearForm();
+    this.componentDidMount();
   } else {
     toast.error("Request Not sent", {
       position: "top-right",

@@ -113,10 +113,12 @@ export default class RMSamplingLog extends Component {
         receivedBy: this.state.recievedBy,
       };
       this.clearForm();
+      
      
 
       const resp = await Sample(payload2);
       console.log(resp.message);
+      this.componentDidMount();
       
       if (resp.status === 201) {
         toast.success("Request Sent !!", {
@@ -155,6 +157,7 @@ export default class RMSamplingLog extends Component {
   };
   clearForm = () => {
     this.setState({
+      grno_List: [],
       grn_no: "",
       material: "",
       code: "",

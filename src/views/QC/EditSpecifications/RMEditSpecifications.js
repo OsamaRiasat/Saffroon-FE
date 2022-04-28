@@ -658,7 +658,6 @@ export default class RMEditSpecifications extends Component {
                         <Button
                           className=""
                           startIcon={<AddCircleOutlineIcon />}
-                          onClick={() => { }}
                           color="primary"
                           onClick={() => {
                             let present = false;
@@ -703,7 +702,6 @@ export default class RMEditSpecifications extends Component {
                         <Button
                           className=""
                           startIcon={<EditIcon />}
-                          onClick={() => { }}
                           color="primary"
                           onClick={() => {
                             var array = [...this.state.cart];
@@ -734,7 +732,6 @@ export default class RMEditSpecifications extends Component {
                         <Button
                           className=""
                           startIcon={<DeleteOutlineIcon />}
-                          onClick={() => { }}
                           color="secondary"
                           onClick={() => {
                             var array = [...this.state.cart];

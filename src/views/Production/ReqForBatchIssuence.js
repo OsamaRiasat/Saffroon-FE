@@ -26,6 +26,7 @@ import {
   ProductByPlanNo,
   SBS,
   BatchIssuenceRequest,
+  Required_batches_by_product_and_planNo,
 } from "../../Services/Production/Batch_Issuance_Request";
 
 export default class ReqForBatchIssuence extends Component {
@@ -44,11 +45,13 @@ export default class ReqForBatchIssuence extends Component {
       pcode: pcodes[0].ProductCode,
     });
   };
-  getbatchSize = async (pcode) => {
+  getbatchSize = async (planno,pcode) => {
     const batchsize = (await SBS(pcode)).data;
+    const nbtp = (await Required_batches_by_product_and_planNo(planno, pcode)).data;
     console.log(batchsize);
     this.setState({
       units: batchsize.Units,
+      batches_to_be_planned: nbtp,
     });
   };
   sendRequest = async () => {
@@ -117,7 +120,8 @@ export default class ReqForBatchIssuence extends Component {
     const errors = {};
     if (!fields.plan) errors.plan = "Plan No Required";
     if (!fields.pcode) errors.pcode = "Product Code Required";
-    if (!fields.no_of_batches) errors.no_of_batches = "No Of Batches Required";
+    if (!fields.no_of_batches ) errors.no_of_batches = "No Of Batches Required";
+    else if (fields.no_of_batches > this.state.batches_to_be_planned) errors.no_of_batches = "No Of Batches Exceeds Planned Batches";
     return errors;
   };
 
@@ -148,6 +152,7 @@ export default class ReqForBatchIssuence extends Component {
       plans: [],
       plan: "",
       no_of_batches: "",
+      batches_to_be_planned:"",
       units: "",
       pcodes: [],
       pcode: "",
@@ -235,7 +240,7 @@ export default class ReqForBatchIssuence extends Component {
                             no_of_batches: "",
                           },
                           () => {
-                            this.getbatchSize(value.ProductCode);
+                            this.getbatchSize(this.state.plan,value.ProductCode);
                           }
                         );
                         this.onChangeClearError(select.name);
@@ -247,7 +252,16 @@ export default class ReqForBatchIssuence extends Component {
                       </span>
                     )}
                   </GridItem>
-
+                  <GridItem xs={12} sm={12} md={2}>
+                    <TextField
+                      id=""
+                      variant="outlined"
+                      label="Batches to be planned:"
+                      fullWidth="true"
+                      value={this.state.batches_to_be_planned}
+                      InputProps={{ readOnly: true }}
+                    />
+                  </GridItem>
                   <GridItem xs={12} sm={12} md={3}>
                     <TextField
                       id=""
@@ -291,7 +305,12 @@ export default class ReqForBatchIssuence extends Component {
                       InputProps={{ readOnly: true }}
                     />
                   </GridItem>
+                  
 
+                
+                </GridContainer>
+                <GridContainer>
+                 
                   <GridItem xs={12} sm={12} md={2}>
                     <Button
                       className=""

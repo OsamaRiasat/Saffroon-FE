@@ -117,6 +117,7 @@ export default class PMSamplingLog extends Component {
 
       const resp = await Sample(payload2);
       console.log(resp.message);
+      this.componentDidMount();
       
       if (resp.status === 201) {
         toast.success("Sample Sent to QC !!", {
@@ -155,6 +156,7 @@ export default class PMSamplingLog extends Component {
   };
   clearForm = () => {
     this.setState({
+      grno_List: [],
       grn_no: "",
       material: "",
       code: "",

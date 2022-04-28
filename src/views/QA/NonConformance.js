@@ -17,7 +17,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import BackupIcon from '@material-ui/icons/Backup';
 import PrintIcon from '@material-ui/icons/Print';
 import { ControlCameraOutlined } from '@material-ui/icons';
-
+import { toast } from "react-toastify";
 import {
 	NCRNoList,
 	ProductCode,
@@ -27,6 +27,8 @@ import {
 	SubCategories,
 	BatchNo,
 	NCR,
+    NameByCode,
+    
 } from "../../Services/QA/NCR";
 export default class NonConformance extends Component {
 
@@ -66,8 +68,9 @@ export default class NonConformance extends Component {
             actionTaken: '',
             productList: [],
             product: '',
+            productName: '',
             batchList: [],
-            batch: '',
+            batch_no: '',
             ncrForPrint: '',
             ncrForPrintList: [],
         };
@@ -100,9 +103,11 @@ export default class NonConformance extends Component {
     async handleProd(pro) {
         const batch = (await BatchNo(pro)).data;        
         this.setState({batchList: batch}, console.log("batch: ", batch))
+        const prodName = await NameByCode(pro);
+        this.setState({productName: prodName.data})
     }
-    async handlePost(props) {
-       if(this.state.auditor==="" ||
+       async handlePost(props) {
+        if(this.state.auditor==="" ||
             this.state.deptt==="" ||
             this.state.identity==="" ||
             this.state.refNo==="" ||
@@ -113,7 +118,7 @@ export default class NonConformance extends Component {
             this.state.desc==="" ||
             this.state.sol==="" ||
             this.state.act==="" ||
-            this.state.action==="" ||
+            // this.state.action==="" ||
             this.state.opneDate==="" ||
             this.state.date==="" ||
             this.state.varified==="" ||
@@ -122,8 +127,11 @@ export default class NonConformance extends Component {
                 alert("Please fill the form first!")
                 return;
             }
-            
-        let chek = this.state.show===true ? false : true;
+       
+        try {
+
+      
+            let chek = this.state.show===true ? false : true;
             
         const req = {
             "status": "OPEN",              // send "OPEN" everytime
@@ -131,8 +139,8 @@ export default class NonConformance extends Component {
             "section": this.state.deptt,             
             "sourceOfIdentification": this.state.identity,
             "refNo": this.state.refNo,
-            "natureOfNC": this.state.natureOfNC,
-            "gradeOfNC": this.state.gradeOfNC,
+            "natureOfNC": this.state.nc,
+            "gradeOfNC": this.state.gnc,
             "category": this.state.cat,
             "subCategory": this.state.subCat,
             "descriptionOFNonConformance": this.state.desc,
@@ -146,10 +154,47 @@ export default class NonConformance extends Component {
             "rootCause": this.state.rootCause,
             "proposedCorrectiveAction": this.state.proposedAction,
             "actionTaken": this.state.actionTaken,
-            "batchNo": this.state.batchNo,
+            "batchNo": this.state.batch_no,
         }
-        await (NCR.methods.NCR(req));
-    }
+       
+             const resp= await (NCR(req));
+            
+            if (resp.status === 201) {
+              toast.success("NC Created !!", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+              
+            } else {
+              toast.error("NC Cannot be created!!", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+              });
+            }
+          } catch (error) {
+            console.log(error);
+            toast.error("Something Went Wrong !!!", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+          }
+        };
+     
 
     toggle = () =>
         this.setState((currentState) => ({ show: !currentState.show }));
@@ -202,6 +247,7 @@ export default class NonConformance extends Component {
                                                     variant="outlined"
                                                     label="NCR No:"
                                                     fullWidth="true"
+                                                    InputLabelProps={{ shrink: true }}  
                                                     InputProps={{readOnly: true}}
                                                     value={this.state.ncrNo.NCRNo}                                                    
                                                 />
@@ -354,7 +400,7 @@ export default class NonConformance extends Component {
                                         </GridContainer>
 
                                         <GridContainer>
-                                            <GridItem xs={12} sm={12} md={4}>
+                                            <GridItem xs={12} sm={12} md={3}>
                                                 <TextField
                                                     id=""
                                                     select
@@ -373,11 +419,11 @@ export default class NonConformance extends Component {
                                                     ))}
                                                 </TextField>
                                             </GridItem>
-                                            <GridItem xs={12} sm={12} md={4}>
+                                            <GridItem xs={12} sm={12} md={3}>
                                                 <TextField
                                                     id=""
                                                     select
-                                                    label="Product:"
+                                                    label="Product Code:"
                                                     fullWidth="true"
                                                     variant="outlined"
                                                     value={this.state.product}
@@ -393,16 +439,27 @@ export default class NonConformance extends Component {
                                                     ))}
                                                 </TextField>
                                             </GridItem>
-                                            <GridItem xs={12} sm={12} md={4}>
+                                            <GridItem xs={12} sm={12} md={3}>
+                                                <TextField
+                                                    id=""
+                                                    label="Product Name:"
+                                                    fullWidth="true"
+                                                    variant="outlined"
+                                                    value={this.state.productName}
+                                                    InputProps={{readOnly: true}}
+                                                >
+                                                                                                    </TextField>
+                                            </GridItem>
+                                            <GridItem xs={12} sm={12} md={3}>
                                                 <TextField
                                                     id=""
                                                     variant="outlined"
                                                     label="Batch No:"
                                                     select
                                                     fullWidth="true"
-                                                    selectvalue={this.state.batch}
+                                                    selectvalue={this.state.batch_no}
                                                     onChange={(event) => {
-                                                        this.setState({batch: event.target.value});
+                                                        this.setState({batch_no: event.target.value});
                                                     }}
                                                 >
                                                     {this.state.batchList.map((pri) => (
@@ -465,10 +522,9 @@ export default class NonConformance extends Component {
                                                     label="Immediate Action"
                                                     multiline
                                                     variant="outlined"
-                                                    value={this.state.sol}
-                                                    variant="outlined"
+                                                    value={this.state.act}
                                                     onChange={(event) => {
-                                                        this.setState({sol: event.target.value});
+                                                        this.setState({act: event.target.value});
                                                     }}
                                                 />
                                             </GridItem>

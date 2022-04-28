@@ -76,6 +76,7 @@ export default class DailyPacking extends Component {
         orderno: "", //planno
         date: "",
         product: "", //pcode
+        productName: "",
         batchno: "", //batch
         quantity: "", //packsno
         packsize: "",
@@ -102,10 +103,11 @@ export default class DailyPacking extends Component {
   validate = (fields) => {
     const errors = {};
     if (!fields.orderno) errors.orderno = "Plan No Required";
-    if (!fields.selected.product) errors.product = "Product No Required";
+    if (!fields.selected.product) errors.product = "Product Code Required";
     if (!fields.selected.packsize) errors.packsize = "Pack Size Required";
     if (!fields.selected.batchno) errors.batchno = "Batch No Required";
-    if (!fields.selected.quantity) errors.quantity = "Product Code Required";
+    if (!fields.selected.quantity) errors.quantity = "Quantity Required";
+    if (!fields.selected.productName) errors.productName = "Product Name Required";
     return errors;
   };
   onChangeClearError = (name) => {
@@ -126,6 +128,7 @@ export default class DailyPacking extends Component {
         ...prevState.selected,
 
         product: "",
+        productName: "",
         batchno: "",
         quantity: "",
         packsize: "",
@@ -294,6 +297,7 @@ export default class DailyPacking extends Component {
     this.setState({
       cart: [],
       canpost: false,
+     
     });
   };
 
@@ -372,7 +376,7 @@ export default class DailyPacking extends Component {
             </CardHeader>
             <CardBody>
               <GridContainer>
-                <GridItem xs={12} sm={12} md={3}>
+                <GridItem xs={12} sm={12} md={2}>
                   <TextField
                     id="date"
                     fullWidth="true"
@@ -383,7 +387,7 @@ export default class DailyPacking extends Component {
                   />
                 </GridItem>
 
-                <GridItem xs={12} sm={12} md={4}>
+                <GridItem xs={12} sm={12} md={2}>
                   <Select
                     name="orderno"
                     placeholder="Select Plan"
@@ -401,6 +405,8 @@ export default class DailyPacking extends Component {
                     getOptionValue={(option) => option.planNo}
                     getOptionLabel={(option) => option.planNo}
                     onChange={(value, select) => {
+                      this.cleardata();
+                      this.clearafteradd();
                       this.setState(
                         {
                           orderno: value.planNo,
@@ -426,7 +432,7 @@ export default class DailyPacking extends Component {
                 <GridItem xs={12} sm={12} md={3}>
                   <Select
                     name="product"
-                    placeholder="Select Product"
+                    placeholder="Select Product Codde"
                     components={{
                       ValueContainer: CustomValueContainer,
                     }}
@@ -448,6 +454,7 @@ export default class DailyPacking extends Component {
                           selected: {
                             ...prevState.selected, // object that we want to update
                             product: value.ProductCode,
+                            productName: value.Product,
                           },
                         }),
                         () => {
@@ -457,12 +464,55 @@ export default class DailyPacking extends Component {
                       this.onChangeClearError(select.name);
                     }}
                   />
-                  {this.state.fieldErrors && this.state.fieldErrors.product && (
+                  {this.state.fieldErrors && this.state.fieldErrors.product && this.state.fieldErrors.productName && (
                     <span className="MuiFormHelperText-root Mui-error">
                       {this.state.fieldErrors.product}
                     </span>
                   )}
                 </GridItem>
+                <GridItem xs={12} sm={12} md={3}>
+                  <Select
+                    name="productName"
+                    placeholder="Select Product Name"
+                    components={{
+                      ValueContainer: CustomValueContainer,
+                    }}
+                    styles={CustomSelectStyle}
+                    className="customSelect"
+                    classNamePrefix="select"
+                    isSearchable={true}
+                    options={this.state.pcodes}
+                    value={
+                      this.state.selected.productName
+                        ? { Product: this.state.selected.productName }
+                        : null
+                    }
+                    getOptionValue={(option) => option.Product}
+                    getOptionLabel={(option) => option.Product}
+                    onChange={(value, select) => {
+                      this.setState(
+                        (prevState) => ({
+                          selected: {
+                            ...prevState.selected, // object that we want to update
+                            product: value.ProductCode,
+                            productName: value.Product,
+                          },
+                        }),
+                        () => {
+                          this.getAutoFill(value.ProductCode);
+                        }
+                      );
+                      this.onChangeClearError(select.name);
+                    }}
+                  />
+                  {this.state.fieldErrors && this.state.fieldErrors.productName && this.state.fieldErrors.product && (
+                    <span className="MuiFormHelperText-root Mui-error">
+                      {this.state.fieldErrors.productName}
+                    </span>
+                  )}
+                </GridItem>
+               
+               
                 <GridItem xs={12} sm={12} md={2}>
                   <Select
                     name="packsize"
@@ -490,7 +540,7 @@ export default class DailyPacking extends Component {
                         },
                       }));
                       this.onChangeClearError(select.name);
-                      this.onChangeClearError(select.name);
+                      
                     }}
                   />
                   {this.state.fieldErrors &&
