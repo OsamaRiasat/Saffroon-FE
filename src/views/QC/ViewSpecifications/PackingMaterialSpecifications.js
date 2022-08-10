@@ -357,7 +357,7 @@ printData = () => {
                             this.toggle();
                           }}
                           disabled={!this.state.canprint}
-                          startIcon={<PrintIcon />}
+                          
                         >
                           Print Sheet
                         </Button>

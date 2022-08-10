@@ -362,7 +362,7 @@ export default class DataEntryOfTestResults extends Component {
                             value={this.state.analyst}
                           />
                         </GridItem>
-
+{/* 
                         <GridItem xs={12} sm={12} md={3}>
                           <TextField
                             id=""
@@ -372,7 +372,7 @@ export default class DataEntryOfTestResults extends Component {
                             value={this.state.igp_sample_req_no}
                             InputProps={{ readOnly: true }}
                           />
-                        </GridItem>
+                        </GridItem> */}
                       </GridContainer>
 
                       <GridContainer>
