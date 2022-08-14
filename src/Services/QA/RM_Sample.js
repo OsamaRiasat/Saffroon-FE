@@ -4,16 +4,37 @@ import { apiUrl } from "../../config.json";
 const data = "QualityAssurance/";   // Its products intentially
 const Endpoint = apiUrl + data;
 
-export function GRNOList() {
-  const resp = http.get(Endpoint + "GRNOList/");
+// export function GRNOList() {
+//   const resp = http.get(Endpoint + "GRNOList/");
+//   return resp;
+// }
+export function RawMaterialListFromSpecifications() {
+  const resp = http.get(Endpoint + "RawMaterialListFromSpecifications/");
+  return resp;
+}
+export function SuppliersList() {
+  const resp = http.get(Endpoint + "SuppliersList");
   return resp;
 }
 
-export function RecievingDetailByGRNo(GRNo) {
-  const resp = http.get(Endpoint + "RMRecievingDetailByGRNo/" + GRNo + "/");
+export function GetQcNo() {
+  const resp = http.get(Endpoint + "GetQcNo/");
   return resp;
 }
 
+
+// {
+//   "QCNo": "string",
+//   "deliveredBy": "string",
+//   "receivedBy": "string",
+//   "RMCode": "string",
+//   "quantityReceived": "string",
+//   "batchNo": "string",
+//   "S_ID": 0,
+//   "MFG_Date": "2022-08-09",
+//   "EXP_Date": "2022-08-09",
+//   "containersReceived": 0
+// }
 export function Sample(obj) {
   const resp = http.post(Endpoint + "RMSample/", obj);
   return resp;

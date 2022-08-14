@@ -16,25 +16,32 @@ import {
 } from "../../../variables/genericVariables";
 
 import {
-  GRNOList,
-  RecievingDetailByGRNo,
+  GetQcNo,
+  RawMaterialListFromSpecifications,
+  SuppliersList,
+  // RecievingDetailByGRNo,
   Sample,
 } from "../../../Services/QA/RM_Sample";
+import { toHaveDisplayValue } from "@testing-library/jest-dom/dist/matchers.js";
 
 export default class RMSamplingLog extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      grno_List: [],
+      rm_List: [],
+      suppliers_list: [],
       addData_List: [],
 
       deliveredBy_List: [{ Name: "Saad" }, { Name: "Usama" }],
       recievedBy_List: [{ rname: "Asad" }, { rname: "Usman" }],
 
-      grn_no: "",
+      // grn_no: "",
       material: "",
+      RMCode: "",
       code: "",
+      S_ID:"",
+      S_Name:"",
       mfg: "",
       exp: "",
       batchNo: "",
@@ -42,6 +49,7 @@ export default class RMSamplingLog extends Component {
       quantity: "",
       unit: "",
       noOfContainers: "",
+      quantityReceived: "",
       qcNo: "",
       deliveredBy: "",
       recievedBy: "",
@@ -50,35 +58,50 @@ export default class RMSamplingLog extends Component {
   }
 
   async componentDidMount() {
-    const grnlist = (await GRNOList()).data;
+    const rm_list = (await RawMaterialListFromSpecifications()).data;
 
-    this.setState({ grno_List: grnlist });
-    console.log(this.state.grno_List);
+    this.setState({ rm_List: rm_list });
+    console.log(this.state.rm_List);
+    
+    const suppliers_list = (await SuppliersList()).data;
+    this.setState({ suppliers_list: suppliers_list });
+    console.log(this.state.suppliers_list);
+
+    const qcNo = (await GetQcNo()).data;
+    this.setState({ qcNo: qcNo.QC_No });
   }
 
   setvalues = async (id) => {
-    console.log(id);
-    const resp = (await RecievingDetailByGRNo(id)).data;
-    console.log(resp);
-    this.setState({
-      material: resp.Material,
-      code: resp.RMCode,
-      mfg: resp.MFG_Date,
-      exp: resp.EXP_Date,
-      batchNo: resp.Batch_No,
-      supplier: resp.supplierName,
-      quantity: resp.Recieved_Quantity,
-      unit: resp.units,
-      noOfContainers: resp.containersReceived,
-      qcNo: resp.QC_No,
-    });
+    // console.log(id);
+    // const resp = (await RecievingDetailByGRNo(id)).data;
+    // console.log(resp);
+    // this.setState({
+    //   material: resp.Material,
+    //   code: resp.RMCode,
+    //   mfg: resp.MFG_Date,
+    //   exp: resp.EXP_Date,
+    //   batchNo: resp.Batch_No,
+    //   supplier: resp.supplierName,
+    //   quantity: resp.Recieved_Quantity,
+    //   unit: resp.units,
+    //   noOfContainers: resp.containersReceived,
+    //   qcNo: resp.QC_No,
+    // });
   };
   validate = (fields) => {
     const errors = {};
-    if (!fields.grn_no) errors.grn_no = "GRN No Required";
+    
     if (!fields.deliveredBy) errors.deliveredBy = "deliveredBy Required";
     if (!fields.recievedBy) errors.recievedBy = "recievedBy No Required";
-    
+    if (!fields.code) errors.code = "RM Code Required";
+    if (!fields.quantityReceived) errors.quantityReceived = "quantityReceived Required";
+    if (!fields.S_ID) errors.S_ID = "S_ID Required";
+    if (!fields.mfg) errors.mfg = "RM Code Required";
+    if (!fields.exp) errors.exp = "EXP Required";
+    if (!fields.noOfContainers) errors.noOfContainers = "noOfContainers Required";
+    // if (!fields.material) errors.material = "Material Required";
+    // if (!fields.S_Name) errors.S_Name = "S_Name Required";
+    if (!fields.batchNo) errors.batchNo = "Batch No Required";
     return errors;
   };
 
@@ -98,20 +121,28 @@ export default class RMSamplingLog extends Component {
     try {
 
       
-      let { grn_no, deliveredBy, recievedBy} = this.state;
+      let { qcNo, deliveredBy, recievedBy, code, quantityReceived, batchNo, S_ID, mfg, exp, noOfContainers } = this.state;
 
-      const fieldErrors = this.validate({grn_no, deliveredBy, recievedBy });
+      const fieldErrors = this.validate({qcNo, deliveredBy, recievedBy, code, quantityReceived, batchNo, S_ID, mfg, exp, noOfContainers });
 
       this.setState({ fieldErrors: fieldErrors });
-
+      console.log(Object.keys(fieldErrors));
       if (Object.keys(fieldErrors).length) return;
 
+      console.log(this.state.RMCode+"HERE IS THE RMCODE");
       const payload2 = {
         QCNo: this.state.qcNo,
-        GRNo: this.state.grn_no,
         deliveredBy: this.state.deliveredBy,
         receivedBy: this.state.recievedBy,
+        RMCode: this.state.code,
+        quantityReceived: this.state.quantityReceived,
+        batchNo: this.state.batchNo,
+        S_ID: this.state.S_ID,
+        MFG_Date: this.state.mfg,
+        EXP_Date: this.state.exp,
+        containersReceived: this.state.noOfContainers,
       };
+      console.log(payload2);
       this.clearForm();
       
      
@@ -155,12 +186,18 @@ export default class RMSamplingLog extends Component {
       });
     }
   };
+
   clearForm = () => {
     this.setState({
-      grno_List: [],
-      grn_no: "",
+      
+      rm_List: [],
+      suppliers_list: [],
+      // grn_no: "",
       material: "",
+      RMCode: "",
       code: "",
+      S_ID:"",
+      S_Name:"",
       mfg: "",
       exp: "",
       batchNo: "",
@@ -168,9 +205,11 @@ export default class RMSamplingLog extends Component {
       quantity: "",
       unit: "",
       noOfContainers: "",
+      quantityReceived: "",
       qcNo: "",
       deliveredBy: "",
       recievedBy: "",
+      fieldErrors: {},
     });
 
     this.componentDidMount();
@@ -203,7 +242,7 @@ export default class RMSamplingLog extends Component {
                 <Card style={{ marginLeft: 15, minWidth: 960 }}>
                   <CardContent>
                     <GridContainer>
-                      <GridItem xs={12} sm={12} md={2}>
+                      <GridItem xs={8} sm={8} md={2}>
                         <TextField
                           id="date"
                           fullWidth="true"
@@ -215,115 +254,79 @@ export default class RMSamplingLog extends Component {
                       </GridItem>
                       <GridItem xs={12} sm={12} md={2}>
                         <Select
-                          placeholder="GRN No:"
+                          placeholder="RM Code:"
                           components={{
                             ValueContainer: CustomValueContainer,
                           }}
                           styles={CustomSelectStyle}
                           className="customSelect"
                           classNamePrefix="select"
-                          name="grn_no"
+                          name="code"
                           isSearchable={true}
-                          options={this.state.grno_List}
+                          options={this.state.rm_List}
                           value={
-                            this.state.grn_no
-                              ? { GRNo: this.state.grn_no }
+                            this.state.code
+                              ? { RMCode: this.state.code }
                               : null
                           }
-                          getOptionValue={(option) => option.GRNo}
-                          getOptionLabel={(option) => option.GRNo}
+                          getOptionValue={(option) => option.RMCode}
+                          getOptionLabel={(option) => option.RMCode}
                           onChange={(value, select) => {
                             this.setState({
-                              grn_no: value.GRNo,
+                              code: value.RMCode,
+                              material: value.Material,
+                              unit: value.Unit,
                             });
-                            this.setvalues(value.GRNo);
+                            // this.setvalues(value.GRNo);
                             this.onChangeClearError(select.name);
+                            // this.onChangeClearError("material");
                             // this.setStages(value.ProductCode);
                           }}
                         />
-                          {this.state.fieldErrors && this.state.fieldErrors.grn_no && (
+                          {this.state.fieldErrors && this.state.fieldErrors.code && (
                       <span className="MuiFormHelperText-root Mui-error">
-                        {this.state.fieldErrors.grn_no}
+                        {this.state.fieldErrors.code}
                       </span>
                     )}
                       </GridItem>
                       <GridItem xs={12} sm={12} md={2}>
-                        <TextField
-                          multiline
-                          id=""
-                          fullWidth="true"
-                          variant="outlined"
-                          label="Material:"
-                          value={this.state.material}
-                          InputProps={{ readOnly: true }}
+                        <Select
+                          placeholder="Material:"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
+                          className="customSelect"
+                          classNamePrefix="select"
+                          name="material"
+                          isSearchable={true}
+                          options={this.state.rm_List}
+                          value={
+                            this.state.material
+                              ? { Material: this.state.material }
+                              : null
+                          }
+                          getOptionValue={(option) => option.Material}
+                          getOptionLabel={(option) => option.Material}
+                          onChange={(value, select) => {
+                            this.setState({
+                              code: value.RMCode,
+                              material: value.Material,
+                              unit: value.Unit,
+                            });
+                            // this.setvalues(value.GRNo);
+                            this.onChangeClearError(select.name);
+                            this.onChangeClearError("code");
+                            // this.setStages(value.ProductCode);
+                          }}
                         />
+                          {this.state.fieldErrors && this.state.fieldErrors.material && (
+                      <span className="MuiFormHelperText-root Mui-error">
+                        {this.state.fieldErrors.material}
+                      </span>
+                    )}
                       </GridItem>
-
-                      <GridItem xs={12} sm={12} md={2}>
-                        <TextField
-                          id=""
-                          fullWidth="true"
-                          variant="outlined"
-                          label="Code:"
-                          value={this.state.code}
-                          InputProps={{ readOnly: true }}
-                        />
-                      </GridItem>
-                      <GridItem xs={12} sm={12} md={2}>
-                        <TextField
-                          id=""
-                          fullWidth="true"
-                          variant="outlined"
-                          label="Mfg Date:"
-                          value={this.state.mfg}
-                          InputProps={{ readOnly: true }}
-                        />
-                      </GridItem>
-                      <GridItem xs={12} sm={12} md={2}>
-                        <TextField
-                          id=""
-                          fullWidth="true"
-                          variant="outlined"
-                          label="Exp Date:"
-                          value={this.state.exp}
-                          InputProps={{ readOnly: true }}
-                        />
-                      </GridItem>
-                    </GridContainer>
-
-                    <GridContainer>
-                      <GridItem xs={12} sm={12} md={2}>
-                        <TextField
-                          id=""
-                          fullWidth="true"
-                          variant="outlined"
-                          label="Batch/Lot:"
-                          value={this.state.batchNo}
-                          InputProps={{ readOnly: true }}
-                        />
-                      </GridItem>
-                      <GridItem xs={12} sm={12} md={4}>
-                        <TextField
-                          id=""
-                          fullWidth="true"
-                          variant="outlined"
-                          label="Supplier:"
-                          value={this.state.supplier}
-                          InputProps={{ readOnly: true }}
-                        />
-                      </GridItem>
-
-                      <GridItem xs={12} sm={12} md={2}>
-                        <TextField
-                          id=""
-                          fullWidth="true"
-                          variant="outlined"
-                          label="Quantity:"
-                          value={this.state.quantity}
-                          InputProps={{ readOnly: true }}
-                        />
-                      </GridItem>
-                      <GridItem xs={12} sm={12} md={2}>
+                      <GridItem xs={12} sm={12} md={1}>
                         <TextField
                           id=""
                           fullWidth="true"
@@ -334,13 +337,242 @@ export default class RMSamplingLog extends Component {
                         />
                       </GridItem>
                       <GridItem xs={12} sm={12} md={2}>
+                        <Select
+                          placeholder="Supplier ID:"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
+                          className="customSelect"
+                          classNamePrefix="select"
+                          name="S_ID"
+                          isSearchable={true}
+                          options={this.state.suppliers_list}
+                          value={
+                            this.state.S_ID
+                              ? { S_ID: this.state.S_ID }
+                              : null
+                          }
+                          getOptionValue={(option) => option.S_ID}
+                          getOptionLabel={(option) => option.S_ID}
+                          onChange={(value, select) => {
+                            this.setState({
+                              S_ID: value.S_ID,
+                              S_Name: value.S_Name,
+                            });
+                            // this.setvalues(value.GRNo);
+                            this.onChangeClearError(select.name);
+                            // this.onChangeClearError("S_Name");
+                            // this.setStages(value.ProductCode);
+                          }}
+                        />
+                          {this.state.fieldErrors && this.state.fieldErrors.S_ID && (
+                      <span className="MuiFormHelperText-root Mui-error">
+                        {this.state.fieldErrors.S_ID}
+                      </span>
+                    )}
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={2}>
+                        <Select
+                          placeholder="Supplier Name:"
+                          components={{
+                            ValueContainer: CustomValueContainer,
+                          }}
+                          styles={CustomSelectStyle}
+                          className="customSelect"
+                          classNamePrefix="select"
+                          name="S_Name"
+                          isSearchable={true}
+                          options={this.state.suppliers_list}
+                          value={
+                            this.state.S_Name
+                              ? { S_Name: this.state.S_Name }
+                              : null
+                          }
+                          getOptionValue={(option) => option.S_Name}
+                          getOptionLabel={(option) => option.S_Name}
+                          onChange={(value, select) => {
+                            this.setState({
+                              S_Name: value.S_Name,
+                              S_ID: value.S_ID,
+                            });
+                            // this.setvalues(value.GRNo);
+                            
+                            this.onChangeClearError(select.name);
+                            this.onChangeClearError("S_ID");
+                            // this.setStages(value.ProductCode);
+                          }}
+                        />
+                          {this.state.fieldErrors && this.state.fieldErrors.S_Name && (
+                      <span className="MuiFormHelperText-root Mui-error">
+                        {this.state.fieldErrors.S_Name}
+                      </span>
+                    )}
+                      </GridItem>
+                     
+                  
+                    </GridContainer>
+                    <GridContainer>
+                    <GridItem xs={12} sm={12} md={2}>
+                    <TextField
+                          id=""
+                          variant="outlined"
+                          label="MFG_Date :"
+                          fullWidth="true"
+                          type="date"
+                          InputLabelProps={{ shrink: true }}
+                          value={this.state.mfg}
+                          name="mfg"
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.mfg
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.mfg
+                          }
+                          onChange={(event) => {
+                            this.setState({ mfg: event.target.value });
+                            this.onChangeClearError(event.target.name);
+                          }}
+                        />
+                    {/* <TextField
+                          id="mfg-date"
+                          InputLabelProps={{ shrink: true }}
+                          variant="outlined"
+                          label="MFG Date"
+                          fullWidth="true"
+                          type="date"
+                          onChange={(event) => {
+                            this.setState({ mfg: event.target.value });
+                          }}
+                        /> */}
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={2}>
+                      <TextField
+                          id=""
+                          variant="outlined"
+                          label="EXP_Date :"
+                          fullWidth="true"
+                          type="date"
+                          InputLabelProps={{ shrink: true }}
+                          value={this.state.exp}
+                          name="exp"
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.exp
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.exp
+                          }
+                          onChange={(event) => {
+                            this.setState({ exp: event.target.value });
+                            this.onChangeClearError(event.target.name);
+                          }}
+                        />
+                      {/* <TextField
+                          id="exp-date"
+                          InputLabelProps={{ shrink: true }}
+                          variant="outlined"
+                          label="EXP Date"
+                          fullWidth="true"
+                          type="date"
+                          onChange={(event) => {
+                            this.setState({ exp: event.target.value });
+                          }}
+                        /> */}
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={2}>
+                        <TextField
+                          id=""
+                          type="text"
+                          fullWidth="true"
+                          variant="outlined"
+                          label="Batch/Lot:"
+                          name= "batchNo"
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.batchNo
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.batchNo
+                          }
+                          value={this.state.batchNo}
+                          onChange={(event) => {
+                            this.setState({
+                              batchNo: event.target.value,
+                            });
+                            this.onChangeClearError(event.target.name);
+                          }}
+                        />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={4}>
+                        <TextField
+                          id=""
+                          type="number"
+                          fullWidth="true"
+                          variant="outlined"
+                          label="Quanity Received:"
+                          name= "quantityReceived"
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.quantityReceived
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.quantityReceived
+                          }
+                          value={this.state.quantityReceived}
+                          onChange={(event) => {
+                            this.setState({
+                              quantityReceived: event.target.value,
+                            });
+                            this.onChangeClearError(event.target.name);
+                          }}
+                        />
+                      </GridItem>
+                      </GridContainer>
+                    <GridContainer>
+
+                     
+
+                      
+                      <GridItem xs={12} sm={12} md={2}>
                         <TextField
                           id=""
                           fullWidth="true"
+                          type="number"
                           variant="outlined"
+                          name= "noOfContainers"
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.noOfContainers
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.noOfContainers
+                          }
                           label="No. of Containers:"
                           value={this.state.noOfContainers}
-                          InputProps={{ readOnly: true }}
+                          onChange={(event) => {
+                            this.setState({
+                              noOfContainers: event.target.value,
+                            });
+                            this.onChangeClearError(event.target.name);
+                          }}
+                        
                         />
                       </GridItem>
                     </GridContainer>
@@ -353,7 +585,7 @@ export default class RMSamplingLog extends Component {
                           variant="outlined"
                           label="QC No:"
                           value={this.state.qcNo}
-                          //   InputProps={{ readOnly: true }}
+                          InputProps={{ readOnly: true }}
                         />
                       </GridItem>
                       <GridItem xs={12} sm={12} md={4}>
