@@ -19,6 +19,7 @@ import {
   GetQcNo,
   RawMaterialListFromSpecifications,
   SuppliersList,
+  is_GRN_NO_Unique,
   // RecievingDetailByGRNo,
   Sample,
 } from "../../../Services/QA/RM_Sample";
@@ -29,6 +30,7 @@ export default class RMSamplingLog extends Component {
     super(props);
 
     this.state = {
+      send: false,
       rm_List: [],
       suppliers_list: [],
       addData_List: [],
@@ -36,7 +38,7 @@ export default class RMSamplingLog extends Component {
       deliveredBy_List: [{ Name: "Saad" }, { Name: "Usama" }],
       recievedBy_List: [{ rname: "Asad" }, { rname: "Usman" }],
 
-      // grn_no: "",
+      GRN_No: "",
       material: "",
       RMCode: "",
       code: "",
@@ -88,9 +90,26 @@ export default class RMSamplingLog extends Component {
     //   qcNo: resp.QC_No,
     // });
   };
-  validate = (fields) => {
+  isUnique = async (grn) => {
+    const flag = await (is_GRN_NO_Unique(grn))
+    console.log(flag.data);
+    const errors ={}
+    if (flag.data == false) {
+      errors.GRN_No = "GRN_No Already Exists";
+    this.setState({
+      fieldErrors: errors,
+      send: false
+    })
+    } else{
+      this.setState({
+        send: true
+      })
+    }   
+  };
+  validate =  (fields) => {
     const errors = {};
     
+
     if (!fields.deliveredBy) errors.deliveredBy = "deliveredBy Required";
     if (!fields.recievedBy) errors.recievedBy = "recievedBy No Required";
     if (!fields.code) errors.code = "RM Code Required";
@@ -99,7 +118,12 @@ export default class RMSamplingLog extends Component {
     if (!fields.mfg) errors.mfg = "RM Code Required";
     if (!fields.exp) errors.exp = "EXP Required";
     if (!fields.noOfContainers) errors.noOfContainers = "noOfContainers Required";
-    // if (!fields.material) errors.material = "Material Required";
+    // if (!fields.GRN_No )
+    // {
+    //   errors.GRN_No = "GRN_No Required";
+    // } else if (!fields.flag) {
+    //   errors.GRN_No = "GRN_No Already Exists";
+    // }
     // if (!fields.S_Name) errors.S_Name = "S_Name Required";
     if (!fields.batchNo) errors.batchNo = "Batch No Required";
     return errors;
@@ -119,8 +143,11 @@ export default class RMSamplingLog extends Component {
 
   sendRequest = async () => {
     try {
-
-      
+      if (!this.state.send) return
+      // const flag = false;
+      // if (this.state.GRN_No){
+      //  flag = await is_GRN_NO_Unique(this.state.GRN_No).data;
+      // }
       let { qcNo, deliveredBy, recievedBy, code, quantityReceived, batchNo, S_ID, mfg, exp, noOfContainers } = this.state;
 
       const fieldErrors = this.validate({qcNo, deliveredBy, recievedBy, code, quantityReceived, batchNo, S_ID, mfg, exp, noOfContainers });
@@ -192,7 +219,7 @@ export default class RMSamplingLog extends Component {
       
       rm_List: [],
       suppliers_list: [],
-      // grn_no: "",
+      GRN_No: "",
       material: "",
       RMCode: "",
       code: "",
@@ -520,7 +547,7 @@ export default class RMSamplingLog extends Component {
                           type="number"
                           fullWidth="true"
                           variant="outlined"
-                          label="Quanity Received:"
+                          label="Quantity Received:"
                           name= "quantityReceived"
                           error={
                             this.state.fieldErrors &&
@@ -570,6 +597,35 @@ export default class RMSamplingLog extends Component {
                             this.setState({
                               noOfContainers: event.target.value,
                             });
+                            this.onChangeClearError(event.target.name);
+                          }}
+                        
+                        />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={2}>
+                        <TextField
+                          id=""
+                          fullWidth="true"
+                          type="number"
+                          variant="outlined"
+                          name= "GRN_No"
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.GRN_No
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.GRN_No
+                          }
+                          label="GRN No:"
+                          value={this.state.GRN_No}
+                          onChange={(event) => {
+                            this.setState({
+                              GRN_No: event.target.value,
+                            });
+                            this.isUnique(event.target.value);
                             this.onChangeClearError(event.target.name);
                           }}
                         
