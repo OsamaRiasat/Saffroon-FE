@@ -23,6 +23,11 @@ export function GetQcNo() {
 }
 
 
+export function is_GRN_NO_Unique(GRN_No) {
+  const resp = http.get(Endpoint + "is_GRN_NO_Unique/"+GRN_No);
+  return resp;
+}
+
 // {
 //   "QCNo": "string",
 //   "deliveredBy": "string",
