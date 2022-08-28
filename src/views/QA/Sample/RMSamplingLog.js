@@ -64,7 +64,7 @@ export default class RMSamplingLog extends Component {
 
     this.setState({ rm_List: rm_list });
     console.log(this.state.rm_List);
-    
+
     const suppliers_list = (await SuppliersList()).data;
     this.setState({ suppliers_list: suppliers_list });
     console.log(this.state.suppliers_list);
@@ -104,11 +104,11 @@ export default class RMSamplingLog extends Component {
       this.setState({
         send: true
       })
-    }   
+    }
   };
   validate =  (fields) => {
     const errors = {};
-    
+
 
     if (!fields.deliveredBy) errors.deliveredBy = "deliveredBy Required";
     if (!fields.recievedBy) errors.recievedBy = "recievedBy No Required";
@@ -118,7 +118,7 @@ export default class RMSamplingLog extends Component {
     if (!fields.mfg) errors.mfg = "RM Code Required";
     if (!fields.exp) errors.exp = "EXP Required";
     if (!fields.noOfContainers) errors.noOfContainers = "noOfContainers Required";
-    
+    if (!fields.GRN_No) errors.GRN_No = "GRN No Required";
     // if (!fields.GRN_No )
     // {
     //   errors.GRN_No = "GRN_No Required";
@@ -144,14 +144,14 @@ export default class RMSamplingLog extends Component {
 
   sendRequest = async () => {
     try {
-      if (!this.state.send) return
+      // if (!this.state.send) return
       // const flag = false;
       // if (this.state.GRN_No){
       //  flag = await is_GRN_NO_Unique(this.state.GRN_No).data;
       // }
-      let { qcNo, deliveredBy, recievedBy, code, quantityReceived, batchNo, S_ID, mfg, exp, noOfContainers } = this.state;
+      let { qcNo, deliveredBy, recievedBy, code, quantityReceived, batchNo, S_ID, mfg, exp, noOfContainers, GRN_No } = this.state;
 
-      const fieldErrors = this.validate({qcNo, deliveredBy, recievedBy, code, quantityReceived, batchNo, S_ID, mfg, exp, noOfContainers });
+      const fieldErrors = this.validate({qcNo, deliveredBy, recievedBy, code, quantityReceived, batchNo, S_ID, mfg, exp, noOfContainers, GRN_No });
 
       this.setState({ fieldErrors: fieldErrors });
       console.log(Object.keys(fieldErrors));
@@ -172,15 +172,15 @@ export default class RMSamplingLog extends Component {
       };
       console.log(payload2);
       this.clearForm();
-      
-     
+
+
 
       const resp = await Sample(payload2);
       console.log(resp.message);
       this.componentDidMount();
-      
+
       if (resp.status === 201) {
-        toast.success("Request Sent !!", {
+        toast.success("Sample Received !!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -189,7 +189,7 @@ export default class RMSamplingLog extends Component {
           draggable: true,
           progress: undefined,
         });
-        
+
       } else {
         toast.error("Request Not Sent", {
           position: "top-right",
@@ -217,7 +217,7 @@ export default class RMSamplingLog extends Component {
 
   clearForm = () => {
     this.setState({
-      
+
       rm_List: [],
       suppliers_list: [],
       GRN_No: "",
@@ -425,7 +425,7 @@ export default class RMSamplingLog extends Component {
                               S_ID: value.S_ID,
                             });
                             // this.setvalues(value.GRNo);
-                            
+
                             this.onChangeClearError(select.name);
                             this.onChangeClearError("S_ID");
                             // this.setStages(value.ProductCode);
@@ -437,8 +437,8 @@ export default class RMSamplingLog extends Component {
                       </span>
                     )}
                       </GridItem>
-                     
-                  
+
+
                     </GridContainer>
                     <GridContainer>
                     <GridItem xs={12} sm={12} md={2}>
@@ -572,9 +572,9 @@ export default class RMSamplingLog extends Component {
                       </GridContainer>
                     <GridContainer>
 
-                     
 
-                      
+
+
                       <GridItem xs={12} sm={12} md={2}>
                         <TextField
                           id=""
@@ -600,7 +600,7 @@ export default class RMSamplingLog extends Component {
                             });
                             this.onChangeClearError(event.target.name);
                           }}
-                        
+
                         />
                       </GridItem>
                       <GridItem xs={12} sm={12} md={2}>
@@ -626,7 +626,7 @@ export default class RMSamplingLog extends Component {
                             this.setState({
                               GRN_No: event.target.value,
                             });
-                            
+
                             this.onChangeClearError(event.target.name);
                           }}
                           onBlur= {
@@ -634,14 +634,14 @@ export default class RMSamplingLog extends Component {
                               this.isUnique(event.target.value);
                             }
                           }
-                        
+
                         />
                       </GridItem>
                     </GridContainer>
 
                     <GridContainer>
-                      
-                    
+
+
                     <GridItem xs={12} sm={12} md={2}>
                         <TextField
                           id=""
@@ -696,7 +696,7 @@ export default class RMSamplingLog extends Component {
                           }}
                         />
                       </GridItem>
-                    
+
                       <GridItem xs={12} sm={12} md={2}>
                         <Button
                           className=""
