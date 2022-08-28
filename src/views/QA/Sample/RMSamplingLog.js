@@ -118,6 +118,7 @@ export default class RMSamplingLog extends Component {
     if (!fields.mfg) errors.mfg = "RM Code Required";
     if (!fields.exp) errors.exp = "EXP Required";
     if (!fields.noOfContainers) errors.noOfContainers = "noOfContainers Required";
+    
     // if (!fields.GRN_No )
     // {
     //   errors.GRN_No = "GRN_No Required";
@@ -625,92 +626,77 @@ export default class RMSamplingLog extends Component {
                             this.setState({
                               GRN_No: event.target.value,
                             });
-                            this.isUnique(event.target.value);
+                            
                             this.onChangeClearError(event.target.name);
                           }}
+                          onBlur= {
+                            (event)=> {
+                              this.isUnique(event.target.value);
+                            }
+                          }
                         
                         />
                       </GridItem>
                     </GridContainer>
 
                     <GridContainer>
+                      
+                    
+                    <GridItem xs={12} sm={12} md={2}>
+                        <TextField
+                          id=""
+                          type="text"
+                          fullWidth="true"
+                          variant="outlined"
+                          label="Delivered By:"
+                          name= "deliveredBy"
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.deliveredBy
+                              ? true
+                              : false
+                          }
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.deliveredBy
+                          }
+                          value={this.state.deliveredBy}
+                          onChange={(event) => {
+                            this.setState({
+                              deliveredBy: event.target.value,
+                            });
+                            this.onChangeClearError(event.target.name);
+                          }}
+                        />
+                      </GridItem>
                       <GridItem xs={12} sm={12} md={2}>
                         <TextField
                           id=""
+                          type="text"
                           fullWidth="true"
                           variant="outlined"
-                          label="QC No:"
-                          value={this.state.qcNo}
-                          InputProps={{ readOnly: true }}
-                        />
-                      </GridItem>
-                      <GridItem xs={12} sm={12} md={4}>
-                        <Select
-                          placeholder="Delivered By:"
-                          components={{
-                            ValueContainer: CustomValueContainer,
-                          }}
-                          styles={CustomSelectStyle}
-                          className="customSelect"
-                          name="deliveredBy"
-                          classNamePrefix="select"
-                          isSearchable={true}
-                          options={this.state.deliveredBy_List}
-                          value={
-                            this.state.deliveredBy
-                              ? { Name: this.state.deliveredBy }
-                              : null
+                          label="Received By:"
+                          name= "recievedBy"
+                          error={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.recievedBy
+                              ? true
+                              : false
                           }
-                          getOptionValue={(option) => option.Name}
-                          getOptionLabel={(option) => option.Name}
-                          onChange={(value, select) => {
-                            this.setState({
-                              deliveredBy: value.Name,
-                            });
-                            this.onChangeClearError(select.name);
-                          
-                          }}
-                        />
-                          {this.state.fieldErrors && this.state.fieldErrors.deliveredBy && (
-                      <span className="MuiFormHelperText-root Mui-error">
-                        {this.state.fieldErrors.deliveredBy}
-                      </span>
-                    )}
-                      </GridItem>
-
-                      <GridItem xs={12} sm={12} md={4}>
-                        <Select
-                          placeholder="Recieved By:"
-                          components={{
-                            ValueContainer: CustomValueContainer,
-                          }}
-                          styles={CustomSelectStyle}
-                          className="customSelect"
-                          classNamePrefix="select"
-                          name="recievedBy"
-                          isSearchable={true}
-                          options={this.state.recievedBy_List}
-                          value={
-                            this.state.recievedBy
-                              ? { rname: this.state.recievedBy }
-                              : null
+                          helperText={
+                            this.state.fieldErrors &&
+                            this.state.fieldErrors.recievedBy
                           }
-                          getOptionValue={(option) => option.rname}
-                          getOptionLabel={(option) => option.rname}
-                          onChange={(value, select) => {
+                          value={this.state.recievedBy}
+                          onChange={(event) => {
                             this.setState({
-                              recievedBy: value.rname,
+                              recievedBy: event.target.value,
                             });
-                            this.onChangeClearError(select.name);
-                            // this.setStages(value.ProductCode);
+                            this.onChangeClearError(event.target.name);
                           }}
                         />
-                          {this.state.fieldErrors && this.state.fieldErrors.recievedBy && (
-                      <span className="MuiFormHelperText-root Mui-error">
-                        {this.state.fieldErrors.recievedBy}
-                      </span>
-                    )}
                       </GridItem>
+                    
                       <GridItem xs={12} sm={12} md={2}>
                         <Button
                           className=""
