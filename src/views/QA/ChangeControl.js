@@ -466,7 +466,7 @@ export default class ChangeControl extends Component {
 													label="Product:"
 													fullWidth="true"
 													variant="outlined"
-													select
+													
 													value={this.state.product}
 													SelectProps={{
 														value: [this.state.product],
