@@ -107,26 +107,40 @@ export default class RMSamplingLog extends Component {
     }
   };
   validate =  (fields) => {
-    const errors = {};
+    let today = new Date;
+    let today_date_format = today.getFullYear() + "-" + (today.getMonth() + 1).toString().padStart(2,'0') + "-" + today.getDate();
+    let today_date = new Date(today_date_format);
 
+    const errors = {};
 
     if (!fields.deliveredBy) errors.deliveredBy = "deliveredBy Required";
     if (!fields.recievedBy) errors.recievedBy = "recievedBy No Required";
     if (!fields.code) errors.code = "RM Code Required";
     if (!fields.quantityReceived) errors.quantityReceived = "quantityReceived Required";
     if (!fields.S_ID) errors.S_ID = "S_ID Required";
-    if (!fields.mfg) errors.mfg = "RM Code Required";
-    if (!fields.exp) errors.exp = "EXP Required";
     if (!fields.noOfContainers) errors.noOfContainers = "noOfContainers Required";
     if (!fields.GRN_No) errors.GRN_No = "GRN No Required";
-    // if (!fields.GRN_No )
-    // {
-    //   errors.GRN_No = "GRN_No Required";
-    // } else if (!fields.flag) {
-    //   errors.GRN_No = "GRN_No Already Exists";
-    // }
-    // if (!fields.S_Name) errors.S_Name = "S_Name Required";
     if (!fields.batchNo) errors.batchNo = "Batch No Required";
+
+
+    if (!fields.mfg) errors.mfg = "MFG Date Required"; else{
+      let f_field = fields.mfg.split("-");
+      let g = f_field[0]+"-"+f_field[1]+"-" + f_field[2]
+      let mfg = new Date(g);
+      if (mfg>today_date){
+      errors.mfg = "MFG date must not be greater then today."
+    }
+  }
+  if (!fields.exp) errors.exp = "EXP Date Required"; else{
+      let f_field = fields.exp.split("-");
+      let g = f_field[0]+"-"+f_field[1]+"-" + f_field[2]
+      let exp = new Date(g);
+
+    if (exp<today_date){
+    errors.exp = "EXP date must not be smaller then today."
+  }
+}
+
     return errors;
   };
 
@@ -169,6 +183,7 @@ export default class RMSamplingLog extends Component {
         MFG_Date: this.state.mfg,
         EXP_Date: this.state.exp,
         containersReceived: this.state.noOfContainers,
+        GRN_No: this.state.GRN_No
       };
       console.log(payload2);
       this.clearForm();
@@ -641,7 +656,16 @@ export default class RMSamplingLog extends Component {
 
                     <GridContainer>
 
-
+                    <GridItem xs={12} sm={12} md={2}>
+                        <TextField
+                          id=""
+                          fullWidth="true"
+                          variant="outlined"
+                          label="QC No:"
+                          value={this.state.qcNo}
+                          InputProps={{ readOnly: true }}
+                        />
+                      </GridItem>
                     <GridItem xs={12} sm={12} md={2}>
                         <TextField
                           id=""
