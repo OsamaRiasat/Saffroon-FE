@@ -25,11 +25,11 @@ import { getRoles, getUsers } from '../Services/Account/misc';
 
 
 const styles={
-  
+
     input: {
       display: 'none',
     },
-  
+
 }
 
 const classes=makeStyles(styles);
@@ -37,15 +37,15 @@ const classes=makeStyles(styles);
 
 class AddUser extends React.Component {
    async componentDidMount(){
-  
+
     const data= (await getRoles()).data
     var usersdata= this.handleShowUsers();
-    
-   
+
+
     console.log(data);
     this.setState({
       roles:data,
-      
+
     })
 
    }
@@ -64,20 +64,19 @@ class AddUser extends React.Component {
    handleRegister= async()=>{
      const payload=
       {
-        
+
         "username": this.state.username,
         "role": this.state.role,
         "password": this.state.password,
-       
-        
-      }
 
+
+      }
+      this.setState({
+        username:"",
+        role:"",
+        password:""
+      })
      const resp = await auth.methods.register(payload);
-     this.setState({
-       username:"",
-       role:"",
-       password:""
-     })
      this.handleShowUsers();
    }
    handleShowUsers=async ()=>{
@@ -87,18 +86,18 @@ class AddUser extends React.Component {
     var refiedUsers= resp.map((user)=>{
       count+=1;
       return [count,user.username , user.role];
-      
+
     });
 
-    
-    this.setState({ 
+
+    this.setState({
       users:refiedUsers,
     })
-    
+
    }
     render() {
       const columns = ["Sr#" , "Name" , "Role"];
-     
+
       console.log(this.state.users)
         return (
             <div style={{marginTop:50}}>
@@ -109,32 +108,32 @@ class AddUser extends React.Component {
                             <h2 >Add User  </h2>
                         </CardHeader>
                         <CardBody>
-                          
+
                           <GridContainer>
-                           
-                          <Card md={6} style={{maxWidth:450 , marginLeft:30}}> 
+
+                          <Card md={6} style={{maxWidth:450 , marginLeft:30}}>
                           <CardHeader color="primary">
-                                  
+
                                   <p className={classes.cardCategoryWhite}  style={{fontWeight:"bold"}}>
                                     Fill the form to add new User
                                   </p>
                           </CardHeader>
                           <GridItem md={12}>
-                          
+
                           <GridContainer>
                               <GridItem md={12} style={{marginTop:45}}>
-                              <TextField 
-                              label="Username" 
-                              fullWidth="true" 
+                              <TextField
+                              label="Username"
+                              fullWidth="true"
                               variant="outlined"
-                              
+
                               value={this.state.username}
                               onChange={
                                 (event)=>{
                                   this.setState({
                                     username:event.target.value
                                   })
-                                  
+
                                 }
                               }
                               ></TextField>
@@ -143,9 +142,9 @@ class AddUser extends React.Component {
                               </GridContainer>
                               <GridContainer>
                               <GridItem  md={12}>
-                              <TextField 
-                              label="Password"  
-                              fullWidth="true" 
+                              <TextField
+                              label="Password"
+                              fullWidth="true"
                               variant="outlined"
                               type="password"
                               value={this.state.password}
@@ -153,9 +152,9 @@ class AddUser extends React.Component {
                                 (event)=>{
                                   this.setState({
                                     password:event.target.value
-                                   
+
                                   })
-                                  
+
                                 }
                               }>
 
@@ -165,11 +164,11 @@ class AddUser extends React.Component {
                               </GridContainer>
                               <GridContainer>
                               <GridItem md={9}>
- 
-                              <TextField 
-                              label="Role" 
-                              fullWidth="true" 
-                              select 
+
+                              <TextField
+                              label="Role"
+                              fullWidth="true"
+                              select
                               variant="outlined"
                               value={this.state.role}
                               onChange={
@@ -179,14 +178,14 @@ class AddUser extends React.Component {
                                   })
                                                                }
                               }>
-                              
+
                               {this.state.roles.map((role) => (
                                 <MenuItem key={role.Role} value={role.Role}>
                                   {role.Role}
                                 </MenuItem>
                               ))}
                               </TextField>
-                              
+
 
                               </GridItem>
                               <GridItem md={1}>
@@ -198,7 +197,7 @@ class AddUser extends React.Component {
                                 </label>
                               </GridItem>
                               </GridContainer>
-                              <GridContainer>                              
+                              <GridContainer>
                                 <GridItem md={4} style={{marginTop:30}}>
                                 <Button className="StyledButton" onClick={() => {
                                     this.handleRegister()
@@ -206,13 +205,13 @@ class AddUser extends React.Component {
                               </GridItem>
                             </GridContainer>
 
-                            
+
                               </GridItem>
                               </Card>
-                            
-                            
-                          
-                           
+
+
+
+
                             <GridItem xs={12} sm={12} md={6}>
                               <Card>
                                 <CardHeader color="primary">
@@ -226,27 +225,27 @@ class AddUser extends React.Component {
                                     heightpx="350px"
                                     tableHeaderColor="primary"
                                     tableHead={columns}
-                                   
+
                                     tableData={this.state.users}
-                                   
+
                                   />
                                 </CardBody>
                               </Card>
                             </GridItem>
-                          
+
                           </GridContainer>
-                          
+
                            {/* <GridContainer justify = "center">
                            <GridItem xs={12} sm={12} md={12}>
                               <Card>
-                                
+
                                 <CardBody>
                                   <GridContainer>
                                     <div style={{ height: 450, width: '100%' }}>
                                       <DataGrid
                                         rows={products_array}
                                         columns={columns}
-                                        
+
                                         onSelectionModelChange={(event) => {
                                           this.setState({ selectedRows: event })
 
@@ -259,11 +258,11 @@ class AddUser extends React.Component {
                                             this.setState({ canDelete: true })
                                           }
                                         }}
-                                        
+
                                       />
-                                      
+
                                     </div>
-                                  </GridContainer>                
+                                  </GridContainer>
                                   </CardBody>
                               </Card>
                         </GridItem>
@@ -271,7 +270,7 @@ class AddUser extends React.Component {
                         </CardBody>
 
                         <CardFooter className="center">
-                            
+
                         </CardFooter>
                     </Card>
                     </GridItem>

@@ -49,13 +49,14 @@ export default function AdminNavbarLinks() {
   };
   const  handleChangePassword =()=>{
     history.push("/changePassword")
-  } 
+  }
   const handleCloseProfile=()=>{
     setOpenProfile(null);
   }
-  
+
   const handleLogout = async () => {
     try{
+        history.replace("/");
       const resp=(await auth.methods.logout());
         if(resp.message === "User logged out")
         {
@@ -71,9 +72,9 @@ export default function AdminNavbarLinks() {
         history.replace("/");
         alert(err , "Not Logout Something Went Wrong")
       }
-    
-  
-    
+
+
+
   };
   return (
     <div>

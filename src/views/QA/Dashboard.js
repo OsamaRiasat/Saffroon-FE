@@ -198,7 +198,7 @@ export default class Dashboard extends Component {
                           color="success"
                           fullWidth="true"
                           component={Link}
-                          to="saffron/QA/product/sample"
+                          to="/saffron/QA/product/sample"
                         >
                           Sample Products
                         </Button>
