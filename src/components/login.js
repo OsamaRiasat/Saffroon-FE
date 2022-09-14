@@ -18,6 +18,7 @@ import auth from "../Services/auth/login.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { toast, ToastContainer } from "react-toastify";
 
+
 // function Copyright() {
 //     return (
 //         <Typography variant="body2" color="textSecondary" align="center">
@@ -173,6 +174,16 @@ export default function SignIn() {
             onChange={(event) => {
               setUsername(event.target.value);
               console.log(username);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                if (isValidated()) {
+                  handleLogin();
+                  setLoading(true);
+                } else {
+                  toast.error("Please Provide all Credentials !!");
+                }
+              }
             }}
           />
           <TextField

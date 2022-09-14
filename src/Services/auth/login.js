@@ -1,26 +1,26 @@
 import http from "../http/httpService.js"
-import {apiUrl} from "../../config.json" 
+import {apiUrl} from "../../config.json"
 
 const data="Account/"
-const Endpoint=apiUrl+data 
+const Endpoint=apiUrl+data
 
 export default{
-    
- 
+
+
     methods: {
         login(creds)
         {
 
             const resp =http.post(Endpoint+"login/",creds).then(function(response){
                 console.log("In response ")
-               
+
                 console.log("data" , response.data )
                 sessionStorage.setItem("Role",response.data.Role);
                 sessionStorage.setItem("token",response.data["Token key"]);
                 sessionStorage.setItem("isLogin",true);
                 return true
-               
-                
+
+
             }).catch((error)=>{
                 if (error.response) {
                     // Request made and server responded
@@ -38,22 +38,22 @@ export default{
                   }
 
             })
-          
-    
+
+
             return resp
-        
+
         },
         logout()
         {
            console.log(sessionStorage.getItem("token"));
-            
+
             const resp=http.get(Endpoint+"logout/",{ 'headers': { 'Authorization': "Token"+" "+sessionStorage.getItem("token") } }).then(function(response){
                 console.log(response.data)
                 sessionStorage.removeItem("Role");
                 sessionStorage.removeItem("token");
                 sessionStorage.setItem("isLogin",false);
                 return response.data;
-               
+
             })
             return resp;
         },
@@ -62,10 +62,10 @@ export default{
             try{
                 console.log(payload);
                 const resp=http.post(Endpoint+"register/",payload).then(function(response){
-                
+
                     console.log(response);
                     if(response.status === 201)
-                    
+
                     {
                         alert("user Created")
                         return true
@@ -74,15 +74,15 @@ export default{
                     alert ("User is Not Created")
                     return false
                 })
-                
-            
+
+
             }
             catch(err)
             {
                 alert (err)
                 return false
             }
-           
+
         },
         changePassword(payload)
         {
@@ -93,7 +93,7 @@ export default{
                 sessionStorage.removeItem("token");
                 sessionStorage.setItem("isLogin",false);
                 console.log("response api " + response);
-            }) 
+            })
         }
 
 
