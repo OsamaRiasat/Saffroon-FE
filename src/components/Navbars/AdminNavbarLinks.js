@@ -223,12 +223,12 @@ export default function AdminNavbarLinks() {
               <Paper>
                 <ClickAwayListener onClickAway={handleCloseProfile}>
                   <MenuList role="menu">
-                    <MenuItem
+                    {/* <MenuItem
                       onClick={handleCloseProfile}
                       className={classes.dropdownItem}
                     >
                       Profile
-                    </MenuItem>
+                    </MenuItem> */}
                     <MenuItem
                       onClick={handleChangePassword}
                       className={classes.dropdownItem}
