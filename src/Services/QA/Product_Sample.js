@@ -24,8 +24,9 @@ export function stagesList(PCode) {
   return resp;
 }
 
+// All users are function here is return only QAs
 export function AllUsers() {
-  const resp = http.get(Endpoint + "AllUsers/");
+  const resp = http.get(Endpoint + "QAs");
   return resp;
 }
 

@@ -28,7 +28,7 @@ import {
 	BatchNo,
 	NCR,
     NameByCode,
-    
+
 } from "../../Services/QA/NCR";
 export default class NonConformance extends Component {
 
@@ -37,7 +37,7 @@ export default class NonConformance extends Component {
         this.state = {
             show: true,
             //API
-            depttList: ["Capsule", "Dry Syrup", "Oral Liquid", "QC", "QA", "Stores", "Workshop", "General", "Packing", "Tablet-G", "Tablet-H"],
+            depttList: ["Capsule", "Dry Syrup", "Oral Liquid", "QC", "QA", "Stores", "Workshop", "General", "Packing", "Tablet-G", "Tablet-H", "Vial"],
             identityList: ["Self-Inspection", "Internal Audit", "Customer Complaint", "Test Result", "External Audit", "Regulatory Inspection", "In-process Inspection", "Others"],
             ncList: ["Known", "Potential"],
             gncList: ["Critical", "Non-Critical", "Observation"],
@@ -101,7 +101,7 @@ export default class NonConformance extends Component {
         this.setState({subCatList: sub}, console.log("sub: ", sub))
     }
     async handleProd(pro) {
-        const batch = (await BatchNo(pro)).data;        
+        const batch = (await BatchNo(pro)).data;
         this.setState({batchList: batch}, console.log("batch: ", batch))
         const prodName = await NameByCode(pro);
         this.setState({productName: prodName.data})
@@ -127,16 +127,16 @@ export default class NonConformance extends Component {
                 alert("Please fill the form first!")
                 return;
             }
-       
+
         try {
 
-      
+
             let chek = this.state.show===true ? false : true;
-            
+
         const req = {
             "status": "OPEN",              // send "OPEN" everytime
-            "originator": this.state.auditor,          
-            "section": this.state.deptt,             
+            "originator": this.state.auditor,
+            "section": this.state.deptt,
             "sourceOfIdentification": this.state.identity,
             "refNo": this.state.refNo,
             "natureOfNC": this.state.nc,
@@ -145,9 +145,9 @@ export default class NonConformance extends Component {
             "subCategory": this.state.subCat,
             "descriptionOFNonConformance": this.state.desc,
             "solutionOfCurrentProblem": this.state.sol,
-            "immediateAction": this.state.act,         // text field next to "solutionOfCurrentProblem" 
+            "immediateAction": this.state.act,         // text field next to "solutionOfCurrentProblem"
             "isActionTaken": true,               // True for checked and vice versa
-            "actionDate": "2021-09-03",          
+            "actionDate": "2021-09-03",
             "closingDate": "2021-09-06",         // send Todays Date everytime
             "verifiedBy": this.state.varified,
             "isLimitAction": chek,
@@ -156,9 +156,9 @@ export default class NonConformance extends Component {
             "actionTaken": this.state.actionTaken,
             "batchNo": this.state.batch_no,
         }
-       
+
              const resp= await (NCR(req));
-            
+
             if (resp.status === 201) {
               toast.success("NC Created !!", {
                 position: "top-right",
@@ -169,7 +169,7 @@ export default class NonConformance extends Component {
                 draggable: true,
                 progress: undefined,
             });
-              
+
             } else {
               toast.error("NC Cannot be created!!", {
                 position: "top-right",
@@ -194,14 +194,14 @@ export default class NonConformance extends Component {
             });
           }
         };
-     
+
 
     toggle = () =>
         this.setState((currentState) => ({ show: !currentState.show }));
 
 
     render() {
-        
+
         var today = new Date();
         let date =
             today.getDate() +
@@ -213,16 +213,16 @@ export default class NonConformance extends Component {
         return (
             <div
                 style={{
-                    
+
                     marginTop: "50px",
-                  
+
                 }}
             >
                 <GridContainer md={12}>
                     <Card>
                         <CardHeader
                             color="primary"
-                            
+
                         >
                             <h2 style={{ textAlign: "center" }}>Non Conformance</h2>
                         </CardHeader>
@@ -247,9 +247,9 @@ export default class NonConformance extends Component {
                                                     variant="outlined"
                                                     label="NCR No:"
                                                     fullWidth="true"
-                                                    InputLabelProps={{ shrink: true }}  
+                                                    InputLabelProps={{ shrink: true }}
                                                     InputProps={{readOnly: true}}
-                                                    value={this.state.ncrNo.NCRNo}                                                    
+                                                    value={this.state.ncrNo.NCRNo}
                                                 />
                                             </GridItem>
 
@@ -395,7 +395,7 @@ export default class NonConformance extends Component {
                                                             {pri.category}
                                                         </MenuItem>
                                                     ))}
-                                                </TextField>                                                
+                                                </TextField>
                                             </GridItem>
                                         </GridContainer>
 

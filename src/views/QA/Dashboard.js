@@ -153,7 +153,7 @@ export default class Dashboard extends Component {
                           color="success"
                           fullWidth="true"
                           component={Link}
-                          to=""
+                          to="/saffron/QA/PM/view"
                         >
                           View Pack Material
                         </Button>
@@ -219,11 +219,11 @@ export default class Dashboard extends Component {
                           color="success"
                           fullWidth="true"
                           component={Link}
-                          to="saffron/QA/change-control"
+                          to="change-control"
                         >
                           Change Control
                         </Button>
-                        <Button
+                        {/* <Button
                           variant="contained"
                           color="success"
                           fullWidth="true"
@@ -231,7 +231,7 @@ export default class Dashboard extends Component {
                           to="/saffron/QA/print-change-control"
                         >
                           Print Change Control
-                        </Button>
+                        </Button> */}
                       </CardBody>
                     </Card>
                   </GridItem>

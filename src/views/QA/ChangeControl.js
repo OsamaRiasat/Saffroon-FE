@@ -53,7 +53,7 @@ export default class ChangeControl extends Component {
 				"Finished Goods",
 				"Engineering",
 			],
-			nc: ["Temporary", "Potential"],
+			nc: ["Temporary", "Permanent"],
 			kw: [
 				"Caping",
 				"Coating",
@@ -368,7 +368,7 @@ export default class ChangeControl extends Component {
 												<TextField
 													id=""
 													select
-													label="Nature of NC:"
+													label="Nature of Change:"
 													fullWidth="true"
 													value={this.state.selected.nc}
 													variant="outlined"
@@ -466,7 +466,7 @@ export default class ChangeControl extends Component {
 													label="Product:"
 													fullWidth="true"
 													variant="outlined"
-													
+
 													value={this.state.product}
 													SelectProps={{
 														value: [this.state.product],
