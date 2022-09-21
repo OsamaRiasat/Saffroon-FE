@@ -97,7 +97,7 @@ export default class RMEditSpecifications extends Component {
       // acc_name: '',
       // acc_code: '',
       // ref: '',
-      
+
       show: false,
     })
   }
@@ -270,13 +270,14 @@ export default class RMEditSpecifications extends Component {
                         <TextField
                           id=""
                           select
-                          label="Material Code:"
+                          variant="outlined"
+                          label="Product Code:"
                           fullWidth="true"
                           value={this.state.code}
                           onChange={(event) => {
                             this.setState({ code: event.target.value })
                             this.fillName(event.target.value);
-                            
+
                           }}
                         >
                           {this.state.codes.map((cod) => (
@@ -286,11 +287,12 @@ export default class RMEditSpecifications extends Component {
                           ))}
                         </TextField>
                       </GridItem>
-                      <GridItem xs={12} sm={12} md={1}>
+                      <GridItem xs={12} sm={12} md={2}>
                         <TextField
                           id=""
                           select
-                          label="Material Name"
+                          label="Product Name"
+                          variant="outlined"
                           fullWidth="true"
                           value = {this.state.name}
                           onChange={(event) => {
@@ -310,6 +312,7 @@ export default class RMEditSpecifications extends Component {
                           id="stage"
                           select
                           label="Stage"
+                          variant="outlined"
                           fullWidth="true"
                           value={this.state.stage}
                           onChange={(event) => {
@@ -361,6 +364,7 @@ export default class RMEditSpecifications extends Component {
                           id="date"
                           fullWidth="true"
                           InputProps={{ readOnly: true }}
+                          style={{ backgroundColor: "#ebebeb" }}
                           variant="outlined"
                           label="Date"
                           value={this.state.date}
@@ -368,11 +372,12 @@ export default class RMEditSpecifications extends Component {
                         />
                       </GridItem>
 
-                      <GridItem xs={12} sm={12} md={2}>
+                      <GridItem xs={12} sm={12} md={1}>
                         <TextField
                           id=""
                           variant="outlined"
                           label="Issue No."
+                          style={{ backgroundColor: "#ebebeb" }}
                           fullWidth="true"
                           value={this.state.issue_no}
                           InputProps={{ readOnly: true }}
@@ -386,6 +391,7 @@ export default class RMEditSpecifications extends Component {
                           id=""
                           select
                           label="Parameter:"
+                          variant="outlined"
                           fullWidth="true"
                           value={this.state.selected.para}
                           onChange={(event) => {
@@ -490,7 +496,7 @@ export default class RMEditSpecifications extends Component {
                                   // this.fillAccCode(this.state.acc_stage)
                                   this.fillAccSpecs(event.target.value);
                                 })
-                                
+
                               }}
                             >
                               {this.state.acc_stages.map((obj) => (
@@ -523,7 +529,6 @@ export default class RMEditSpecifications extends Component {
                         <Button
                           className=""
                           startIcon={<AddCircleOutlineIcon />}
-                          onClick={() => {}}
                           color="primary"
                           onClick={() => {
                             let present = false;
@@ -564,7 +569,6 @@ export default class RMEditSpecifications extends Component {
                         <Button
                           className=""
                           startIcon={<EditIcon />}
-                          onClick={() => {}}
                           color="primary"
                           onClick={() => {
                             var array = [...this.state.cart];
@@ -595,7 +599,6 @@ export default class RMEditSpecifications extends Component {
                         <Button
                           className=""
                           startIcon={<DeleteOutlineIcon />}
-                          onClick={() => {}}
                           color="secondary"
                           onClick={() => {
                             var array = [...this.state.cart];

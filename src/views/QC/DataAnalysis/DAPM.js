@@ -151,7 +151,7 @@ export default class DARM extends Component {
   };
 
 
-  
+
   toggle = () =>
 this.setState({ show: !this.state.show }, () => {
   this.printData();
@@ -219,7 +219,7 @@ GenerateSpecs = () => {
           <td style={{ border: "1px solid black", width: "200px" }}>
             {analysisDateTime}
           </td>
-         
+
         </tr>
       );
     });
@@ -327,7 +327,7 @@ GenerateSpecs = () => {
           <Card>
             <CardHeader color="primary">
               <h4 style={{ textAlign: "center" }}>
-                Finished Goods Analysis Data
+                Packing Material Data Analysis
               </h4>
             </CardHeader>
             <CardBody>
@@ -379,12 +379,12 @@ GenerateSpecs = () => {
                                 },()=>{
                                   this.handleGetData()
                                 });
-                                
+
                               }}
                             >
                               {this.state.materials.map((item) => (
-                                
-                                
+
+
                                 <MenuItem key={item.material} value={item.material}>
                                 {item.material}
                               </MenuItem>
@@ -429,7 +429,7 @@ GenerateSpecs = () => {
                                 },()=>{
                                   this.handleGetData()
                                 });
-                                
+
                               }}
                             >
                                 {this.state.batches.map((item) => (
@@ -475,7 +475,7 @@ GenerateSpecs = () => {
                                 },()=>{
                                   this.handleGetData()
                                 });
-                                
+
                               }}
                             >
                               {this.state.QClist.map((item) => (
@@ -526,7 +526,7 @@ GenerateSpecs = () => {
                                 },()=>{
                                   this.handleGetData()
                                 });
-                                
+
                               }}
                             >
                                {this.state.suppliers.map((item) => (
@@ -577,7 +577,7 @@ GenerateSpecs = () => {
                                 },()=>{
                                   this.handleGetData()
                                 });
-                               
+
                               }}
                             >
                                {this.state.parameters.map((item) => (
@@ -639,7 +639,7 @@ GenerateSpecs = () => {
         {this.state.show && (
           <div id="hide">
           <div style={{ textAlign: "center" }}>
-            
+
             <h2>Data Analysis Log</h2>
           </div>
 
@@ -667,7 +667,7 @@ GenerateSpecs = () => {
             </tbody>
           </table>
 
-         
+
           </div>
         )}
     </div>

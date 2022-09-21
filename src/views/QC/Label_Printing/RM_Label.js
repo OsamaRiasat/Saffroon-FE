@@ -15,31 +15,31 @@ import {
     CustomValueContainer,
     CustomSelectStyle,
   } from "../../../variables/genericVariables";
-  
+
   export default class RejectedLabel extends React.Component {
 
 
-      
+
   toggle = () =>
   this.setState({ show1: !this.state.show1 }, () => {
     this.printData();
   });
-  
-  
+
+
   printData =  async () => {
 
-   
+
 
     var divToPrint = document.getElementById("hide");
     if (divToPrint === "" || divToPrint === null) {
       return;
     } else {
-      
+
       var newWin = window.open("");
-  
+
       newWin.document.write(divToPrint.outerHTML);
       newWin.print();
-  
+
       if (newWin.stop) {
         newWin.location.reload(); //triggering unload (e.g. reloading the page) makes the print dialog appear
         newWin.stop(); //immediately stop reloading
@@ -65,21 +65,21 @@ import {
             required_labels:"",
             result:"",
             color:"info"
-  
+
       });
-  
+
       this.componentDidMount();
-      
+
     }
   };
-  
-  
+
+
 //   GenerateSpecs = () => {
 //     try {
 //       const tabledata = this.state.cart.map((staged, index) => {
 //         var { parameter, specification, result } =
 //           staged;
-        
+
 //         return (
 //           <tr style={{ border: "1px solid black" }} key={index}>
 //             <td style={{ border: "1px solid black", width: "100px" }}>
@@ -94,18 +94,18 @@ import {
 //             <td style={{ border: "1px solid black", width: "170px" }}>
 //               {result}
 //             </td>
-           
+
 //           </tr>
 //         );
 //       });
-  
+
 //       return tabledata;
 //     } catch (error) {
 //       console.log(error);
 //       alert("Something Went Wrong");
 //     }
 //   };
-  
+
 
     async componentDidMount () {
         const qc_no = (await services.methods.RMAnalysisQCNo()).data;
@@ -160,12 +160,12 @@ import {
         const fieldErrors = this.validate(this.state);
         this.setState({ fieldErrors: fieldErrors });
         if (Object.keys(fieldErrors).length) return;
-    
+
 
       }
       handleQCNo = async (qcno)=> {
-        
-        
+
+
         console.log("state qc",qcno)
         const data = (await services.methods.RMAnalysis(qcno)).data;
         console.log(data);
@@ -183,7 +183,7 @@ import {
             remarks:data.remarks,
             Assay:data.Assay,
             result:data.result,
-            
+
         })
 
         this.setState({ canprint: true });
@@ -210,8 +210,8 @@ import {
           fieldErrors: data,
         });
       };
-    render() { 
-  
+    render() {
+
 
         return <div> <div>
         <GridContainer md={12} >
@@ -252,13 +252,13 @@ import {
                                     this.setState(
                                         {
                                           QCNo: value.QCNo,
-                                         
+
                                         },)
                                     this.handleQCNo(value.QCNo);
                                     this.onChangeClearError(select.name);
                                     }}
                                 >
-                                
+
                             Product items
                             </Select>
                             {this.state.fieldErrors && this.state.fieldErrors.QCNo && (
@@ -268,7 +268,7 @@ import {
                             )}
                        </GridItem>
 
-                       <GridItem xs={12} sm={12} md={2}>
+                       <GridItem xs={12} sm={12} md={4}>
                         <TextField
                           id="name"
                           name="name"
@@ -277,13 +277,13 @@ import {
                           variant="outlined"
                           label="Material Name:"
                           value={this.state.name}
-                          
+
                         />
                       </GridItem>
 
                       <GridItem xs={12} sm={12} md={2}>
                         <TextField
-                        
+
                           fullWidth="true"
                           InputProps={{ readOnly: true }}
                           variant="outlined"
@@ -292,16 +292,16 @@ import {
                         />
                       </GridItem>
 
-                      <GridItem xs={12} sm={12} md={2}>
+                      {/* <GridItem xs={12} sm={12} md={2}>
                         <TextField
-                         
+
                           fullWidth="true"
                           InputProps={{ readOnly: true }}
                           variant="outlined"
                           label="IGPNo :"
                         value={this.state.IGPNo}
                         />
-                      </GridItem>
+                      </GridItem> */}
 
 
                       <GridItem xs={12} sm={12} md={2}>
@@ -319,29 +319,29 @@ import {
 
                    <GridContainer>
                         <GridItem xs={12} sm={12} md={6}  >
-                        <TextField 
-                               id="manufacturedate" 
+                        <TextField
+                               id="manufacturedate"
                                 name="mfg_Date"
-                                
-                                fullWidth="true" 
-                                required="true" 
-                                variant="outlined" 
-                                label="MFG   Date "     
+
+                                fullWidth="true"
+                                required="true"
+                                variant="outlined"
+                                label="MFG   Date "
                                 value={this.state.MFG_Date}
-                                                                   
+
                                 />
                         </GridItem>
                             <GridItem xs={12} sm={12} md={6}>
-                                <TextField 
-                               id="manufacturedate" 
+                                <TextField
+                               id="manufacturedate"
                                 name="mfg_Date"
-                                
-                                fullWidth="true" 
-                                required="true" 
-                                variant="outlined" 
-                                label="Expiry   Date "     
+
+                                fullWidth="true"
+                                required="true"
+                                variant="outlined"
+                                label="Expiry   Date "
                                 value={this.state.EXP_Date}
-                                                                   
+
                                 />
                         </GridItem>
                     </GridContainer>
@@ -360,13 +360,13 @@ import {
                         </GridItem>
                         <GridItem  xs={12} sm={12} md={5}>
                         <TextField
-                               
+
                                 fullWidth="true"
                                 required="true"
                                 variant="outlined"
                                 label="Supplier :"
                                 value={this.state.S_Name}
-                               
+
                                 />
                         </GridItem>
 
@@ -378,7 +378,7 @@ import {
                                 fullWidth="true"
                                 variant="outlined"
                                 label="Number Of Required labels:"
-                                value = {this.state.required_labels}                                
+                                value = {this.state.required_labels}
                                 error={
                                     this.state.fieldErrors &&
                                       this.state.fieldErrors.reqLabels
@@ -390,7 +390,7 @@ import {
                                     this.state.fieldErrors.reqLabels
                                   }
                                   onChange={(event) => {
-                                    
+
                                     this.onChangeClearError(event.target.name);
                                   }}
                             /> */}
@@ -416,7 +416,7 @@ import {
                                 this.state.fieldErrors &&
                                 this.state.fieldErrors.reqLabels
                               }
-                             
+
                             />
                         </GridItem>
                     </GridContainer>
@@ -432,40 +432,39 @@ import {
                                 label="Remarks"
                                 variant="outlined"
                                 fullWidth="true"
-                                name="remarks"
                                 value={this.state.remarks}
                                 >
 
                             </TextField>
-                           
+
                         </GridItem>
                         <GridItem xs={12} sm={12} md={4}>
-                            <Button 
+                            <Button
                                 startIcon={<PrintIcon />}
-                                className="StyledButton"  
+                                className="StyledButton"
                                 disabled={!this.state.canprint}
                                 color={this.state.color}
                                 onClick={() => {
                                     this.toggle();
                                   }}
                             >
-                            Print     
+                            Print
                             </Button>
 
                         </GridItem>
-                        
+
                     </GridContainer>
-                   
+
                   </CardContent>
                 </CardM>
               </GridContainer>
             </CardBody>
-          
+
           </Card>
         </GridContainer>
         {this.state.show1 && (
           <div id="hide" >
-          
+
              <div style={{textAlign:"center", fontFamily:"sans-serif",background:this.state.labelColor}}>
 
             <i><h1>{this.state.result}</h1></i>
@@ -506,16 +505,16 @@ import {
                 <th style={{color:"white",textAlign:"left",width:"310px"}}><h3>{this.state.remarks}</h3></th>
 
                 </tr>
-             
+
             </table>
             </div>
 
              </div>
-         
+
           </div>
         )}
     </div>
-          
+
   </div>
     }
 }

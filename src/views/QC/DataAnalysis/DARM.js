@@ -52,7 +52,7 @@ export default class DARM extends Component {
       parameters: parameter,
     });
 
-   
+
 
     //supplier
     var supplier = this.state.cart.map((item) => {
@@ -206,7 +206,7 @@ GenerateSpecs = () => {
           <td style={{ border: "1px solid black", width: "200px" }}>
             {analysisDateTime}
           </td>
-         
+
         </tr>
       );
     });
@@ -227,7 +227,7 @@ GenerateSpecs = () => {
       suppliers: [],
       QClist: [],
       parameters: [],
-      
+
 
       material: "",
       batch: "",
@@ -322,7 +322,7 @@ GenerateSpecs = () => {
           <Card>
             <CardHeader color="primary">
               <h4 style={{ textAlign: "center" }}>
-                Finished Goods Analysis Data
+                Raw Material Data Analysis
               </h4>
             </CardHeader>
             <CardBody>
@@ -605,7 +605,7 @@ GenerateSpecs = () => {
         {this.state.show && (
           <div id="hide">
           <div style={{ textAlign: "center" }}>
-            
+
             <h2>Data Analysis Log</h2>
           </div>
 
@@ -633,7 +633,7 @@ GenerateSpecs = () => {
             </tbody>
           </table>
 
-         
+
           </div>
         )}
     </div>
