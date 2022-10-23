@@ -82,8 +82,8 @@ export default class NonConformance extends Component {
         this.setState({productList: pc})
         const catL = (await CategoriesList()).data;
         this.setState({catList: catL})
-        const highNC = (await HighestNCR()).data;
-        this.setState({ncrNo: highNC})
+        const highNC = (await HighestNCR()).data.NCRNo;
+        this.setState({ncrNo: highNC+1})
         const allU = (await AllUsers()).data;
         this.setState({varifiedList: allU})
         this.setState({auditorList: allU})
@@ -249,7 +249,7 @@ export default class NonConformance extends Component {
                                                     fullWidth="true"
                                                     InputLabelProps={{ shrink: true }}
                                                     InputProps={{readOnly: true}}
-                                                    value={this.state.ncrNo.NCRNo}
+                                                    value={this.state.ncrNo}
                                                 />
                                             </GridItem>
 
