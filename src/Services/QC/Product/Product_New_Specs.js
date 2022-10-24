@@ -1,22 +1,22 @@
 import http from "../../http/httpService.js"
-import {apiUrl} from "../../../config.json" 
+import {apiUrl} from "../../../config.js"
 
 const data="QualityControl/"
-const Endpoint=apiUrl+data 
+const Endpoint=apiUrl+data
 
 export default{
-    
- 
+
+
     methods: {
-        
-        
+
+
         CodeList() {
 
             console.log("Gettting ProductCodeList")
             const resp = http.get(Endpoint + "ProductCodeList/");
             console.log(resp);
             return resp;
-        
+
         },
 
         CodeByName(code) {
@@ -25,7 +25,7 @@ export default{
             const resp = http.get(Endpoint + "ProductCodeByProductName/"+code+"/");
             console.log(resp);
             return resp;
-        
+
         },
 
         MaterialList() {
@@ -34,33 +34,33 @@ export default{
             const resp = http.get(Endpoint + "ProductList/");
             console.log(resp);
             return resp;
-        
+
         },
 
         NameByCode(code) {
-            //1st line 
+            //1st line
             console.log("Gettting NameByCode/")
             const resp = http.get(Endpoint + "ProductNameByProductCode/"+code+"/");
             console.log(resp);
             return resp;
-        
+
         },
         newStagelist(code) {
-            //1st line 
+            //1st line
             console.log("Gettting NameByCode/")
             const resp = http.get(Endpoint + "newStagelist/"+code);
             console.log(resp);
             return resp;
-        
+
         },
-        
+
         Reference() {
 
             console.log("Gettting Reference")
             const resp = http.get(Endpoint + "RMReference/");
             console.log(resp);
             return resp;
-        
+
         },
 
         Parameters() {
@@ -69,18 +69,18 @@ export default{
             const resp = http.get(Endpoint + "ProductParameters/");
             console.log(resp);
             return resp;
-        
+
         },
-        
-        
-        
+
+
+
         AcquireCode() {
 
             console.log("Gettting AcquireProductCode")
             const resp = http.get(Endpoint + "AcquireProductCode/");
             console.log(resp);
             return resp;
-        
+
         },
 
 
@@ -90,7 +90,7 @@ export default{
             const resp = http.get(Endpoint + "ProductAcquirermaterial/");
             console.log(resp);
             return resp;
-        
+
         },
         ProductStageListOfSpecifications(code) {
             console.log("Gettting ProductStageListOfSpecifications");
@@ -113,7 +113,7 @@ export default{
             const resp = http.post(Endpoint + "Productspecifications/", obj);
             console.log(resp);
             return resp;
-        
+
         },
         //qccuire
         CodeByNameforaccuire(name) {
@@ -122,7 +122,7 @@ export default{
             const resp = http.get(Endpoint + "ProductCodeByProductNameForViewSpecs/"+name+"/");
             console.log(resp);
             return resp;
-        
+
         },
         NameByCodeforaccuire(code) {
 
@@ -130,9 +130,9 @@ export default{
             const resp = http.get(Endpoint + "ProductNameByProductCodeForViewSpecs/"+code+"/");
             console.log(resp);
             return resp;
-        
+
         },
-        
-    }   
+
+    }
 
 }

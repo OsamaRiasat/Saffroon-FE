@@ -1,14 +1,14 @@
 import http from "../../http/httpService.js"
-import {apiUrl} from "../../../config.json" 
+import {apiUrl} from "../../../config.js"
 
 const data="QualityControl/"
-const Endpoint=apiUrl+data 
+const Endpoint=apiUrl+data
 
 export default{
-    
- 
+
+
     methods: {
-        
+
         // List of assigned QC No
         RMQCNo() {
 
@@ -16,9 +16,9 @@ export default{
             const resp = http.get(Endpoint + "RMQCNo/",{ 'headers': { 'Authorization': "Token"+" "+sessionStorage.getItem("token") } });
             console.log(resp);
             return resp;
-        
+
         },
-        
+
         // When QC NO is selected call this service and append tha data accordingly in the whole form
         RMQCNoSample(QCNo) {
 
@@ -26,21 +26,21 @@ export default{
             const resp = http.get(Endpoint + "RMQCNoSample/"+QCNo+"/");
             console.log(resp);
             return resp;
-        
+
         },
 
         // look at the swagger for body
         PostRMAnalysis(obj) {
 
             console.log("Gettting specifications")
-            const resp = http.post(Endpoint + "PostRMAnalysis/", obj);  
+            const resp = http.post(Endpoint + "PostRMAnalysis/", obj);
             console.log(resp);
             return resp;
-        
+
         },
 
-        
-        // you can test Post Function only  by this 
+
+        // you can test Post Function only  by this
         // {
         //     "QCNo": "RM23232",
         //     "workingStd": "USP",
@@ -58,7 +58,7 @@ export default{
         //       }
         //     ]
         //   }
-        
-    }   
+
+    }
 
 }

@@ -1,23 +1,23 @@
 import http from "../../http/httpService.js"
-import {apiUrl} from "../../../config.json" 
+import {apiUrl} from "../../../config.js"
 
 const data="QualityControl/"
-const Endpoint=apiUrl+data 
+const Endpoint=apiUrl+data
 
 export default{
-    
- 
+
+
     methods: {
-        
-        
-        
+
+
+
         RMSamples() {
 
             console.log("Gettting PMSamples")
             const resp = http.get(Endpoint + "PMSamples/");
             console.log(resp);
             return resp;
-        
+
         },
 
 
@@ -27,11 +27,11 @@ export default{
             const resp = http.get(Endpoint + "Analysts/");
             console.log(resp);
             return resp;
-        
+
         },
 
-        
-        
+
+
         AssignAnalyst(QCNo,payload) {
             // {
             //     "analyst": 1
@@ -45,7 +45,7 @@ export default{
             });
             console.log(resp);
             return resp;
-        
+
         },
         AnalystSample(id){
             console.log("Analyst Samole", id)
@@ -53,8 +53,8 @@ export default{
             console.log(resp);
             return resp;
         }
-       
-        
-    }   
+
+
+    }
 
 }

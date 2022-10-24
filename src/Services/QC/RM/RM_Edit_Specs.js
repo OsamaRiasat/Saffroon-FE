@@ -1,23 +1,23 @@
 import http from "../../http/httpService.js"
-import {apiUrl} from "../../../config.json" 
+import {apiUrl} from "../../../config.js"
 
 const data="QualityControl/"
-const Endpoint=apiUrl+data 
+const Endpoint=apiUrl+data
 
 export default{
-    
- 
+
+
     methods: {
-        
-        
-        
+
+
+
         AcquireCode() {
 
             console.log("Gettting AcquireRMCode")
             const resp = http.get(Endpoint + "AcquireRMCode/");
             console.log(resp);
             return resp;
-        
+
         },
 
         Reference() {
@@ -26,7 +26,7 @@ export default{
             const resp = http.get(Endpoint + "RMReference/");
             console.log(resp);
             return resp;
-        
+
         },
 
         Parameters() {
@@ -35,7 +35,7 @@ export default{
             const resp = http.get(Endpoint + "RMParameters/");
             console.log(resp);
             return resp;
-        
+
         },
 
 
@@ -45,26 +45,26 @@ export default{
             const resp = http.get(Endpoint + "Acquirermaterial/");
             console.log(resp);
             return resp;
-        
+
         },
 
-        
+
         RMEditSpecificationView(code) {
 
             console.log("Gettting Acquirespecifications/")
             const resp = http.get(Endpoint + "RMEditSpecifications/"+code);
             console.log(resp);
             return resp;
-        
+
         },
-    
+
         updateSpecification(obj) {
 
             console.log("Gettting specifications")
             const resp = http.post(Endpoint + "TempRMSpecifications/", obj);  // Method Post is set intwentially for update Don't Change it
             console.log(resp);
             return resp;
-        
+
         },
         CodeByName(name) {
 
@@ -72,7 +72,7 @@ export default{
             const resp = http.get(Endpoint + "RMCodeByRMNameForViewSpecs/"+name+"/");
             console.log(resp);
             return resp;
-        
+
         },
         NameByCode(code) {
 
@@ -80,9 +80,9 @@ export default{
             const resp = http.get(Endpoint + "RMNameByRMCodeForViewSpecs/"+code+"/");
             console.log(resp);
             return resp;
-        
+
         },
-        
-    }   
+
+    }
 
 }

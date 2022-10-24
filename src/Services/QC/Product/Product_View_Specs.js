@@ -1,5 +1,5 @@
 import http from "../../http/httpService.js";
-import { apiUrl } from "../../../config.json";
+import { apiUrl } from "../../../config.js";
 
 const data = "QualityControl/";
 const Endpoint = apiUrl + data;
@@ -20,7 +20,7 @@ export default {
       return resp;
     },
 
-    
+
     ProductStageListOfSpecifications(code) {
       console.log("Gettting ProductStageListOfSpecifications");
       const resp = http.get(Endpoint + "ProductStageListOfSpecifications/" + code + "/");
@@ -41,7 +41,7 @@ export default {
       const resp = http.get(Endpoint + "ProductCodeByProductNameForViewSpecs/"+name+"/");
       console.log(resp);
       return resp;
-  
+
   },
   NameByCode(code) {
 
@@ -49,7 +49,7 @@ export default {
       const resp = http.get(Endpoint + "ProductNameByProductCodeForViewSpecs/"+code+"/");
       console.log(resp);
       return resp;
-  
+
   },
   },
 

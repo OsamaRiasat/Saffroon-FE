@@ -1,5 +1,5 @@
 import http from "../http/httpService.js";
-import { apiUrl } from "../../config.json";
+import { apiUrl } from "../../config.js";
 
 const data = "QualityAssurance/";   // Its production intentially
 const Endpoint = apiUrl + data;
@@ -11,5 +11,5 @@ export function ListOfDosageForms() {
 
 export function AddProduct(obj) {
   const resp = http.post(Endpoint + "AddProduct/", obj);
-  return resp; 
+  return resp;
 }

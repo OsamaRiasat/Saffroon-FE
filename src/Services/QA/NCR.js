@@ -1,5 +1,5 @@
 import http from "../http/httpService.js";
-import { apiUrl } from "../../config.json";
+import { apiUrl } from "../../config.js";
 
 const data = "QualityAssurance/";   // Its production intentially
 const Endpoint = apiUrl + data;
@@ -13,7 +13,7 @@ export function HighestNCR() {
   const resp = http.get(Endpoint + "HighestNCR/");
   return resp;
 }
-    
+
 export function CategoriesList() {
   const resp = http.get(Endpoint + "CategoriesList/" );
   return resp;

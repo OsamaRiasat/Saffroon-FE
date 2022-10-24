@@ -1,5 +1,5 @@
 import http from "../../http/httpService.js";
-import { apiUrl } from "../../../config.json";
+import { apiUrl } from "../../../config.js";
 
 const data = "QualityControl/";
 const Endpoint = apiUrl + data;
@@ -32,7 +32,7 @@ export default {
       const resp = http.get(Endpoint + "RMCodeByRMNameForViewSpecs/"+name+"/");
       console.log(resp);
       return resp;
-  
+
   },
   NameByCode(code) {
 
@@ -40,7 +40,7 @@ export default {
       const resp = http.get(Endpoint + "RMNameByRMCodeForViewSpecs/"+code+"/");
       console.log(resp);
       return resp;
-  
+
   },
   },
 

@@ -1,9 +1,9 @@
 import http from "../http/httpService.js"
-import {apiUrl} from "../../config.json" 
+import {apiUrl} from "../../config.js"
 
 
 const data="inventory/"
-const Endpoint=apiUrl+data 
+const Endpoint=apiUrl+data
 
 
 // RM Demand Form
@@ -13,7 +13,7 @@ export function getRMDemandHighestDNo()
      const resp=http.get(Endpoint+"RMDemandHighestDNo/");
      console.log(resp);
      return resp;
-     
+
 }
 
 export function RawMaterialNames()
@@ -22,7 +22,7 @@ export function RawMaterialNames()
      const resp=http.get(Endpoint+"viewset/RawMaterialNames/");
      console.log(resp);
      return resp;
-    
+
 }
 
 export function RawMaterialCodes()
@@ -31,26 +31,26 @@ export function RawMaterialCodes()
      const resp=http.get(Endpoint+"viewset/RawMaterialCodes/");
      console.log(resp);
      return resp;
-    
+
 }
 
 export function RawMaterialSearchByRMCode(rmCode)
 {
-    
+
     console.log("Gettting RawMaterialbyCode")
      const resp=http.get(Endpoint+"RawMaterialSearchByRMCode/"+rmCode+"/");
      console.log(resp);
      return resp;
-    
+
 }
 export function RawMaterialSearchByName(rmName)
 {
-    
+
     console.log("Gettting RawMaterialSearchByName")
      const resp=http.get(Endpoint+"RawMaterialSearchByName/"+rmName+"/");
      console.log(resp);
      return resp;
-    
+
 }
 
 export function PlanNosList()
@@ -59,26 +59,26 @@ export function PlanNosList()
      const resp=http.get(Endpoint+"PlanNosList");
      console.log(resp);
      return resp;
-    
+
 }
 
 export function Demanded_Materials_Through_PlanNo(planNo)
-{    
+{
     console.log("Gettting Demanded_Materials_Through_PlanNo")
      const resp=http.get(Endpoint+"Demanded_Materials_Through_PlanNo"+planNo);
      console.log(resp);
      return resp;
-    
+
 }
 
 export function RMDemands(rmdemand)
 {
-    
+
     console.log("Gettting RMDemands")
      const resp=http.post(Endpoint+"RMDemands/",rmdemand);
      console.log(resp);
      return resp;
-    
+
 }
 
 // RM Purchase Order

@@ -1,5 +1,5 @@
 import http from "../http/httpService.js";
-import { apiUrl } from "../../config.json";
+import { apiUrl } from "../../config.js";
 
 const data = "Production/";
 const Endpoint = apiUrl + data;
@@ -10,14 +10,14 @@ export function PlanNo() {
   console.log(resp);
   return resp;
 }
-   
+
 export function ProductByPlanNo(planNo) {
   console.log("Gettting ProductByPlanNo");
   const resp = http.get(Endpoint + "ProductByPlanNo/" + planNo + "/");
   console.log(resp);
   return resp;
 }
-    
+
 export function SBS(PCode) {
   console.log("Gettting Standard Batc Size");
   const resp = http.get(Endpoint + "SBS/"+PCode+"/");

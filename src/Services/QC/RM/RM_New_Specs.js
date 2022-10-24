@@ -1,22 +1,22 @@
 import http from "../../http/httpService.js"
-import {apiUrl} from "../../../config.json" 
+import {apiUrl} from "../../../config.js"
 
 const data="QualityControl/"
-const Endpoint=apiUrl+data 
+const Endpoint=apiUrl+data
 
 export default{
-    
- 
+
+
     methods: {
-        
-        
+
+
         CodeList() {
 
             console.log("Gettting RMCodeList")
             const resp = http.get(Endpoint + "RMCodeList/");
             console.log(resp);
             return resp;
-        
+
         },
 
         CodeByName(code) {
@@ -25,7 +25,7 @@ export default{
             const resp = http.get(Endpoint + "RMCodeByRMName/"+code+"/");
             console.log(resp);
             return resp;
-        
+
         },
 
         MaterialList() {
@@ -34,16 +34,16 @@ export default{
             const resp = http.get(Endpoint + "RMaterialList/");
             console.log(resp);
             return resp;
-        
+
         },
 
         NameByCode(code) {
-            //1st line 
+            //1st line
             console.log("Gettting NameByCode/")
             const resp = http.get(Endpoint + "RMNameByRMCode/"+code+"/");
             console.log(resp);
             return resp;
-        
+
         },
 
         Reference() {
@@ -52,7 +52,7 @@ export default{
             const resp = http.get(Endpoint + "RMReference/");
             console.log(resp);
             return resp;
-        
+
         },
 
         Parameters() {
@@ -61,18 +61,18 @@ export default{
             const resp = http.get(Endpoint + "RMParameters/");
             console.log(resp);
             return resp;
-        
+
         },
-        
-        
-        
+
+
+
         AcquireCode() {
 
             console.log("Gettting AcquireRMCode")
             const resp = http.get(Endpoint + "AcquireRMCode/");
             console.log(resp);
             return resp;
-        
+
         },
 
 
@@ -82,7 +82,7 @@ export default{
             const resp = http.get(Endpoint + "Acquirermaterial/");
             console.log(resp);
             return resp;
-        
+
         },
 
         Acquirespecifications(code) {
@@ -91,7 +91,7 @@ export default{
             const resp = http.get(Endpoint + "RMAcquirespecifications/"+code);
             console.log(resp);
             return resp;
-        
+
         },
 
         postSpecifications(obj) {
@@ -100,7 +100,7 @@ export default{
             const resp = http.post(Endpoint + "RMspecifications/", obj);
             console.log(resp);
             return resp;
-        
+
         },
         //qccuire
         CodeByNameforaccuire(name) {
@@ -109,7 +109,7 @@ export default{
             const resp = http.get(Endpoint + "RMCodeByRMNameForViewSpecs/"+name+"/");
             console.log(resp);
             return resp;
-        
+
         },
         NameByCodeforaccuire(code) {
 
@@ -117,9 +117,9 @@ export default{
             const resp = http.get(Endpoint + "RMNameByRMCodeForViewSpecs/"+code+"/");
             console.log(resp);
             return resp;
-        
+
         },
-        
-    }   
+
+    }
 
 }

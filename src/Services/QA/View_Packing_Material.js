@@ -1,14 +1,14 @@
 import http from "../http/httpService.js"
-import {apiUrl} from "../../config.json" 
+import {apiUrl} from "../../config.js"
 
 const data="QualityAssurance/"
-const Endpoint=apiUrl+data 
+const Endpoint=apiUrl+data
 
 export default{
-    
- 
+
+
     methods: {
-        
+
         RMDetail(RMCode="",MaterialName="", Units="", Type="") {
             console.log("Gettting Raw Materials")
             console.log(RMCode,MaterialName, Units, Type)
@@ -17,5 +17,5 @@ export default{
             console.log(resp);
             return resp;
         },
-    }   
+    }
 }

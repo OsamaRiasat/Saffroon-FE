@@ -1,9 +1,9 @@
 import http from "../http/httpService.js"
-import {apiUrl} from "../../config.json" 
+import {apiUrl} from "../../config.js"
 
 
 const data="inventory/"
-const Endpoint=apiUrl+data 
+const Endpoint=apiUrl+data
 
 export function RMHighestGRNo() {
   const resp = http.get(Endpoint+"HighestGRNo/");
@@ -14,7 +14,7 @@ export function IGPNoList(){
   const resp = http.get(Endpoint+"IGPNoList/");
   return resp
 }
-      
+
 export function RMRecievingDetail(IGPNo){
   const resp = http.get(Endpoint+"RMRecievingDetail/"+IGPNo);
   return resp

@@ -1,5 +1,5 @@
 import http from "../http/httpService.js";
-import { apiUrl } from "../../config.json";
+import { apiUrl } from "../../config.js";
 
 const data = "Production/";
 const Endpoint = apiUrl + data;
@@ -31,7 +31,7 @@ export function PackSizesList(PCode) {
   console.log(resp);
   return resp;
 }
-      
+
 export function ViewFormulationForAssessment(PCode, batchSize, noOfBatches) {
   console.log("Gettting ViewFormulationForAssessment");
   const resp = http.get(Endpoint + "ViewFormulationForAssessment/" + PCode + "/"+ batchSize + "/"+ noOfBatches + "/");

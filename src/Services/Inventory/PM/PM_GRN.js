@@ -1,9 +1,9 @@
 import http from "../../http/httpService.js"
-import {apiUrl} from "../../../config.json" 
+import {apiUrl} from "../../../config.js"
 
 
 const data="inventory/"
-const Endpoint=apiUrl+data 
+const Endpoint=apiUrl+data
 
 export function PMHighestGRNo(){
   const resp = http.get(Endpoint+"PMHighestGRNo/");
@@ -14,7 +14,7 @@ export function IGPNoList(){
   const resp = http.get(Endpoint+"PMIGPNoList/");
   return resp
 }
-      
+
 export function PMRecievingDetail(IGPNo){
   const resp = http.get(Endpoint+"PMRecievingDetail/"+IGPNo);
   return resp

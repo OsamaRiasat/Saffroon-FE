@@ -1,5 +1,5 @@
 import http from "../http/httpService.js";
-import { apiUrl } from "../../config.json";
+import { apiUrl } from "../../config.js";
 
 const data = "products/";
 const Endpoint = apiUrl + data;

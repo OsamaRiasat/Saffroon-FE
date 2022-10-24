@@ -1,5 +1,5 @@
 import http from "../../http/httpService.js";
-import { apiUrl } from "../../../config.json";
+import { apiUrl } from "../../../config.js";
 
 const data = "QualityControl/";
 const Endpoint = apiUrl + data;
@@ -30,7 +30,7 @@ export default {
           console.log("error");
         });
         return resp;
-       
+
     }
   },
 };
