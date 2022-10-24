@@ -12,9 +12,7 @@
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@material-ui/x-grid": "^4.0.0-alpha.35",
     "@material-ui/x-grid-data-generator": "^4.0.0-alpha.35",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^11.2.7",
-    "@testing-library/user-event": "^12.8.3",
+
     "axios": "^0.21.1",
     "bootstrap": "^5.0.2",
     "material-icons": "^1.10.5",
